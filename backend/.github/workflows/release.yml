@@ -1,0 +1,31 @@
+name: Release Audace
+
+on:
+  milestone:
+    types: [ closed ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+      - name: Release
+        run:
+          ./gradlew release -Prelease.forceVersion=${{ github.event.milestone.title }} -Prelease.customPassword=${GITHUB_TOKEN} -Prelease.customUsername=${GITHUB_ACTOR}
+      - name: Merge in production
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: 'main'
+          target_branch: 'production'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
