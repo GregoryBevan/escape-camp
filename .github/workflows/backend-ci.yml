@@ -43,5 +43,5 @@ jobs:
         if: success() || failure()
         with:
           name: Escape Camp test report
-          path: build/test-results/**/*.xml
+          path: backend/build/test-results/**/*.xml
           reporter: java-junit
