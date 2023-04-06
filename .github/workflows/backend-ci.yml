@@ -20,6 +20,9 @@ defaults:
   run:
     working-directory: backend
 
+permissions:
+  checks: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
