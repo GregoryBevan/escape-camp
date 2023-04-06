@@ -45,3 +45,4 @@ jobs:
           name: Escape Camp test report
           path: backend/build/test-results/**/*.xml
           reporter: java-junit
+          working-directory: backend
