@@ -67,3 +67,11 @@ gitProperties {
 	keys = listOf("git.branch", "git.commit.id", "git.commit.time", "git.commit.message.short", "git.branch")
 	dateFormat = "yyyy-MM-dd HH:mm:ss"
 }
+
+scmVersion {
+
+	repository {
+		type.set("git") // type of repository
+		directory.set(project.rootProject.file("../"))
+	}
+}
