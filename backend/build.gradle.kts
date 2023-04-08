@@ -16,7 +16,18 @@ repositories {
 	mavenCentral()
 }
 
+sourceSets {
+	create("integrationTest") {
+		compileClasspath += sourceSets.test.get().output
+		runtimeClasspath += sourceSets.test.get().output
+	}
+}
+
+configurations["integrationTestRuntimeOnly"].extendsFrom(configurations.testRuntimeOnly.get())
+configurations["integrationTestImplementation"].extendsFrom(configurations.testImplementation.get())
+
 extra["testcontainersVersion"] = "1.17.6"
+ext["junit-jupiter.version"] = "5.9.2"
 
 dependencyManagement {
 	imports {
@@ -39,12 +50,16 @@ dependencies {
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
 	runtimeOnly("org.postgresql:r2dbc-postgresql")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.jetbrains.kotlin:kotlin-test")
+	testImplementation("org.junit.jupiter:junit-jupiter-params")
+	testImplementation("org.junit.platform:junit-platform-suite")
 	testImplementation("io.projectreactor:reactor-test")
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:postgresql")
 	testImplementation("org.testcontainers:r2dbc")
+	"integrationTestImplementation"(project)
+	"integrationTestImplementation"("org.springframework.boot:spring-boot-starter-test")
 }
 
 tasks.withType<KotlinCompile> {
@@ -56,7 +71,20 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+	testLogging {
+		events("passed", "skipped", "failed")
+	}
 }
+
+val integrationTest = tasks.register<Test>("integrationTest") {
+	description = "Runs the integration tests."
+	group = "verification"
+	testClassesDirs = sourceSets["integrationTest"].output.classesDirs
+	classpath = sourceSets["integrationTest"].runtimeClasspath
+	shouldRunAfter("test")
+}
+
+tasks.check { dependsOn(integrationTest) }
 
 springBoot {
 	mainClass.set("fr.maifinternational.audace.AudaceApplicationKt")
