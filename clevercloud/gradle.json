@@ -1,0 +1,9 @@
+{
+  "build": {
+    "type": "gradle",
+    "goal": "build -x integrationTest -x test"
+  },
+  "deploy": {
+    "goal": "bootRun -x generateGitProperties"
+  }
+}
