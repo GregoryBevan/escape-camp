@@ -5,10 +5,11 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.0"
 	kotlin("jvm") version "1.7.22"
 	kotlin("plugin.spring") version "1.7.22"
+	id("pl.allegro.tech.build.axion-release") version "1.15.0"
+	id("com.gorylenko.gradle-git-properties") version "2.4.1"
 }
 
 group = "me.elgregos"
-version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
@@ -17,10 +18,16 @@ repositories {
 
 extra["testcontainersVersion"] = "1.17.6"
 
+dependencyManagement {
+	imports {
+		mavenBom("org.testcontainers:testcontainers-bom:${property("testcontainersVersion")}")
+	}
+}
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-	implementation("org.springframework.boot:spring-boot-starter-security")
+//	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -40,12 +47,6 @@ dependencies {
 	testImplementation("org.testcontainers:r2dbc")
 }
 
-dependencyManagement {
-	imports {
-		mavenBom("org.testcontainers:testcontainers-bom:${property("testcontainersVersion")}")
-	}
-}
-
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
 		freeCompilerArgs = listOf("-Xjsr305=strict")
@@ -55,4 +56,22 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+springBoot {
+	mainClass.set("fr.maifinternational.audace.AudaceApplicationKt")
+	buildInfo()
+}
+
+gitProperties {
+	keys = listOf("git.branch", "git.commit.id", "git.commit.time", "git.commit.message.short", "git.branch")
+	dateFormat = "yyyy-MM-dd HH:mm:ss"
+}
+
+scmVersion {
+
+	repository {
+		type.set("git") // type of repository
+		directory.set(project.rootProject.file("../"))
+	}
 }
