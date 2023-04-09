@@ -38,7 +38,6 @@ dependencyManagement {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-//	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -87,7 +86,7 @@ val integrationTest = tasks.register<Test>("integrationTest") {
 tasks.check { dependsOn(integrationTest) }
 
 springBoot {
-	mainClass.set("fr.maifinternational.audace.AudaceApplicationKt")
+	mainClass.set("me.elgregos.escapecamp.EscapeCampApplicationKt")
 	buildInfo()
 }
 
