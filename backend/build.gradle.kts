@@ -52,14 +52,14 @@ dependencies {
 	runtimeOnly("org.postgresql:r2dbc-postgresql")
 	testImplementation("org.jetbrains.kotlin:kotlin-test")
 	testImplementation("org.junit.jupiter:junit-jupiter-params")
-	testImplementation("org.junit.platform:junit-platform-suite")
-	testImplementation("io.projectreactor:reactor-test")
-	testImplementation("org.springframework.security:spring-security-test")
-	testImplementation("org.testcontainers:junit-jupiter")
-	testImplementation("org.testcontainers:postgresql")
-	testImplementation("org.testcontainers:r2dbc")
 	"integrationTestImplementation"(project)
 	"integrationTestImplementation"("org.springframework.boot:spring-boot-starter-test")
+	"integrationTestImplementation"("org.junit.platform:junit-platform-suite")
+	"integrationTestImplementation"("io.projectreactor:reactor-test")
+	"integrationTestImplementation"("org.springframework.security:spring-security-test")
+	"integrationTestImplementation"("org.testcontainers:junit-jupiter")
+	"integrationTestImplementation"("org.testcontainers:postgresql")
+	"integrationTestImplementation"("org.testcontainers:r2dbc")
 }
 
 tasks.withType<KotlinCompile> {
