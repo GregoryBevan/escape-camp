@@ -4,8 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class EscapecampApplication
+class EscapeCampApplication
 
 fun main(args: Array<String>) {
-	runApplication<EscapecampApplication>(*args)
+	runApplication<EscapeCampApplication>(*args)
 }
