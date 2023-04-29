@@ -36,6 +36,7 @@ dependencyManagement {
 }
 
 dependencies {
+	implementation("me.elgregos:events-k:1.0.2")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
