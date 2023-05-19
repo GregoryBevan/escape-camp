@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="EscapeCampApplicationKt" type="JetRunConfigurationType" nameIsGenerated="true">
+    <envs>
+      <env name="POSTGRESQL_ADDON_PORT" value="5440" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="me.elgregos.escapecamp.EscapeCampApplicationKt" />
+    <module name="escapecamp.main" />
+    <shortenClasspath name="NONE" />
+    <option name="VM_PARAMETERS" value="-Dserver.port=8040" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

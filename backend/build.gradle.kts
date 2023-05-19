@@ -36,7 +36,7 @@ dependencyManagement {
 }
 
 dependencies {
-	implementation("me.elgregos:events-k:1.0.2")
+	implementation("me.elgregos:reakt-eves:1.0.0")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -52,6 +52,9 @@ dependencies {
 	runtimeOnly("org.postgresql:r2dbc-postgresql")
 	testImplementation("org.jetbrains.kotlin:kotlin-test")
 	testImplementation("org.junit.jupiter:junit-jupiter-params")
+	testImplementation("io.mockk:mockk:1.13.5")
+	testImplementation("io.projectreactor:reactor-test")
+	testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.25")
 	"integrationTestImplementation"(project)
 	"integrationTestImplementation"("org.springframework.boot:spring-boot-starter-test")
 	"integrationTestImplementation"("org.junit.platform:junit-platform-suite")
@@ -64,7 +67,7 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
-		freeCompilerArgs = listOf("-Xjsr305=strict")
+		freeCompilerArgs = listOf("-Xjsr305=strict", "-Xjvm-default=all")
 		jvmTarget = "17"
 	}
 }
