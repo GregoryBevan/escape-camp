@@ -1,19 +1,22 @@
 package me.elgregos.escapecamp.game.api
 
+import me.elgregos.escapecamp.config.security.AuthenticatedUser
+import me.elgregos.escapecamp.game.application.GameCommand
+import me.elgregos.escapecamp.game.application.GameCommandHandler
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
-import reactor.core.publisher.Mono
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping(
     path = ["/api/games"]
 )
-class GameController {
+class GameController(val gameCommandHandler: GameCommandHandler) {
 
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    fun helloWorld() = Mono.just("Hello world")
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+//    @PreAuthorize("hasAuthority('ORGANIZER')")
+    fun createGame(@AuthenticationPrincipal  authenticatedUser: AuthenticatedUser) =
+        gameCommandHandler.handle(GameCommand.CreateGame(createdBy = authenticatedUser.id))
+            .map { mapOf(Pair("gameId", it.aggregateId)) }
 }

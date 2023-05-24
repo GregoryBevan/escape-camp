@@ -14,6 +14,9 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
 	mavenCentral()
+	maven {
+		url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+	}
 }
 
 sourceSets {
@@ -36,22 +39,29 @@ dependencyManagement {
 }
 
 dependencies {
-	implementation("me.elgregos:events-k:1.0.2")
+	implementation("me.elgregos:reakt-eves:1.1.0-SNAPSHOT")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
+	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 	implementation("org.liquibase:liquibase-core")
 	implementation("org.springframework:spring-jdbc")
+	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+	implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
+	implementation("org.postgresql:r2dbc-postgresql")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
-	runtimeOnly("org.postgresql:r2dbc-postgresql")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
 	testImplementation("org.jetbrains.kotlin:kotlin-test")
 	testImplementation("org.junit.jupiter:junit-jupiter-params")
+	testImplementation("io.mockk:mockk:1.13.5")
+	testImplementation("io.projectreactor:reactor-test")
+	testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.25")
 	"integrationTestImplementation"(project)
 	"integrationTestImplementation"("org.springframework.boot:spring-boot-starter-test")
 	"integrationTestImplementation"("org.junit.platform:junit-platform-suite")
@@ -60,11 +70,14 @@ dependencies {
 	"integrationTestImplementation"("org.testcontainers:junit-jupiter")
 	"integrationTestImplementation"("org.testcontainers:postgresql")
 	"integrationTestImplementation"("org.testcontainers:r2dbc")
+	"integrationTestImplementation"("io.cucumber:cucumber-java8:7.12.0")
+	"integrationTestImplementation"("io.cucumber:cucumber-junit-platform-engine:7.12.0")
+	"integrationTestImplementation"("io.cucumber:cucumber-spring:7.12.0")
 }
 
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
-		freeCompilerArgs = listOf("-Xjsr305=strict")
+		freeCompilerArgs = listOf("-Xjsr305=strict", "-Xjvm-default=all")
 		jvmTarget = "17"
 	}
 }

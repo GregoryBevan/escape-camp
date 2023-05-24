@@ -1,0 +1,35 @@
+spring:
+  r2dbc:
+    url: r2dbc:pool:postgresql://${POSTGRESQL_ADDON_HOST:localhost}:${POSTGRESQL_ADDON_PORT:5432}/${POSTGRESQL_ADDON_DB:escape-camp}
+    username: ${POSTGRESQL_ADDON_USER:admin}
+    password: ${POSTGRESQL_ADDON_PASSWORD:guess-what}
+    initialSize: 2
+    maxSize: 10
+    properties:
+      sslMode: ${POSTGRESQL_R2DBC_SSL_MODE:DISABLE}
+  liquibase:
+    change-log: classpath:db/changelog/db-changelog.sql
+    url: jdbc:postgresql://${POSTGRESQL_ADDON_HOST:localhost}:${POSTGRESQL_ADDON_PORT:5440}/${POSTGRESQL_ADDON_DB:escape-camp}
+    user: ${POSTGRESQL_ADDON_USER:admin}
+    password: ${POSTGRESQL_ADDON_PASSWORD:guess-what}
+
+organizer:
+  password: "7P2byKz39G!FGY"
+
+jwt:
+  accessTokenExpiration: ${ACCESS_TOKEN_EXPIRATION:PT60M}
+  issuer: ${JWT_ISSUER:https://escamp-camp.elgregos.me}
+  secretKey: ${JWT_SECRET_KEY:youllneverguesswhatismysecretbutyoucantry}
+
+
+logging:
+  level:
+    org:
+      springframework:
+        r2dbc: INFO
+    io:
+      r2dbc:
+        postgresql:
+          QUERY: INFO
+          PARAM: INFO
+  liquibase: WARN
