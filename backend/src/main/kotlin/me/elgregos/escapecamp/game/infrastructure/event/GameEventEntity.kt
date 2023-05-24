@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Table("game_event")
-class GameEventEntity(
+data class GameEventEntity(
     @get:JvmName("id") val id: UUID,
     override val sequenceNum: Long? = null,
     override val version: Int = 1,

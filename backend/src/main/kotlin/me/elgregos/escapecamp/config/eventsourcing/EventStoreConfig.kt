@@ -1,4 +1,4 @@
-package me.elgregos.escapecamp.config
+package me.elgregos.escapecamp.config.eventsourcing
 
 import me.elgregos.escapecamp.game.domain.event.GameEvent
 import me.elgregos.escapecamp.game.domain.event.GameEventRepository

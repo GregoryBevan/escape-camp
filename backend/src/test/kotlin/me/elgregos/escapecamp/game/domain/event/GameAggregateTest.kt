@@ -21,11 +21,11 @@ class GameAggregateTest {
     }
 
     @Test
-    fun `should start new game`() {
+    fun `should create new game`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.empty()
-        GameAggregate(escapeCampId, escapeCampCreatorId, gameEventStore).startGame(escapeCampCreatedAt)
+        GameAggregate(escapeCampId, escapeCampCreatorId, gameEventStore).createGame(escapeCampCreatedAt)
             .`as`(StepVerifier::create)
-            .assertNext { assertThat(it).isEqualTo(escapeCampStarted.copy(id = it.id)) }
+            .assertNext { assertThat(it).isEqualTo(escapeCampCreated.copy(id = it.id)) }
             .verifyComplete()
     }
 }
