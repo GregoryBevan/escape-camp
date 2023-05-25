@@ -1,7 +1,9 @@
 package me.elgregos.escapecamp.game.domain.event
 
 import com.fasterxml.jackson.databind.JsonNode
+import me.elgregos.escapecamp.game.domain.entity.Team
 import me.elgregos.reakteves.domain.Event
+import me.elgregos.reakteves.libs.genericObjectMapper
 import me.elgregos.reakteves.libs.nowUTC
 import java.time.LocalDateTime
 import java.util.*
@@ -26,7 +28,7 @@ sealed class GameEvent(
         override val createdAt: LocalDateTime = nowUTC(),
         override val createdBy: UUID,
         override val aggregateId: UUID,
-        override val event: JsonNode
+        override val event: JsonNode = genericObjectMapper.createObjectNode().put("id", "$aggregateId").put("createdAt", "$createdAt")
     ) : GameEvent(
         id,
         sequenceNum,
@@ -38,30 +40,30 @@ sealed class GameEvent(
         event
     )
 
-//    data class TeamAdded(
-//        override val id: UUID = UUID.randomUUID(),
-//        override val sequenceNum: Long? = null,
-//        override val version: Int = 1,
-//        override val createdAt: LocalDateTime = nowUTC(),
-//        override val createdBy: UUID,
-//        val gameId: UUID,
-//        override val event: JsonNode,
-//    ) : GameEvent(
-//        id,
-//        sequenceNum,
-//        version,
-//        createdAt,
-//        createdBy,
-//        gameId,
-//        TeamAdded::class.simpleName!!,
-//        event
-//    ) {
-//        constructor(createdBy: UUID, gameId: UUID, team: Team) : this(
-//            createdBy = createdBy,
-//            gameId = gameId,
-//            event = team.toJson()
-//        )
-//    }
+    data class TeamAdded(
+        override val id: UUID = UUID.randomUUID(),
+        override val sequenceNum: Long? = null,
+        override val version: Int = 1,
+        override val createdAt: LocalDateTime = nowUTC(),
+        override val createdBy: UUID,
+        val gameId: UUID,
+        override val event: JsonNode,
+    ) : GameEvent(
+        id,
+        sequenceNum,
+        version,
+        createdAt,
+        createdBy,
+        gameId,
+        TeamAdded::class.simpleName!!,
+        event
+    ) {
+        constructor(createdBy: UUID, gameId: UUID, team: Team) : this(
+            createdBy = createdBy,
+            gameId = gameId,
+            event = team.toJson()
+        )
+    }
 
 //    data class GameStarted(
 //        override val id: UUID = UUID.randomUUID(),
