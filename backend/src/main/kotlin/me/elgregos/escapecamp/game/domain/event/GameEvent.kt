@@ -28,7 +28,8 @@ sealed class GameEvent(
         override val createdAt: LocalDateTime = nowUTC(),
         override val createdBy: UUID,
         override val aggregateId: UUID,
-        override val event: JsonNode = genericObjectMapper.createObjectNode().put("id", "$aggregateId").put("createdAt", "$createdAt")
+        override val event: JsonNode = genericObjectMapper.createObjectNode().put("id", "$aggregateId")
+            .put("createdAt", "$createdAt")
     ) : GameEvent(
         id,
         sequenceNum,
@@ -58,10 +59,14 @@ sealed class GameEvent(
         TeamAdded::class.simpleName!!,
         event
     ) {
-        constructor(createdBy: UUID, gameId: UUID, team: Team) : this(
-            createdBy = createdBy,
+        constructor(gameId: UUID, addedBy: UUID, addedAt: LocalDateTime, teams: List<Team>) : this(
             gameId = gameId,
-            event = team.toJson()
+            createdBy = addedBy,
+            createdAt = addedAt,
+            event = genericObjectMapper.createObjectNode()
+                .put("updatedBy", "$addedBy")
+                .put("updatedAt", "$addedAt")
+                .set("teams", genericObjectMapper.valueToTree(teams))
         )
     }
 

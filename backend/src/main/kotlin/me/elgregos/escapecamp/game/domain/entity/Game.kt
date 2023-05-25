@@ -8,8 +8,8 @@ data class Game(
     val createdAt: LocalDateTime,
     val teams: List<Team> = listOf()
 ) {
-    fun addTeam(id: UUID, name: String) =
-        copy(teams = teams.toMutableList().also { it.add(Team(id, name)) })
+    fun addTeam(team: Team) =
+        copy(teams = teams.toMutableList().also { it.add(team) })
 
 }
 

@@ -4,9 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.mockk.every
 import io.mockk.mockk
-import me.elgregos.escapecamp.game.domain.entity.escapeCampCreatedAt
-import me.elgregos.escapecamp.game.domain.entity.escapeCampCreatorId
-import me.elgregos.escapecamp.game.domain.entity.escapeCampId
+import me.elgregos.escapecamp.game.domain.entity.*
 import me.elgregos.reakteves.domain.EventStore
 import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
@@ -33,11 +31,14 @@ class GameAggregateTest {
     }
 
     @Test
-    fun `should add team to game`() {
+    fun `should add first team to game`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.just(escapeCampCreated)
-        GameAggregate(escapeCampId, escapeCampCreatorId, gameEventStore).createGame(escapeCampCreatedAt)
+        GameAggregate(escapeCampId, lockedAndLoadedTeamId, gameEventStore).addTeam(
+            lockedAndLoadedTeam,
+            lockedAndLoadedTeamAddAt
+        )
             .`as`(StepVerifier::create)
-            .assertNext { assertThat(it).isEqualTo(escapeCampCreated.copy(id = it.id)) }
+            .assertNext { assertThat(it).isEqualTo(lockedAndLoadedTeamAdded.copy(id = it.id)) }
             .verifyComplete()
     }
 }

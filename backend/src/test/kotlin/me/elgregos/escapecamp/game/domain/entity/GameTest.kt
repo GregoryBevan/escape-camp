@@ -8,7 +8,7 @@ class GameTest {
 
     @Test
     fun `should add first team to game`() {
-        assertThat(escapeCamp.addTeam(lockedAndLoadedTeamId, lockedAndLoadedTeamName)).isEqualTo(
+        assertThat(escapeCamp.addTeam(lockedAndLoadedTeam)).isEqualTo(
             escapeCampAfterLockedAndLoadedTeamAdded
         )
     }
