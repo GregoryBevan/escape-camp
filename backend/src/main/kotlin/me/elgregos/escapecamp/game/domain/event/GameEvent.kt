@@ -30,6 +30,7 @@ sealed class GameEvent(
         override val aggregateId: UUID,
         override val event: JsonNode = genericObjectMapper.createObjectNode().put("id", "$aggregateId")
             .put("createdAt", "$createdAt")
+            .put("createdBy", "$createdBy")
     ) : GameEvent(
         id,
         sequenceNum,

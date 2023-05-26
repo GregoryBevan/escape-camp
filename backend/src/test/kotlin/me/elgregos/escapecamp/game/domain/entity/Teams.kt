@@ -13,4 +13,5 @@ val theEscapePeasTeamId = UUID.fromString("91700c93-10f9-474e-8176-811598a9aaef"
 val theEscapePeasTeam = Team(theEscapePeasTeamId, "The Escape Peas")
 
 val sherUnlockTeamId = UUID.fromString("a6e05314-2af2-43c7-a274-d024cf053b42")!!
-val sherUnlockTeam = Team(sherUnlockTeamId, "Sher-unlock")
+const val sherUnlockTeamName = "Sher-unlock"
+val sherUnlockTeam = Team(sherUnlockTeamId, sherUnlockTeamName)

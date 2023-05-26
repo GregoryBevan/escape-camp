@@ -1,5 +1,6 @@
 package me.elgregos.escapecamp.game.domain.event
 
+import me.elgregos.escapecamp.config.exception.GameException
 import me.elgregos.escapecamp.game.domain.entity.Game
 import me.elgregos.escapecamp.game.domain.entity.Team
 import me.elgregos.reakteves.domain.EventStore
@@ -18,6 +19,8 @@ class GameAggregate(private val gameId: UUID, private val userId: UUID, eventSto
     fun addTeam(team: Team, addedAt: LocalDateTime): Mono<GameEvent> =
         previousState()
             .map { JsonConvertible.fromJson(it, Game::class.java) }
+            .filter { game -> game.teams.size < 4 }
+            .switchIfEmpty(Mono.error { GameException.TeamNumberLimitExceededException() })
             .map { game -> game.addTeam(team) }
             .map { game -> GameEvent.TeamAdded(gameId, userId, addedAt, game.teams) }
 

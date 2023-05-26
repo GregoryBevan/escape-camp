@@ -4,10 +4,12 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.mockk.every
 import io.mockk.mockk
+import me.elgregos.escapecamp.config.exception.GameException
 import me.elgregos.escapecamp.game.domain.entity.*
 import me.elgregos.reakteves.domain.EventStore
 import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -35,10 +37,27 @@ class GameAggregateTest {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.just(escapeCampCreated)
         GameAggregate(escapeCampId, lockedAndLoadedTeamId, gameEventStore).addTeam(
             lockedAndLoadedTeam,
-            lockedAndLoadedTeamAddAt
+            lockedAndLoadedTeamAddedAt
         )
             .`as`(StepVerifier::create)
             .assertNext { assertThat(it).isEqualTo(lockedAndLoadedTeamAdded.copy(id = it.id)) }
             .verifyComplete()
+    }
+
+    @Test
+    fun `should fail to add team to game when 4 teams exists`() {
+        every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.just(
+            escapeCampCreated,
+            lockedAndLoadedTeamAdded,
+            jeepersKeypersTeamAdded,
+            theEscapePeasTeamAdded,
+            sherUnlockTeamAdded
+        )
+        val unexpectedTeamId = UUID.randomUUID()
+        GameAggregate(escapeCampId, unexpectedTeamId, gameEventStore).addTeam(
+            Team(unexpectedTeamId, "unexpectedTeam"), LocalDateTime.now()
+        )
+            .`as`(StepVerifier::create)
+            .verifyErrorMatches { throwable -> throwable is GameException.TeamNumberLimitExceededException }
     }
 }

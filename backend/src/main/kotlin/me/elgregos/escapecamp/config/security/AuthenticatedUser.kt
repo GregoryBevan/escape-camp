@@ -14,9 +14,10 @@ data class AuthenticatedUser(
     val role: Role,
     @get:JvmName("authorities")
     val authorities: Collection<GrantedAuthority> = listOf(SimpleGrantedAuthority(role.name))
-): User(username, password, authorities)
+) : User(username, password, authorities)
 
-val organizer = AuthenticatedUser(id = UUID.fromString("2d399fb8-d137-47a5-b848-1755bb80e62e"), username = "organizer", role = Role.ORGANIZER)
+val organizerId: UUID = UUID.fromString("2d399fb8-d137-47a5-b848-1755bb80e62e")
+val organizer = AuthenticatedUser(id = organizerId, username = "organizer", role = Role.ORGANIZER)
 
 enum class Role {
     ORGANIZER,
