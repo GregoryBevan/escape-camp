@@ -19,6 +19,8 @@ class GameAggregate(private val gameId: UUID, private val userId: UUID, eventSto
     fun addTeam(team: Team, addedAt: LocalDateTime): Mono<GameEvent> =
         previousState()
             .map { JsonConvertible.fromJson(it, Game::class.java) }
+            .filter { game -> game.isTeamNameAvailable(team.name) }
+            .switchIfEmpty(Mono.error { GameException.TeamNameNotAvailableException(team.name) })
             .filter { game -> game.teams.size < 4 }
             .switchIfEmpty(Mono.error { GameException.TeamNumberLimitExceededException() })
             .map { game -> game.addTeam(team) }

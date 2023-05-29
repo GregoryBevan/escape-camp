@@ -60,4 +60,22 @@ class GameAggregateTest {
             .`as`(StepVerifier::create)
             .verifyErrorMatches { throwable -> throwable is GameException.TeamNumberLimitExceededException }
     }
+
+    @Test
+    fun `should fail to add team to game with same name`() {
+        every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.just(
+            escapeCampCreated,
+            lockedAndLoadedTeamAdded
+        )
+        GameAggregate(escapeCampId, lockedAndLoadedTeamId, gameEventStore).addTeam(
+            lockedAndLoadedTeam,
+            LocalDateTime.now()
+        )
+            .`as`(StepVerifier::create)
+            .verifyErrorMatches { throwable ->
+                throwable is GameException.TeamNameNotAvailableException || throwable.message.equals(
+                    "Team with name Lock and loaded already exists"
+                )
+            }
+    }
 }

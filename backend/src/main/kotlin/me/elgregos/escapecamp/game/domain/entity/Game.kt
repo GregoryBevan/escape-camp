@@ -14,5 +14,7 @@ data class Game(
     fun addTeam(team: Team) =
         copy(teams = teams.toMutableList().also { it.add(team) })
 
+    fun isTeamNameAvailable(teamName: String) = teams.none { it.name == teamName }
+
 }
 
