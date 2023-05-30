@@ -14,3 +14,13 @@ Feature: Add team to game
     And a team with name "Locked and loaded" has been added to the game
     When he adds his team to the game with name "Locked and loaded"
     Then the response contains a team name not available error
+
+  Scenario: Add team to game that has already 4 teams
+    Given a player with game identifier
+    And 4 teams have been added to the game
+      | Locked and Loaded |
+      | Jeepers Keypers   |
+      | The Escape Peas   |
+      | Sher-unlock       |
+    When he adds his team to the game with name "The unexpected team"
+    Then the response contains a team number limit exceeded error

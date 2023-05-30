@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.fasterxml.jackson.databind.JsonNode
+import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 import me.elgregos.escapecamp.features.scenario
 import org.springframework.beans.factory.annotation.Autowired
@@ -46,6 +47,11 @@ class AddTeamApiStepDefinition : En {
             response = gameClient.addTeam(gameId, teamName)
         }
 
+        When("4 teams have been added to the game") { teamNamesTable: DataTable ->
+            teamNamesTable.asList()
+                .forEach { gameClient.addTeam(gameId, it).expectStatus().isCreated }
+        }
+
         Then("the team is added") {
             response.expectStatus().isCreated
                 .expectBody(JsonNode::class.java).consumeWith {
@@ -68,6 +74,15 @@ class AddTeamApiStepDefinition : En {
                     assertThat(
                         it.responseBody!!.get("message").asText()
                     ).isEqualTo("Team with name Locked and loaded already exists")
+                }
+        }
+
+        Then("the response contains a team number limit exceeded error") {
+            response.expectStatus().isBadRequest
+                .expectBody(JsonNode::class.java).consumeWith {
+                    assertThat(
+                        it.responseBody!!.get("message").asText()
+                    ).isEqualTo("Number of team is limited to 4")
                 }
         }
     }
