@@ -1,6 +1,7 @@
 package me.elgregos.escapecamp.game.api
 
 import assertk.assertThat
+import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.fasterxml.jackson.databind.JsonNode
 import io.cucumber.java8.En
@@ -33,6 +34,14 @@ class AddTeamApiStepDefinition : En {
                 }
         }
 
+        And("a team with name {string} has been added to the game") { teamName: String ->
+            gameClient.addTeam(gameId, teamName)
+                .expectBody(JsonNode::class.java).consumeWith {
+                    responseBody = it.responseBody!!
+                    assertThat(responseBody.get("teamId")).isNotNull()
+                }
+        }
+
         When("he adds his team to the game with name {string}") { teamName: String ->
             response = gameClient.addTeam(gameId, teamName)
         }
@@ -51,6 +60,15 @@ class AddTeamApiStepDefinition : En {
             val accessToken = responseBody.get("accessToken")
             assertThat(accessToken).isNotNull()
             scenario?.log("Team access token $accessToken")
+        }
+
+        Then("the response contains a team name not available error") {
+            response.expectStatus().isBadRequest
+                .expectBody(JsonNode::class.java).consumeWith {
+                    assertThat(
+                        it.responseBody!!.get("message").asText()
+                    ).isEqualTo("Team with name Locked and loaded already exists")
+                }
         }
     }
 

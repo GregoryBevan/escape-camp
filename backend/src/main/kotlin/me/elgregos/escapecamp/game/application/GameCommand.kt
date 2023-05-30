@@ -1,5 +1,6 @@
 package me.elgregos.escapecamp.game.application
 
+import me.elgregos.escapecamp.game.domain.entity.Team
 import me.elgregos.reakteves.application.Command
 import me.elgregos.reakteves.libs.nowUTC
 import java.time.LocalDateTime
@@ -17,6 +18,7 @@ sealed class GameCommand(open val gameId: UUID) : Command {
         override val gameId: UUID,
         val addedAt: LocalDateTime = nowUTC(),
         val addedBy: UUID = UUID.randomUUID(),
-        val name: String
+        val name: String,
+        val team: Team = Team(addedBy, name)
     ) : GameCommand(gameId)
 }

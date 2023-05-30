@@ -29,6 +29,6 @@ class GameCommandHandler(
 
     private fun addTeam(gameCommand: AddTeam) =
         GameAggregate(gameCommand.gameId, gameCommand.addedBy, gameEventStore)
-            .createGame(gameCommand.addedAt)
+            .addTeam(gameCommand.team, gameCommand.addedAt)
 
 }

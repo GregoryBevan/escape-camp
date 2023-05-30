@@ -8,7 +8,7 @@ Feature: Create escape camp
     When he creates an escape camp
     Then the game is created
 
-  Scenario: Create an escape camp by the organizer
+  Scenario: Create an escape camp by an unauthenticated user
     Given an unauthenticated user
     When he creates an escape camp
     Then an authentication error is returned

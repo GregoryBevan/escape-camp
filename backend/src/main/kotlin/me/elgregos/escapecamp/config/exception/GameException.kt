@@ -9,12 +9,12 @@ sealed class GameException(
 ) : Exception(message, cause) {
 
     data class TeamNumberLimitExceededException(override val message: String = "Number of team is limited to 4") :
-        GameException(message)
+        GameException(message, status = HttpStatus.BAD_REQUEST)
 
     data class TeamNameNotAvailableException(
         val teamName: String,
         override val message: String = "Team with name $teamName already exists"
     ) :
-        GameException(message)
+        GameException(message, status = HttpStatus.BAD_REQUEST)
 
 }
