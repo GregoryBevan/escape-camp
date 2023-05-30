@@ -7,7 +7,7 @@ import io.cucumber.plugin.event.TestRunFinished
 import io.cucumber.plugin.event.TestRunStarted
 import me.elgregos.escapecamp.utils.extensions.postgres.PostgreSQLContainerHandler
 
-class FeaturesEventListener : ConcurrentEventListener {
+class FeatureEventListener : ConcurrentEventListener {
 
     private val postgreSQLContainerHandler = PostgreSQLContainerHandler()
 

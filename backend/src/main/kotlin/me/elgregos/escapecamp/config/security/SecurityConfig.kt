@@ -12,7 +12,10 @@ import org.springframework.security.web.server.SecurityWebFilterChain
 
 @Configuration
 @EnableWebFluxSecurity
-class SecurityConfig(val authenticationManager: AuthenticationManager, val securityContextRepository: SecurityContextRepository) {
+class SecurityConfig(
+    val authenticationManager: AuthenticationManager,
+    val securityContextRepository: SecurityContextRepository
+) {
 
     @Bean
     fun passwordEncoder(): PasswordEncoder? {
@@ -29,6 +32,10 @@ class SecurityConfig(val authenticationManager: AuthenticationManager, val secur
             .securityContextRepository(securityContextRepository)
             .authorizeExchange()
             .pathMatchers(HttpMethod.POST, "/api/tokens").permitAll()
+            .pathMatchers(
+                HttpMethod.POST,
+                "/api/games/{id:[a-fA-F0-9]{8}\\-[a-fA-F0-9]{4}\\-4[a-fA-F0-9]{3}\\-[89abAB][a-fA-F0-9]{3}\\-[a-fA-F0-9]{12}}/teams"
+            ).permitAll()
             .anyExchange().authenticated()
             .and()
             .build()

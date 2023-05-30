@@ -1,20 +1,27 @@
 package me.elgregos.escapecamp.game.domain.entity
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
-import java.util.*
-import kotlin.test.assertEquals
+import org.junit.jupiter.params.provider.CsvSource
 
 class GameTest {
 
-    @ParameterizedTest
-    @ValueSource(ints = [1, 2, 3, 4])
-    fun `should add team to game`(numberOfTeam: Int) {
-        val game = Game()
-        (1..numberOfTeam)
-            .map { game.addTeam(UUID.randomUUID(), "Team${it}") }
+    @Test
+    fun `should add team to game`() {
+        assertThat(escapeCamp.addTeam(lockedAndLoadedTeam)).isEqualTo(
+            escapeCampAfterLockedAndLoadedTeamAdded
+        )
+    }
 
-        assertEquals(numberOfTeam, game.teams().size)
+    @ParameterizedTest
+    @CsvSource(
+        "Locked and Loaded, false",
+        "Jeepers Keypers, true"
+    )
+    fun `should check if team name is available`(teamName: String, expectedResult: Boolean) {
+        assertThat(escapeCampAfterLockedAndLoadedTeamAdded.isTeamNameAvailable(teamName)).isEqualTo(expectedResult)
     }
 
 }
