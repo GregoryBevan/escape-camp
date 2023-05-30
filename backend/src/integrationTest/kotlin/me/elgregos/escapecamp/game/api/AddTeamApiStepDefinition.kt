@@ -6,9 +6,10 @@ import assertk.assertions.isNotNull
 import com.fasterxml.jackson.databind.JsonNode
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
+import me.elgregos.escapecamp.features.gameId
+import me.elgregos.escapecamp.features.response
 import me.elgregos.escapecamp.features.scenario
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.web.reactive.server.WebTestClient
 import java.util.*
 
 class AddTeamApiStepDefinition : En {
@@ -16,8 +17,6 @@ class AddTeamApiStepDefinition : En {
     @Autowired
     private lateinit var gameClient: GameClient
 
-    private lateinit var gameId: UUID
-    private lateinit var response: WebTestClient.ResponseSpec
     private lateinit var responseBody: JsonNode
 
     init {
@@ -35,8 +34,14 @@ class AddTeamApiStepDefinition : En {
                 }
         }
 
+        Given("a player with an unknown game identifier") {
+            gameId = UUID.randomUUID()
+            assertThat(gameId).isNotNull()
+            scenario?.log("Unknown ame identifier $gameId")
+        }
+
         And("a team with name {string} has been added to the game") { teamName: String ->
-            gameClient.addTeam(gameId, teamName)
+            gameClient.addTeam(gameId!!, teamName)
                 .expectBody(JsonNode::class.java).consumeWith {
                     responseBody = it.responseBody!!
                     assertThat(responseBody.get("teamId")).isNotNull()
@@ -44,16 +49,16 @@ class AddTeamApiStepDefinition : En {
         }
 
         When("he adds his team to the game with name {string}") { teamName: String ->
-            response = gameClient.addTeam(gameId, teamName)
+            response = gameClient.addTeam(gameId!!, teamName)
         }
 
         When("4 teams have been added to the game") { teamNamesTable: DataTable ->
             teamNamesTable.asList()
-                .forEach { gameClient.addTeam(gameId, it).expectStatus().isCreated }
+                .forEach { gameClient.addTeam(gameId!!, it).expectStatus().isCreated }
         }
 
         Then("the team is added") {
-            response.expectStatus().isCreated
+            response!!.expectStatus().isCreated
                 .expectBody(JsonNode::class.java).consumeWith {
                     responseBody = it.responseBody!!
                     val teamId = responseBody.get("teamId")
@@ -69,7 +74,7 @@ class AddTeamApiStepDefinition : En {
         }
 
         Then("the response contains a team name not available error") {
-            response.expectStatus().isBadRequest
+            response!!.expectStatus().isBadRequest
                 .expectBody(JsonNode::class.java).consumeWith {
                     assertThat(
                         it.responseBody!!.get("message").asText()
@@ -78,7 +83,7 @@ class AddTeamApiStepDefinition : En {
         }
 
         Then("the response contains a team number limit exceeded error") {
-            response.expectStatus().isBadRequest
+            response!!.expectStatus().isBadRequest
                 .expectBody(JsonNode::class.java).consumeWith {
                     assertThat(
                         it.responseBody!!.get("message").asText()

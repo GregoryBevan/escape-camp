@@ -78,4 +78,19 @@ class GameAggregateTest {
                 )
             }
     }
+
+    @Test
+    fun `should fail to add team to non-existent game`() {
+        every { gameEventStore.loadAllEvents(unknownGameId) } returns Flux.empty()
+        GameAggregate(unknownGameId, lockedAndLoadedTeamId, gameEventStore).addTeam(
+            lockedAndLoadedTeam,
+            lockedAndLoadedTeamAddedAt
+        )
+            .`as`(StepVerifier::create)
+            .verifyErrorMatches { throwable ->
+                throwable is GameException.GameNotFoundException || throwable.message.equals(
+                    "Game with id 07c905e7-8179-4b59-a65a-510a4e1de4d3 has not been found"
+                )
+            }
+    }
 }

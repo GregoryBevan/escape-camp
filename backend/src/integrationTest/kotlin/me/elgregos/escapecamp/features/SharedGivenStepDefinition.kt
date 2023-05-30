@@ -5,9 +5,11 @@ import io.cucumber.java8.Scenario
 import me.elgregos.escapecamp.game.api.GameClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.reactive.server.WebTestClient
+import java.util.*
 
 var scenario: Scenario? = null
 var organizerJwt: String? = null
+var gameId: UUID? = null
 var response: WebTestClient.ResponseSpec? = null
 
 class SharedGivenStepDefinition : En {

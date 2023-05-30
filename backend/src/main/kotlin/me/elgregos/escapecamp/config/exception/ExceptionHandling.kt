@@ -99,7 +99,7 @@ class GlobalErrorAttributes : DefaultErrorAttributes() {
 
     fun getAndLogError(request: ServerRequest?): Throwable {
         val error = super.getError(request)
-        logger.error(error) { "An error occurred while calling Audace Api" }
+        logger.error(error) { "An error occurred while calling Escape Camp Api" }
         return error
     }
 }

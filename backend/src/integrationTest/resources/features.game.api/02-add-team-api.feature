@@ -24,3 +24,8 @@ Feature: Add team to game
       | Sher-unlock       |
     When he adds his team to the game with name "The unexpected team"
     Then the response contains a team number limit exceeded error
+
+  Scenario: Add team to an unknown game
+    Given a player with an unknown game identifier
+    When he adds his team to the game with name "Locked and loaded"
+    Then the response contains a game not found error
