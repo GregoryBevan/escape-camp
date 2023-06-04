@@ -25,6 +25,18 @@ Feature: Add team to game
     When he adds his team to the game with name "The unexpected team"
     Then the response contains a team number limit exceeded error
 
+  Scenario: Add last team to game
+    Given a player with game identifier
+    And 3 teams have been added to the game
+      | Locked and Loaded |
+      | Jeepers Keypers   |
+      | The Escape Peas   |
+    When he adds his team to the game with name "Sher-unlock"
+    Then the team is added
+    And a token is returned to continue the game
+    And the game is started
+    And a game started notification is sent
+
   Scenario: Add team to an unknown game
     Given a player with an unknown game identifier
     When he adds his team to the game with name "Locked and loaded"

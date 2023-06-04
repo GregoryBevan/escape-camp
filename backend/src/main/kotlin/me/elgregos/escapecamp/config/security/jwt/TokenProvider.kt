@@ -22,7 +22,7 @@ class TokenProvider(private val jwtConfig: JwtConfig) {
         signingKey = Keys.hmacShaKeyFor(jwtConfig.secretKey.encodeToByteArray())
     }
 
-    fun generateAccessToken(subject: UUID, name: String, role: Role): String? {
+    fun generateAccessToken(subject: UUID, name: String, role: Role): String {
         val issuedAt = Date()
         val expireAt = Date(issuedAt.time + jwtConfig.accessTokenExpiration.toMillis())
         return Jwts.builder()

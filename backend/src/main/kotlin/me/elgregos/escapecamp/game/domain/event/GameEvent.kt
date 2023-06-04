@@ -27,8 +27,8 @@ sealed class GameEvent(
         override val version: Int = 1,
         override val createdAt: LocalDateTime = nowUTC(),
         override val createdBy: UUID,
-        override val aggregateId: UUID,
-        override val event: JsonNode = genericObjectMapper.createObjectNode().put("id", "$aggregateId")
+        val gameId: UUID,
+        override val event: JsonNode = genericObjectMapper.createObjectNode().put("id", "$gameId")
             .put("createdAt", "$createdAt")
             .put("createdBy", "$createdBy")
     ) : GameEvent(
@@ -37,7 +37,7 @@ sealed class GameEvent(
         version,
         createdAt,
         createdBy,
-        aggregateId,
+        gameId,
         GameCreated::class.simpleName!!,
         event
     )
@@ -60,33 +60,37 @@ sealed class GameEvent(
         TeamAdded::class.simpleName!!,
         event
     ) {
-        constructor(gameId: UUID, addedBy: UUID, addedAt: LocalDateTime, teams: List<Team>) : this(
+        constructor(gameId: UUID, version: Int, addedBy: UUID, addedAt: LocalDateTime, teams: List<Team>) : this(
             gameId = gameId,
+            version = version,
             createdBy = addedBy,
             createdAt = addedAt,
             event = genericObjectMapper.createObjectNode()
+                .put("id", "$gameId")
                 .put("updatedBy", "$addedBy")
                 .put("updatedAt", "$addedAt")
                 .set("teams", genericObjectMapper.valueToTree(teams))
         )
     }
 
-//    data class GameStarted(
-//        override val id: UUID = UUID.randomUUID(),
-//        override val sequenceNum: Long? = null,
-//        override val version: Int = 1,
-//        override val createdAt: LocalDateTime = nowUTC(),
-//        override val createdBy: UUID,
-//        val gameId: UUID,
-//        override val event: JsonNode = genericObjectMapper.createObjectNode(),
-//    ) : GameEvent(
-//        id,
-//        sequenceNum,
-//        version,
-//        createdAt,
-//        createdBy,
-//        gameId,
-//        GameStarted::class.simpleName!!,
-//        event
-//    )
+    data class GameStarted(
+        override val id: UUID = UUID.randomUUID(),
+        override val sequenceNum: Long? = null,
+        override val version: Int,
+        override val createdAt: LocalDateTime = nowUTC(),
+        override val createdBy: UUID,
+        val gameId: UUID,
+        override val event: JsonNode = genericObjectMapper.createObjectNode()
+            .put("id", "$gameId")
+            .put("startedAt", "$createdAt"),
+    ) : GameEvent(
+        id,
+        sequenceNum,
+        version,
+        createdAt,
+        createdBy,
+        gameId,
+        GameStarted::class.simpleName!!,
+        event
+    )
 }

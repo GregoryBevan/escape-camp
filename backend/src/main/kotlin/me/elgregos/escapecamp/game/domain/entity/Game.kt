@@ -9,7 +9,8 @@ data class Game(
     val createdBy: UUID,
     val updatedAt: LocalDateTime = createdAt,
     val updatedBy: UUID = createdBy,
-    val teams: List<Team> = listOf()
+    val teams: List<Team> = listOf(),
+    val startedAt: LocalDateTime? = null
 ) {
     fun addTeam(team: Team) =
         copy(teams = teams.toMutableList().also { it.add(team) })

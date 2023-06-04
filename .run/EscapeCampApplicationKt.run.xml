@@ -6,7 +6,7 @@
     <option name="MAIN_CLASS_NAME" value="me.elgregos.escapecamp.EscapeCampApplicationKt" />
     <module name="escapecamp.main" />
     <shortenClasspath name="NONE" />
-    <option name="VM_PARAMETERS" value="-Dserver.port=8040" />
+    <option name="VM_PARAMETERS" value="-Dserver.port=8090" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
