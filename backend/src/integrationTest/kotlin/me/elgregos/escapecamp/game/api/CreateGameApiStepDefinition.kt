@@ -22,7 +22,7 @@ class CreateGameApiStepDefinition : En {
         Then("the game is created") {
             response!!.expectStatus().isCreated
                 .expectBody(JsonNode::class.java).consumeWith {
-                    val gameId = it.responseBody?.get("gameId")
+                    val gameId = it.responseBody?.get("gameId")?.asText()
                     assertThat(gameId).isNotNull()
                     scenario?.log("Game identifier $gameId")
                 }

@@ -10,6 +10,9 @@ import me.elgregos.escapecamp.features.gameId
 import me.elgregos.escapecamp.features.response
 import me.elgregos.escapecamp.features.scenario
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.codec.ServerSentEvent
+import reactor.core.publisher.Flux
+import reactor.test.StepVerifier
 import java.util.*
 
 class AddTeamApiStepDefinition : En {
@@ -18,6 +21,8 @@ class AddTeamApiStepDefinition : En {
     private lateinit var gameClient: GameClient
 
     private lateinit var responseBody: JsonNode
+
+    private lateinit var sseResponseBody: Flux<ServerSentEvent<JsonNode>>
 
     init {
 
@@ -52,7 +57,7 @@ class AddTeamApiStepDefinition : En {
             response = gameClient.addTeam(gameId!!, teamName)
         }
 
-        When("4 teams have been added to the game") { teamNamesTable: DataTable ->
+        When("{int} teams have been added to the game") { numberOfTeam: Int,  teamNamesTable: DataTable ->
             teamNamesTable.asList()
                 .forEach { gameClient.addTeam(gameId!!, it).expectStatus().isCreated }
         }
@@ -67,10 +72,30 @@ class AddTeamApiStepDefinition : En {
                 }
         }
 
-        Then("a token is returned to continue the game") {
-            val accessToken = responseBody.get("accessToken")
+        And("a token is returned to continue the game") {
+            val accessToken = responseBody.get("accessToken").asText()
             assertThat(accessToken).isNotNull()
             scenario?.log("Team access token $accessToken")
+        }
+
+        And("the game is started") {
+            val eventType  = responseBody.get("eventType").asText()
+            assertThat(eventType).isEqualTo("GameStarted")
+        }
+
+        And("a game started notification is sent") {
+            sseResponseBody = gameClient.serverSentEventStream(gameId!!).responseBody
+            StepVerifier.create(sseResponseBody)
+                .assertNext { assertThat(it.event()).isEqualTo("GameCreated") }
+                .assertNext { assertThat(it.event()).isEqualTo("TeamAdded") }
+                .assertNext { assertThat(it.event()).isEqualTo("TeamAdded") }
+                .assertNext { assertThat(it.event()).isEqualTo("TeamAdded") }
+                .assertNext { assertThat(it.event()).isEqualTo("TeamAdded") }
+                .assertNext { assertThat(it.event()).isEqualTo("GameStarted") }
+                .thenCancel()
+                .verify()
+            val eventType  = responseBody.get("eventType").asText()
+            assertThat(eventType).isEqualTo("GameStarted")
         }
 
         Then("the response contains a team name not available error") {

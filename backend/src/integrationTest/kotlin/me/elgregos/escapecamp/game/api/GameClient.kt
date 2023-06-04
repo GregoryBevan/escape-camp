@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode
 import me.elgregos.escapecamp.features.organizerJwt
 import me.elgregos.reakteves.libs.genericObjectMapper
 import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
+import org.springframework.http.MediaType.*
+import org.springframework.http.codec.ServerSentEvent
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.returnResult
 import org.springframework.web.reactive.function.BodyInserters
 import java.util.*
 
@@ -22,8 +24,8 @@ class GameClient(private val webTestClient: WebTestClient) {
 
     fun authenticateOrganizer() = webTestClient.post()
         .uri("/api/tokens")
-        .accept(MediaType.APPLICATION_JSON)
-        .contentType(MediaType.APPLICATION_JSON)
+        .accept(APPLICATION_JSON)
+        .contentType(APPLICATION_JSON)
         .body(BodyInserters.fromValue(loginPayload))
         .exchange()
         .expectStatus().isOk
@@ -35,15 +37,24 @@ class GameClient(private val webTestClient: WebTestClient) {
         webTestClient.post()
             .uri(rootPath)
             .header(HttpHeaders.AUTHORIZATION, "Bearer $organizerJwt")
-            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .accept(MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
+            .accept(APPLICATION_JSON)
             .exchange()
 
     fun addTeam(gameId: UUID, teamName: String) =
         webTestClient.post()
-            .uri { it.path(rootPath).pathSegment("$gameId").pathSegment("teams").build() }
-            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .accept(MediaType.APPLICATION_JSON)
+            .uri { it.path(rootPath).pathSegment("$gameId", "teams").build() }
+            .header(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
+            .accept(APPLICATION_JSON)
             .body(BodyInserters.fromValue(genericObjectMapper.createObjectNode().put("name", teamName)))
             .exchange()
+
+    fun serverSentEventStream(gameId: UUID) =
+        webTestClient.get()
+            .uri { it.path(rootPath).pathSegment("$gameId", "events-stream").build() }
+            .header(HttpHeaders.AUTHORIZATION, "Bearer $organizerJwt")
+            .accept(TEXT_EVENT_STREAM)
+            .exchange()
+            .expectStatus().isOk()
+            .returnResult<ServerSentEvent<JsonNode>>()
 }
