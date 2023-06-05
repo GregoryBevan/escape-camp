@@ -15,3 +15,5 @@ val theEscapePeasTeam = Team(theEscapePeasTeamId, "The Escape Peas")
 val sherUnlockTeamId = UUID.fromString("a6e05314-2af2-43c7-a274-d024cf053b42")!!
 const val sherUnlockTeamName = "Sher-unlock"
 val sherUnlockTeam = Team(sherUnlockTeamId, sherUnlockTeamName)
+
+val lockedAndLoadedTeamAfterFirstRiddleAssigned = Team(lockedAndLoadedTeamId, lockedAndLoadedTeamName, listOf(lockedAndLoadedFirstRiddle))

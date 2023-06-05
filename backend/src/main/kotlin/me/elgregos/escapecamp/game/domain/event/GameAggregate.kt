@@ -2,6 +2,7 @@ package me.elgregos.escapecamp.game.domain.event
 
 import me.elgregos.escapecamp.config.exception.GameException
 import me.elgregos.escapecamp.game.domain.entity.Game
+import me.elgregos.escapecamp.game.domain.entity.Riddle
 import me.elgregos.escapecamp.game.domain.entity.Team
 import me.elgregos.escapecamp.game.domain.event.GameEvent.*
 import me.elgregos.reakteves.domain.EventStore
@@ -16,7 +17,7 @@ class GameAggregate(private val gameId: UUID, private val userId: UUID, eventSto
     JsonAggregate<GameEvent, UUID>(gameId, eventStore) {
 
     fun createGame(startedAt: LocalDateTime): Flux<GameEvent> =
-        Flux.just(GameCreated(gameId = gameId, createdBy = userId, createdAt = startedAt))
+        Flux.just(GameCreated(gameId, userId, startedAt))
 
     fun addTeam(team: Team, addedAt: LocalDateTime): Flux<GameEvent> =
         previousState()
@@ -27,16 +28,25 @@ class GameAggregate(private val gameId: UUID, private val userId: UUID, eventSto
             .switchIfEmpty(Mono.error { GameException.TeamNameNotAvailableException(team.name) })
             .filter { game -> game.teams.size < 4 }
             .switchIfEmpty(Mono.error { GameException.TeamNumberLimitExceededException() })
-            .map { game -> game.addTeam(team) }
+            .map { game -> game.addTeam(team, addedAt) }
             .flatMapMany { game ->
                 nextVersion()
-                    .map { version ->
-                        TeamAdded(gameId, version, userId, addedAt, game.teams)
-                    }
-                    .flatMap { this.applyNewEvent(it)}
+                    .map { version -> TeamAdded(gameId, version, userId, addedAt, game.teams) }
+                    .flatMap { this.applyNewEvent(it) }
                     .cast(GameEvent::class.java)
                     .concatWith(nextVersion()
-                        .filter{ game.teams.size == 4 }
-                        .map { version ->  GameStarted(gameId = gameId, version = version, createdBy = userId, createdAt = addedAt) })
+                        .filter { game.teams.size == 4 }
+                        .map { version -> GameStarted(gameId, version,userId, addedAt) })
+            }
+
+    fun assignTeamNextRiddle(assignedAt: LocalDateTime): Flux<GameEvent> =
+        previousState()
+            .filter { !it.isEmpty }
+            .switchIfEmpty(Mono.error { GameException.GameNotFoundException(gameId) })
+            .map { JsonConvertible.fromJson(it, Game::class.java) }
+            .map { game -> game.assignRiddleToTeam(userId, Riddle("first", assignedAt)) }
+            .flatMapMany { game ->
+                nextVersion()
+                    .map { nextVersion -> TeamNextRiddleAssigned(gameId, nextVersion, assignedAt, userId, game.teams) }
             }
 }

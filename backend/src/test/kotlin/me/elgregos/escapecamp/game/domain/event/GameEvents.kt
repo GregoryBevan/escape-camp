@@ -17,12 +17,11 @@ val escapeCampCreated = GameCreated(
 )
 
 val lockedAndLoadedTeamAddedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 31)
-
 val lockedAndLoadedTeamAdded = TeamAdded(
     gameId = escapeCampId,
     version = 2,
-    createdAt = lockedAndLoadedTeamAddedAt,
-    createdBy = lockedAndLoadedTeamId,
+    addedAt = lockedAndLoadedTeamAddedAt,
+    addedBy = lockedAndLoadedTeamId,
     event = genericObjectMapper.createObjectNode()
         .put("id", "981e1b04-ecc6-48b3-b750-58f20faa5e05")
         .put("updatedBy", "0bfce65c-dff9-4f2e-8e8f-11ed6151b205")
@@ -33,13 +32,14 @@ val lockedAndLoadedTeamAdded = TeamAdded(
                 .add(lockedAndLoadedTeam.toJson())
         ),
 )
-val jeepersKeypersTeamAddedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 32)
 
+
+val jeepersKeypersTeamAddedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 32)
 val jeepersKeypersTeamAdded = TeamAdded(
     gameId = escapeCampId,
     version = 3,
-    createdAt = jeepersKeypersTeamAddedAt,
-    createdBy = jeepersKeypersTeamId,
+    addedAt = jeepersKeypersTeamAddedAt,
+    addedBy = jeepersKeypersTeamId,
     event = genericObjectMapper.createObjectNode()
         .put("id", "981e1b04-ecc6-48b3-b750-58f20faa5e05")
         .put("updatedBy", "3a66dce7-ca96-4cd0-af56-6bd7e082edd5")
@@ -56,8 +56,8 @@ val theEscapePeasTeamAddedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 
 val theEscapePeasTeamAdded = TeamAdded(
     gameId = escapeCampId,
     version = 4,
-    createdAt = theEscapePeasTeamAddedAt,
-    createdBy = theEscapePeasTeamId,
+    addedAt = theEscapePeasTeamAddedAt,
+    addedBy = theEscapePeasTeamId,
     event = genericObjectMapper.createObjectNode()
         .put("id", "981e1b04-ecc6-48b3-b750-58f20faa5e05")
         .put("updatedBy", "91700c93-10f9-474e-8176-811598a9aaef")
@@ -76,8 +76,8 @@ val sherUnlockTeamAddedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 35)
 val sherUnlockTeamAdded = TeamAdded(
     gameId = escapeCampId,
     version = 5,
-    createdAt = sherUnlockTeamAddedAt,
-    createdBy = sherUnlockTeamId,
+    addedAt = sherUnlockTeamAddedAt,
+    addedBy = sherUnlockTeamId,
     event = genericObjectMapper.createObjectNode()
         .put("id", "981e1b04-ecc6-48b3-b750-58f20faa5e05")
         .put("updatedBy", "a6e05314-2af2-43c7-a274-d024cf053b42")
@@ -93,4 +93,25 @@ val sherUnlockTeamAdded = TeamAdded(
 )
 
 val escapeCampStarted =
-    GameEvent.GameStarted(gameId = escapeCampId, version = 6, createdAt = sherUnlockTeamAddedAt, createdBy = sherUnlockTeamId)
+    GameEvent.GameStarted(gameId = escapeCampId, version = 6, startedAt = sherUnlockTeamAddedAt, startedBy = sherUnlockTeamId)
+
+val eventsAfterEscapeCampStarted = listOf(escapeCampCreated, lockedAndLoadedTeamAdded, jeepersKeypersTeamAdded, theEscapePeasTeamAdded, sherUnlockTeamAdded, escapeCampStarted)
+
+val lockedAndLoadedFirstRiddleAssigned =
+    GameEvent.TeamNextRiddleAssigned(
+        gameId = escapeCampId,
+        version = 7,
+        assignedAt = lockedAndLoadedFirstRiddleAssignedAt,
+        assignedBy = lockedAndLoadedTeamId,
+        event = genericObjectMapper.createObjectNode()
+            .put("id", "981e1b04-ecc6-48b3-b750-58f20faa5e05")
+            .put("updatedAt", "2023-06-15T13:36:12")
+            .put("updatedBy", "0bfce65c-dff9-4f2e-8e8f-11ed6151b205")
+            .set(
+                "teams",
+                genericObjectMapper.createArrayNode()
+                    .add(lockedAndLoadedTeamAfterFirstRiddleAssigned.toJson())
+                    .add(jeepersKeypersTeam.toJson())
+                    .add(theEscapePeasTeam.toJson())
+                    .add(sherUnlockTeam.toJson()))
+    )

@@ -1,6 +1,8 @@
 package me.elgregos.escapecamp.game.domain.entity
 
 import me.elgregos.escapecamp.config.security.organizerId
+import me.elgregos.escapecamp.game.domain.event.lockedAndLoadedTeamAddedAt
+import me.elgregos.escapecamp.game.domain.event.sherUnlockTeamAddedAt
 import java.time.LocalDateTime
 import java.util.*
 
@@ -12,4 +14,11 @@ val escapeCampCreatedAt: LocalDateTime = LocalDateTime.of(2023, 5, 19, 21, 40, 1
 val escapeCamp = Game(escapeCampId, escapeCampCreatedAt, organizerId)
 
 val escapeCampAfterLockedAndLoadedTeamAdded =
-    Game(escapeCampId, escapeCampCreatedAt, organizerId, teams = listOf(lockedAndLoadedTeam))
+    Game(escapeCampId, escapeCampCreatedAt, organizerId, lockedAndLoadedTeamAddedAt, lockedAndLoadedTeamId, listOf(lockedAndLoadedTeam))
+
+val escapeCampAfterGameStarted =
+    Game(escapeCampId, escapeCampCreatedAt, organizerId, sherUnlockTeamAddedAt, sherUnlockTeamId, listOf(lockedAndLoadedTeam, jeepersKeypersTeam, theEscapePeasTeam, sherUnlockTeam))
+
+val escapeCampAfterLockedAndLoadedFirstRiddleAssigned =
+    Game(escapeCampId, escapeCampCreatedAt, organizerId, lockedAndLoadedFirstRiddleAssignedAt, lockedAndLoadedTeamId, listOf(
+        lockedAndLoadedTeamAfterFirstRiddleAssigned, jeepersKeypersTeam, theEscapePeasTeam, sherUnlockTeam))
