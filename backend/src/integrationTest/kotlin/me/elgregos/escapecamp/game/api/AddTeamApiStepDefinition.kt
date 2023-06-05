@@ -57,7 +57,7 @@ class AddTeamApiStepDefinition : En {
             response = gameClient.addTeam(gameId!!, teamName)
         }
 
-        When("{int} teams have been added to the game") { numberOfTeam: Int,  teamNamesTable: DataTable ->
+        When("{int} teams have been added to the game") { _: Int, teamNamesTable: DataTable ->
             teamNamesTable.asList()
                 .forEach { gameClient.addTeam(gameId!!, it).expectStatus().isCreated }
         }

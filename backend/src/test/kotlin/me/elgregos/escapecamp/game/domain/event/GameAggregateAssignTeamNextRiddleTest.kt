@@ -23,13 +23,24 @@ class GameAggregateAssignTeamNextRiddleTest {
     }
 
     @Test
-    fun `should assign riddle to team`() {
+    fun `should assign riddle-1 to first registered team`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterEscapeCampStarted)
 
         GameAggregate(escapeCampId, lockedAndLoadedTeamId, gameEventStore)
             .assignTeamNextRiddle(lockedAndLoadedFirstRiddleAssignedAt)
             .`as`(StepVerifier::create)
             .assertNext { assertThat(it).isEqualTo(lockedAndLoadedFirstRiddleAssigned.copy(id = it.id)) }
+            .verifyComplete()
+    }
+
+    @Test
+    fun `should assign riddle-4 to fourth registered team`() {
+        every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterLockedAndLoadedFirstRiddleAssigned)
+
+        GameAggregate(escapeCampId, sherUnlockTeamId, gameEventStore)
+            .assignTeamNextRiddle(sherUnlockFirstRiddleAssignedAt)
+            .`as`(StepVerifier::create)
+            .assertNext { assertThat(it).isEqualTo(sherUnlockFirstRiddleAssigned.copy(id = it.id)) }
             .verifyComplete()
     }
 

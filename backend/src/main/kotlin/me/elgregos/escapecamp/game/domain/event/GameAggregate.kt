@@ -4,6 +4,7 @@ import me.elgregos.escapecamp.config.exception.GameException
 import me.elgregos.escapecamp.game.domain.entity.Game
 import me.elgregos.escapecamp.game.domain.entity.Riddle
 import me.elgregos.escapecamp.game.domain.entity.Team
+import me.elgregos.escapecamp.game.domain.entity.riddleNames
 import me.elgregos.escapecamp.game.domain.event.GameEvent.*
 import me.elgregos.reakteves.domain.EventStore
 import me.elgregos.reakteves.domain.JsonAggregate
@@ -44,7 +45,7 @@ class GameAggregate(private val gameId: UUID, private val userId: UUID, eventSto
             .filter { !it.isEmpty }
             .switchIfEmpty(Mono.error { GameException.GameNotFoundException(gameId) })
             .map { JsonConvertible.fromJson(it, Game::class.java) }
-            .map { game -> game.assignRiddleToTeam(userId, Riddle("first", assignedAt)) }
+            .map { game -> game.assignRiddleToTeam(userId, Riddle(riddleNames[game.teamRegistrationOrder(userId)], assignedAt)) }
             .flatMapMany { game ->
                 nextVersion()
                     .map { nextVersion -> TeamNextRiddleAssigned(gameId, nextVersion, assignedAt, userId, game.teams) }

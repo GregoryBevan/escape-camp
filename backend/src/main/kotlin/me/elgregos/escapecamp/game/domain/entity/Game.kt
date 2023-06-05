@@ -21,10 +21,14 @@ data class Game(
 
     fun isTeamNameAvailable(teamName: String) = teams.none { it.name == teamName }
 
+    fun teamRegistrationOrder(teamId: UUID) =
+        teams.indexOfFirst { it.id == teamId }
+
     fun assignRiddleToTeam(teamId: UUID, riddle: Riddle) =
         copy(
             updatedAt = riddle.assignedAt,
             updatedBy = teamId,
             teams = teams.map { team -> if(team.id == teamId) team.assignRiddle(riddle) else team })
+
 }
 
