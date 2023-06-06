@@ -1,7 +1,6 @@
 package me.elgregos.escapecamp.game.application
 
-import me.elgregos.escapecamp.game.application.GameCommand.AddTeam
-import me.elgregos.escapecamp.game.application.GameCommand.CreateGame
+import me.elgregos.escapecamp.game.application.GameCommand.*
 import me.elgregos.escapecamp.game.domain.event.GameAggregate
 import me.elgregos.escapecamp.game.domain.event.GameEvent
 import me.elgregos.reakteves.domain.EventStore
@@ -19,6 +18,7 @@ class GameCommandHandler(
         when (gameCommand) {
             is CreateGame -> createGame(gameCommand)
             is AddTeam -> addTeam(gameCommand)
+            is AssignTeamNextRiddle -> assignTeamNextRiddle(gameCommand)
         }
             .flatMap { gameEventStore.save(it) }
             .doOnNext { eventPublisher.publish(it) }
@@ -30,5 +30,9 @@ class GameCommandHandler(
     private fun addTeam(gameCommand: AddTeam) =
         GameAggregate(gameCommand.gameId, gameCommand.addedBy, gameEventStore)
             .addTeam(gameCommand.team, gameCommand.addedAt)
+
+    private fun assignTeamNextRiddle(gameCommand: AssignTeamNextRiddle) =
+        GameAggregate(gameCommand.gameId, gameCommand.assignedBy, gameEventStore)
+            .assignTeamNextRiddle(gameCommand.assignedAt)
 
 }

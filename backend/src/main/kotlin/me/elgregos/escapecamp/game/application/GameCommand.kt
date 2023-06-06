@@ -21,4 +21,10 @@ sealed class GameCommand(open val gameId: UUID) : Command {
         val name: String,
         val team: Team = Team(addedBy, name)
     ) : GameCommand(gameId)
+
+    data class AssignTeamNextRiddle(
+        override val gameId: UUID,
+        val assignedAt: LocalDateTime = nowUTC(),
+        val assignedBy: UUID,
+    ) : GameCommand(gameId)
 }

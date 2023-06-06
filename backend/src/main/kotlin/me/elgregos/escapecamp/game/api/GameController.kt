@@ -36,23 +36,37 @@ class GameController(
             .toMono()
             .map { mapOf(Pair("gameId", it.aggregateId)) }
 
-    @PostMapping("{id}/teams")
+    @PostMapping("{gameId}/teams")
     @ResponseStatus(HttpStatus.CREATED)
     fun createGame(
-        @PathVariable @Valid id: UUID,
+        @PathVariable @Valid gameId: UUID,
         @RequestBody @Valid teamCreationDTO: TeamCreationDTO
     ): Mono<Map<String, String>> =
-        gameCommandHandler.handle(GameCommand.AddTeam(gameId = id, name = teamCreationDTO.name))
+        gameCommandHandler.handle(GameCommand.AddTeam(gameId = gameId, name = teamCreationDTO.name))
             .last()
             .map {
                 mapOf(
                     Pair("teamId", "${it.createdBy}"),
-                    Pair("accessToken", tokenProvider.generateAccessToken(it.createdBy, teamCreationDTO.name, Role.PLAYER)),
+                    Pair(
+                        "accessToken",
+                        tokenProvider.generateAccessToken(it.createdBy, teamCreationDTO.name, Role.PLAYER)
+                    ),
                     Pair("eventType", it.eventType)
                 )
             }
 
+    @GetMapping("{gameId}/teams/{teamId}/riddle")
+    @ResponseStatus(HttpStatus.OK)
+    fun assignRiddle(
+        @PathVariable @Valid gameId: UUID,
+        @PathVariable @Valid teamId: UUID
+    ): Mono<Map<String, String>> =
+        gameCommandHandler.handle(GameCommand.AssignTeamNextRiddle(gameId, assignedBy = teamId))
+            .last()
+            .map { mapOf(Pair("riddle", "")) }
+
     @GetMapping(path = ["{id}/events-stream"], produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
+    @PreAuthorize("hasAnyAuthority('ORGANIZER','PLAYER')")
     fun eventsStream(@PathVariable @Valid id: UUID) =
         serverSentEventService.sseFlux()
             .filter { it.data()?.get("id")?.asText() == id.toString() }
