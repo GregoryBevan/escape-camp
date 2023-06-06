@@ -45,6 +45,30 @@ class GameAggregateAssignTeamNextRiddleTest {
     }
 
     @Test
+    fun `should fail to assign riddle to first registered team if previous riddle not solved`() {
+        every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterLockedAndLoadedFirstRiddleAssigned)
+
+        GameAggregate(escapeCampId, lockedAndLoadedTeamId, gameEventStore)
+            .assignTeamNextRiddle(lockedAndLoadedFirstRiddleAssignedAt.plusSeconds(30))
+            .`as`(StepVerifier::create)
+            .verifyErrorMatches { throwable ->  throwable is GameException.PreviousRiddleNotSolvedException || throwable.message.equals(
+                "Previous riddle not solved yet"
+            ) }
+    }
+
+    @Test
+    fun `should fail to assign riddle to a non-existing team`() {
+        every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterLockedAndLoadedFirstRiddleAssigned)
+
+        GameAggregate(escapeCampId, unknownTeamId, gameEventStore)
+            .assignTeamNextRiddle(lockedAndLoadedFirstRiddleAssignedAt.plusSeconds(30))
+            .`as`(StepVerifier::create)
+            .verifyErrorMatches { throwable ->  throwable is GameException.TeamNotFoundException || throwable.message.equals(
+                "Team with id 4f5ddf39-4a5c-4317-b4a6-db2d6c50dd18 has not been found"
+            ) }
+    }
+
+    @Test
     fun `should fail to assign riddle to team when game is not existing`() {
         every { gameEventStore.loadAllEvents(unknownGameId) } returns Flux.empty()
 

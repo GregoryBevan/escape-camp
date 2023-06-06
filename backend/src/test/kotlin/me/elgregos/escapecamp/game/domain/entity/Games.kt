@@ -14,11 +14,36 @@ val escapeCampCreatedAt: LocalDateTime = LocalDateTime.of(2023, 5, 19, 21, 40, 1
 val escapeCamp = Game(escapeCampId, escapeCampCreatedAt, organizerId)
 
 val escapeCampAfterLockedAndLoadedTeamAdded =
-    Game(escapeCampId, escapeCampCreatedAt, organizerId, lockedAndLoadedTeamAddedAt, lockedAndLoadedTeamId, listOf(lockedAndLoadedTeam))
+    escapeCamp.copy(
+        updatedAt = lockedAndLoadedTeamAddedAt,
+        updatedBy = lockedAndLoadedTeamId,
+        teams = listOf(lockedAndLoadedTeam)
+    )
 
 val escapeCampAfterGameStarted =
-    Game(escapeCampId, escapeCampCreatedAt, organizerId, sherUnlockTeamAddedAt, sherUnlockTeamId, listOf(lockedAndLoadedTeam, jeepersKeypersTeam, theEscapePeasTeam, sherUnlockTeam))
+    escapeCamp.copy(
+        updatedAt = sherUnlockTeamAddedAt,
+        updatedBy = sherUnlockTeamId,
+        teams = listOf(lockedAndLoadedTeam, jeepersKeypersTeam, theEscapePeasTeam, sherUnlockTeam)
+    )
 
 val escapeCampAfterLockedAndLoadedFirstRiddleAssigned =
-    Game(escapeCampId, escapeCampCreatedAt, organizerId, lockedAndLoadedFirstRiddleAssignedAt, lockedAndLoadedTeamId, listOf(
-        lockedAndLoadedTeamAfterFirstRiddleAssigned, jeepersKeypersTeam, theEscapePeasTeam, sherUnlockTeam))
+    escapeCamp.copy(
+        updatedAt = lockedAndLoadedFirstRiddleAssignedAt,
+        updatedBy = lockedAndLoadedTeamId,
+        teams = listOf(lockedAndLoadedTeamAfterFirstRiddleAssigned, jeepersKeypersTeam, theEscapePeasTeam, sherUnlockTeam)
+    )
+
+val escapeCampAfterAllFirstRiddleAssigned =
+    escapeCamp.copy(
+        updatedAt = lockedAndLoadedFirstRiddleAssignedAt,
+        updatedBy = lockedAndLoadedTeamId,
+        teams = listOf( lockedAndLoadedTeamAfterFirstRiddleAssigned, jeepersKeypersTeamAfterFirstRiddleAssigned, theEscapePeasTeamAfterFirstRiddleAssigned, sherUnlockTeamAfterFirstRiddleAssigned)
+    )
+
+val escapeCampAfterLockedAndLoadedFirstRiddleSolved =
+    escapeCamp.copy(
+        updatedAt = lockedAndLoadedFirstRiddleSolvedAt,
+        updatedBy = lockedAndLoadedTeamId,
+        teams = listOf(lockedAndLoadedTeamAfterFirstRiddleSolved, jeepersKeypersTeamAfterFirstRiddleAssigned, theEscapePeasTeamAfterFirstRiddleAssigned, sherUnlockTeamAfterFirstRiddleAssigned)
+    )

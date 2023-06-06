@@ -45,6 +45,10 @@ class GameAggregate(private val gameId: UUID, private val userId: UUID, eventSto
             .filter { !it.isEmpty }
             .switchIfEmpty(Mono.error { GameException.GameNotFoundException(gameId) })
             .map { JsonConvertible.fromJson(it, Game::class.java) }
+            .filter { game -> game.checkIfTeamExists(userId)}
+            .switchIfEmpty(Mono.error { GameException.TeamNotFoundException(userId) })
+             .filter { game -> game.canAssignRiddleToTeam(userId)}
+            .switchIfEmpty(Mono.error { GameException.PreviousRiddleNotSolvedException() })
             .map { game -> game.assignRiddleToTeam(userId, Riddle(riddleNames[game.teamRegistrationOrder(userId)], assignedAt)) }
             .flatMapMany { game ->
                 nextVersion()

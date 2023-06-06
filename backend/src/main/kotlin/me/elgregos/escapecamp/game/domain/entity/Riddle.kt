@@ -8,4 +8,7 @@ data class Riddle(
     val name: String,
     val assignedAt: LocalDateTime,
     val solvedAt: LocalDateTime? = null
-)
+) {
+    fun solved() = solvedAt != null
+
+}

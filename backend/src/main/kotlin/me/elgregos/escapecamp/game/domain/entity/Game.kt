@@ -21,6 +21,9 @@ data class Game(
 
     fun isTeamNameAvailable(teamName: String) = teams.none { it.name == teamName }
 
+    fun canAssignRiddleToTeam(teamId: UUID) =
+        teams.find { it.id == teamId }?.previousRiddleSolved()?:false
+
     fun teamRegistrationOrder(teamId: UUID) =
         teams.indexOfFirst { it.id == teamId }
 
@@ -29,6 +32,9 @@ data class Game(
             updatedAt = riddle.assignedAt,
             updatedBy = teamId,
             teams = teams.map { team -> if(team.id == teamId) team.assignRiddle(riddle) else team })
+
+    fun checkIfTeamExists(teamId: UUID) = teams.map{ team -> team.id }.contains(teamId)
+
 
 }
 

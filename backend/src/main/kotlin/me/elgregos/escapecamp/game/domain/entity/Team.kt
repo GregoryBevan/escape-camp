@@ -13,4 +13,7 @@ data class Team(
          = copy(
              riddles = listOf(riddle)
          )
+
+    fun previousRiddleSolved() =
+        riddles.isEmpty() || riddles.last().solved()
 }

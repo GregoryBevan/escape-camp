@@ -3,10 +3,14 @@ package me.elgregos.escapecamp.game.domain.entity
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import me.elgregos.escapecamp.game.domain.event.lockedAndLoadedTeamAddedAt
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Named
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.CsvSource
+import org.junit.jupiter.params.provider.MethodSource
 import java.util.*
+import java.util.stream.Stream
+import kotlin.test.Test
 
 class GameTest {
 
@@ -36,11 +40,41 @@ class GameTest {
         assertThat(escapeCampAfterGameStarted.teamRegistrationOrder(teamId))
             .isEqualTo(expectedOrder)
     }
+    @ParameterizedTest
+    @MethodSource("checkIfTeamExistsTestCases")
+    fun `should check if team exist`(teamId: UUID, expectedResult: Boolean) {
+        assertThat(escapeCampAfterGameStarted.checkIfTeamExists(teamId)).isEqualTo(expectedResult)
+    }
+
+    @ParameterizedTest
+    @MethodSource("canAssignRiddleToTeamTestCases")
+    fun `should check if riddle is assignable to team`(game: Game, expectedResult: Boolean) {
+        assertThat(game.canAssignRiddleToTeam(lockedAndLoadedTeamId))
+            .isEqualTo(expectedResult)
+    }
 
     @Test
     fun `should assign riddle to team`() {
         assertThat(escapeCampAfterGameStarted.assignRiddleToTeam(lockedAndLoadedTeamId, lockedAndLoadedFirstRiddle))
             .isEqualTo(escapeCampAfterLockedAndLoadedFirstRiddleAssigned)
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun checkIfTeamExistsTestCases(): Stream<Arguments> =
+            Stream.of(
+                Arguments.of(lockedAndLoadedTeamId, true),
+                Arguments.of(unknownTeamId, false),
+            )
+
+        @JvmStatic
+        fun canAssignRiddleToTeamTestCases(): Stream<Arguments> =
+            Stream.of(
+                Arguments.of(Named.named("No previous riddle assigned to the team", escapeCampAfterGameStarted), true),
+                Arguments.of(Named.named("After riddle assigned to the team", escapeCampAfterLockedAndLoadedFirstRiddleAssigned), false),
+                Arguments.of(Named.named("After riddle solved by team", escapeCampAfterLockedAndLoadedFirstRiddleSolved), true),
+            )
     }
 
 }

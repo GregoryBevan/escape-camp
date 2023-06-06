@@ -133,5 +133,5 @@ val sherUnlockFirstRiddleAssigned =
                     .add(lockedAndLoadedTeamAfterFirstRiddleAssigned.toJson())
                     .add(jeepersKeypersTeam.toJson())
                     .add(theEscapePeasTeam.toJson())
-                    .add(sherUnlockTeamTeamAfterFirstRiddleAssigned.toJson()))
+                    .add(sherUnlockTeamAfterFirstRiddleAssigned.toJson()))
     )
