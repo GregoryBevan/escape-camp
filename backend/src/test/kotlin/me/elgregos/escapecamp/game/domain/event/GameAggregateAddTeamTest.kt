@@ -14,24 +14,13 @@ import java.util.*
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
-class GameAggregateTest {
+class GameAggregateAddTeamTest {
 
     private lateinit var gameEventStore: EventStore<GameEvent, UUID>
 
     @BeforeTest
     fun setup() {
         gameEventStore = mockk()
-    }
-
-    @Test
-    fun `should create new game`() {
-        every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.empty()
-
-        GameAggregate(escapeCampId, escapeCampCreatorId, gameEventStore)
-            .createGame(escapeCampCreatedAt)
-            .`as`(StepVerifier::create)
-            .assertNext { assertThat(it).isEqualTo(escapeCampCreated.copy(id = it.id)) }
-            .verifyComplete()
     }
 
     @Test
@@ -85,6 +74,7 @@ class GameAggregateTest {
             escapeCampCreated,
             lockedAndLoadedTeamAdded
         )
+
         GameAggregate(escapeCampId, lockedAndLoadedTeamId, gameEventStore)
             .addTeam(lockedAndLoadedTeam, LocalDateTime.now())
             .`as`(StepVerifier::create)
@@ -98,6 +88,7 @@ class GameAggregateTest {
     @Test
     fun `should fail to add team to non-existent game`() {
         every { gameEventStore.loadAllEvents(unknownGameId) } returns Flux.empty()
+
         GameAggregate(unknownGameId, lockedAndLoadedTeamId, gameEventStore)
             .addTeam(lockedAndLoadedTeam, lockedAndLoadedTeamAddedAt)
             .`as`(StepVerifier::create)

@@ -6,9 +6,7 @@ import assertk.assertions.isNotNull
 import com.fasterxml.jackson.databind.JsonNode
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
-import me.elgregos.escapecamp.features.gameId
-import me.elgregos.escapecamp.features.response
-import me.elgregos.escapecamp.features.scenario
+import me.elgregos.escapecamp.features.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.codec.ServerSentEvent
 import reactor.core.publisher.Flux
@@ -26,27 +24,18 @@ class AddTeamApiStepDefinition : En {
 
     init {
 
-        Given("a player with game identifier") {
-            gameClient.authenticateOrganizer()
-            gameClient.createGame()
-                .expectStatus().isCreated
-                .expectBody(JsonNode::class.java).consumeWith {
-                    gameId = UUID.fromString(
-                        it.responseBody?.get("gameId")?.asText() ?: throw Exception("Error while getting game id")
-                    )
-                    assertThat(gameId).isNotNull()
-                    scenario?.log("Game identifier $gameId")
-                }
+        Given("a team player with game identifier") {
+            createGame(gameClient)
         }
 
-        Given("a player with an unknown game identifier") {
+        Given("a team player with an unknown game identifier") {
             gameId = UUID.randomUUID()
             assertThat(gameId).isNotNull()
             scenario?.log("Unknown ame identifier $gameId")
         }
 
         And("a team with name {string} has been added to the game") { teamName: String ->
-            gameClient.addTeam(gameId!!, teamName)
+            gameClient.addTeam(teamName)
                 .expectBody(JsonNode::class.java).consumeWith {
                     responseBody = it.responseBody!!
                     assertThat(responseBody.get("teamId")).isNotNull()
@@ -54,12 +43,12 @@ class AddTeamApiStepDefinition : En {
         }
 
         When("he adds his team to the game with name {string}") { teamName: String ->
-            response = gameClient.addTeam(gameId!!, teamName)
+            response = gameClient.addTeam(teamName)
         }
 
-        When("{int} teams have been added to the game") { numberOfTeam: Int,  teamNamesTable: DataTable ->
+        When("{int} teams have been added to the game") { _: Int, teamNamesTable: DataTable ->
             teamNamesTable.asList()
-                .forEach { gameClient.addTeam(gameId!!, it).expectStatus().isCreated }
+                .forEach { gameClient.addTeam(it).expectStatus().isCreated }
         }
 
         Then("the team is added") {
@@ -78,13 +67,13 @@ class AddTeamApiStepDefinition : En {
             scenario?.log("Team access token $accessToken")
         }
 
-        And("the game is started") {
+        And("the game starts automatically") {
             val eventType  = responseBody.get("eventType").asText()
             assertThat(eventType).isEqualTo("GameStarted")
         }
 
         And("a game started notification is sent") {
-            sseResponseBody = gameClient.serverSentEventStream(gameId!!).responseBody
+            sseResponseBody = gameClient.serverSentEventStream().responseBody
             StepVerifier.create(sseResponseBody)
                 .assertNext { assertThat(it.event()).isEqualTo("GameCreated") }
                 .assertNext { assertThat(it.event()).isEqualTo("TeamAdded") }
@@ -94,8 +83,6 @@ class AddTeamApiStepDefinition : En {
                 .assertNext { assertThat(it.event()).isEqualTo("GameStarted") }
                 .thenCancel()
                 .verify()
-            val eventType  = responseBody.get("eventType").asText()
-            assertThat(eventType).isEqualTo("GameStarted")
         }
 
         Then("the response contains a team name not available error") {

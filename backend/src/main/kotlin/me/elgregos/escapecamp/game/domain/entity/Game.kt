@@ -12,10 +12,29 @@ data class Game(
     val teams: List<Team> = listOf(),
     val startedAt: LocalDateTime? = null
 ) {
-    fun addTeam(team: Team) =
-        copy(teams = teams.toMutableList().also { it.add(team) })
+    fun addTeam(team: Team, addedAt: LocalDateTime) =
+        copy(
+            updatedAt = addedAt,
+            updatedBy = team.id,
+            teams = teams.toMutableList().also { it.add(team) }
+        )
 
     fun isTeamNameAvailable(teamName: String) = teams.none { it.name == teamName }
+
+    fun canAssignRiddleToTeam(teamId: UUID) =
+        teams.find { it.id == teamId }?.hasPreviousRiddleSolved()?:false
+
+    fun teamRegistrationOrder(teamId: UUID) =
+        teams.indexOfFirst { it.id == teamId }
+
+    fun assignRiddleToTeam(teamId: UUID, riddle: Riddle) =
+        copy(
+            updatedAt = riddle.assignedAt,
+            updatedBy = teamId,
+            teams = teams.map { team -> if(team.id == teamId) team.assignRiddle(riddle) else team })
+
+    fun checkIfTeamExists(teamId: UUID) = teams.map{ team -> team.id }.contains(teamId)
+
 
 }
 

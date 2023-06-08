@@ -9,15 +9,20 @@ sealed class GameException(
     open val status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR
 ) : Exception(message, cause) {
 
-    data class GameNotFoundException(val gameId: UUID) :
+    class GameNotFoundException(gameId: UUID) :
         GameException("Game with id $gameId has not been found", status = HttpStatus.NOT_FOUND)
 
     class TeamNumberLimitExceededException :
         GameException("Number of team is limited to 4", status = HttpStatus.BAD_REQUEST)
 
-    data class TeamNameNotAvailableException(
-        val teamName: String,
-    ) :
+    class TeamNameNotAvailableException(teamName: String) :
         GameException("Team with name $teamName already exists", status = HttpStatus.BAD_REQUEST)
+
+    class TeamNotFoundException(teamId: UUID) :
+        GameException("Team with id $teamId has not been found", status = HttpStatus.BAD_REQUEST)
+
+
+    class PreviousRiddleNotSolvedException :
+        GameException("Previous riddle not solved yet", status = HttpStatus.BAD_REQUEST)
 
 }
