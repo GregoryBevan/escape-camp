@@ -2,7 +2,6 @@ package me.elgregos.escapecamp.game.domain.entity
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import me.elgregos.escapecamp.game.domain.event.lockedAndLoadedTeamAddedAt
 import org.junit.jupiter.api.Named
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments

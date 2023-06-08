@@ -1,6 +1,8 @@
 package me.elgregos.escapecamp.game.api
 
 import com.fasterxml.jackson.databind.JsonNode
+import me.elgregos.escapecamp.features.RegisteredTeam
+import me.elgregos.escapecamp.features.gameId
 import me.elgregos.escapecamp.features.organizerJwt
 import me.elgregos.reakteves.libs.genericObjectMapper
 import org.springframework.http.HttpHeaders
@@ -9,7 +11,6 @@ import org.springframework.http.codec.ServerSentEvent
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.returnResult
 import org.springframework.web.reactive.function.BodyInserters
-import java.util.*
 
 class GameClient(private val webTestClient: WebTestClient) {
 
@@ -41,7 +42,7 @@ class GameClient(private val webTestClient: WebTestClient) {
             .accept(APPLICATION_JSON)
             .exchange()
 
-    fun addTeam(gameId: UUID, teamName: String) =
+    fun addTeam(teamName: String) =
         webTestClient.post()
             .uri { it.path(rootPath).pathSegment("$gameId", "teams").build() }
             .header(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
@@ -49,7 +50,14 @@ class GameClient(private val webTestClient: WebTestClient) {
             .body(BodyInserters.fromValue(genericObjectMapper.createObjectNode().put("name", teamName)))
             .exchange()
 
-    fun serverSentEventStream(gameId: UUID) =
+    fun requestNextRiddle(team: RegisteredTeam) =
+        webTestClient.get()
+            .uri { it.path(rootPath).pathSegment("$gameId", "teams", "${team.id}", "riddle").build() }
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ${team.accessToken}")
+            .accept(APPLICATION_JSON)
+            .exchange()
+
+    fun serverSentEventStream() =
         webTestClient.get()
             .uri { it.path(rootPath).pathSegment("$gameId", "events-stream").build() }
             .header(HttpHeaders.AUTHORIZATION, "Bearer $organizerJwt")

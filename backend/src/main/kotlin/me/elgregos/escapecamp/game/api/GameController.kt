@@ -8,6 +8,8 @@ import me.elgregos.escapecamp.config.sse.ServerSentEventService
 import me.elgregos.escapecamp.game.api.dto.TeamCreationDTO
 import me.elgregos.escapecamp.game.application.GameCommand
 import me.elgregos.escapecamp.game.application.GameCommandHandler
+import me.elgregos.escapecamp.game.application.RiddleService
+import me.elgregos.escapecamp.game.domain.event.GameEvent.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -25,6 +27,7 @@ import java.util.*
 class GameController(
     private val gameCommandHandler: GameCommandHandler,
     private val tokenProvider: TokenProvider,
+    private val riddleService: RiddleService,
     private val serverSentEventService: ServerSentEventService
 ) {
 
@@ -47,23 +50,30 @@ class GameController(
             .map {
                 mapOf(
                     Pair("teamId", "${it.createdBy}"),
-                    Pair(
-                        "accessToken",
-                        tokenProvider.generateAccessToken(it.createdBy, teamCreationDTO.name, Role.PLAYER)
-                    ),
+                    Pair("accessToken", tokenProvider.generateAccessToken(it.createdBy, teamCreationDTO.name, Role.PLAYER)),
                     Pair("eventType", it.eventType)
                 )
             }
 
     @GetMapping("{gameId}/teams/{teamId}/riddle")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('PLAYER')")
     fun assignRiddle(
         @PathVariable @Valid gameId: UUID,
         @PathVariable @Valid teamId: UUID
-    ): Mono<Map<String, String>> =
+    ): Mono<Map<String, Map<String, String>>> =
         gameCommandHandler.handle(GameCommand.AssignTeamNextRiddle(gameId, assignedBy = teamId))
             .last()
-            .map { mapOf(Pair("riddle", "")) }
+            .cast(NextTeamRiddleAssigned::class.java)
+            .map(NextTeamRiddleAssigned::assignedRiddle)
+            .map { riddle ->
+                mapOf(Pair("riddle", mapOf(
+                            Pair("name", riddle.name),
+                            Pair("content", riddleService.retrieveRiddleContent(riddle.name))
+                        )
+                    )
+                )
+            }
 
     @GetMapping(path = ["{id}/events-stream"], produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     @PreAuthorize("hasAnyAuthority('ORGANIZER','PLAYER')")

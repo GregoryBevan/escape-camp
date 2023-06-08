@@ -22,7 +22,7 @@ data class Game(
     fun isTeamNameAvailable(teamName: String) = teams.none { it.name == teamName }
 
     fun canAssignRiddleToTeam(teamId: UUID) =
-        teams.find { it.id == teamId }?.previousRiddleSolved()?:false
+        teams.find { it.id == teamId }?.hasPreviousRiddleSolved()?:false
 
     fun teamRegistrationOrder(teamId: UUID) =
         teams.indexOfFirst { it.id == teamId }

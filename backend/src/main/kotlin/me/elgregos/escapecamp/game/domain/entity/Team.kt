@@ -14,6 +14,9 @@ data class Team(
              riddles = listOf(riddle)
          )
 
-    fun previousRiddleSolved() =
+    fun hasPreviousRiddleSolved() =
         riddles.isEmpty() || riddles.last().solved()
+
+    fun lastUnsolvedRiddle() =
+        riddles.last { riddle -> !riddle.solved() }
 }

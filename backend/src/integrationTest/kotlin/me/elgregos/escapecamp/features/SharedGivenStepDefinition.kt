@@ -45,12 +45,8 @@ class SharedGivenStepDefinition : En {
         }
 
         And("the game has started") {
-            StepVerifier.create(gameClient.serverSentEventStream(gameId!!).responseBody.filter { it.event() == "GameStarted"})
-//                .assertNext { assertThat(it.event()).isEqualTo("GameCreated") }
-//                .assertNext { assertThat(it.event()).isEqualTo("TeamAdded") }
-//                .assertNext { assertThat(it.event()).isEqualTo("TeamAdded") }
-//                .assertNext { assertThat(it.event()).isEqualTo("TeamAdded") }
-                .assertNext { assertThat(it.event()).isEqualTo("TeamAdded") }
+            val filteredServerSentEventFlux = gameClient.serverSentEventStream().responseBody.filter { it.event() == "GameStarted" }
+            StepVerifier.create(filteredServerSentEventFlux)
                 .assertNext { assertThat(it.event()).isEqualTo("GameStarted") }
                 .thenCancel()
                 .verify()
@@ -79,14 +75,18 @@ fun addAllTeams(gameClient: GameClient) {
 }
 
 fun addTeam(gameClient: GameClient, teamName: String) {
-    gameClient.addTeam(gameId!!, teamName)
+    gameClient.addTeam(teamName)
         .expectStatus().isCreated
         .expectBody(JsonNode::class.java).consumeWith {
             val teamId = it.responseBody!!.get("teamId").asText()
+            val accessToken = it.responseBody!!.get("accessToken").asText()
             assertThat(teamId).isNotNull()
-            teams.add(RegisteredTeam(UUID.fromString(teamId), teamName))
+            assertThat(accessToken).isNotNull()
+            teams.add(RegisteredTeam(UUID.fromString(teamId), teamName, accessToken))
             scenario?.log("Team $teamName with identifier $teamId is added")
         }
 }
 
-data class RegisteredTeam(val id: UUID, val name: String)
+data class RegisteredTeam(val id: UUID, val name: String, val accessToken: String)
+
+data class AssignedRiddle(val name: String, val content: String)

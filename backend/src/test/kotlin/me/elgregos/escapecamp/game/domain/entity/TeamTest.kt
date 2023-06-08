@@ -17,16 +17,21 @@ class TeamTest {
             lockedAndLoadedTeamAfterFirstRiddleAssigned)
     }
 
-
     @ParameterizedTest
-    @MethodSource("previousRiddleSolvedTestCases")
+    @MethodSource("hasPreviousRiddleSolvedTestCases")
     fun `should check if previous riddle is solved`(team: Team, expectedResult: Boolean) {
-        assertThat(team.previousRiddleSolved()).isEqualTo(expectedResult)
+        assertThat(team.hasPreviousRiddleSolved()).isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `should find last unsolved riddle`() {
+        assertThat(lockedAndLoadedTeamAfterFirstRiddleAssigned.lastUnsolvedRiddle())
+            .isEqualTo(lockedAndLoadedFirstRiddle)
     }
 
     companion object {
         @JvmStatic
-        fun previousRiddleSolvedTestCases(): Stream<Arguments> =
+        fun hasPreviousRiddleSolvedTestCases(): Stream<Arguments> =
             Stream.of(
                 Arguments.of(named("No previous riddle assigned", lockedAndLoadedTeam), true),
                 Arguments.of(named("Previous riddle not solved", lockedAndLoadedTeamAfterFirstRiddleAssigned), false),

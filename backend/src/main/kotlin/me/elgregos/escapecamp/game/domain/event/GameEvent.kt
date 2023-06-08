@@ -1,6 +1,8 @@
 package me.elgregos.escapecamp.game.domain.event
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.module.kotlin.readValue
+import me.elgregos.escapecamp.game.domain.entity.Riddle
 import me.elgregos.escapecamp.game.domain.entity.Team
 import me.elgregos.reakteves.domain.Event
 import me.elgregos.reakteves.libs.genericObjectMapper
@@ -109,7 +111,7 @@ sealed class GameEvent(
         )
     }
 
-    data class TeamNextRiddleAssigned(
+    data class NextTeamRiddleAssigned(
         override val id: UUID = UUID.randomUUID(),
         override val sequenceNum: Long? = null,
         override val version: Int,
@@ -124,9 +126,10 @@ sealed class GameEvent(
         assignedAt,
         assignedBy,
         gameId,
-        TeamNextRiddleAssigned::class.simpleName!!,
+        NextTeamRiddleAssigned::class.simpleName!!,
         event
     ) {
+
         constructor(gameId: UUID, version: Int, assignedAt: LocalDateTime, assignedBy: UUID, teams: List<Team>) : this(
             gameId = gameId,
             version = version,
@@ -138,5 +141,10 @@ sealed class GameEvent(
                 .put("updatedBy", "$assignedBy")
                 .set("teams", genericObjectMapper.valueToTree(teams))
         )
+
+        fun assignedRiddle(): Riddle =
+            genericObjectMapper.readValue<List<Team>>(event.get("teams").toString())
+                .find { team -> team.id == assignedBy }!!
+                .lastUnsolvedRiddle()
     }
 }

@@ -16,7 +16,6 @@ val escapeCampCreated = GameCreated(
         .put("createdBy", "$organizerId")
 )
 
-val lockedAndLoadedTeamAddedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 31)
 val lockedAndLoadedTeamAdded = TeamAdded(
     gameId = escapeCampId,
     version = 2,
@@ -70,9 +69,6 @@ val theEscapePeasTeamAdded = TeamAdded(
                 .add(theEscapePeasTeam.toJson())
         ),
 )
-
-val sherUnlockTeamAddedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 35)
-
 val sherUnlockTeamAdded = TeamAdded(
     gameId = escapeCampId,
     version = 5,
@@ -98,7 +94,7 @@ val escapeCampStarted =
 val eventsAfterEscapeCampStarted = listOf(escapeCampCreated, lockedAndLoadedTeamAdded, jeepersKeypersTeamAdded, theEscapePeasTeamAdded, sherUnlockTeamAdded, escapeCampStarted)
 
 val lockedAndLoadedFirstRiddleAssigned =
-    GameEvent.TeamNextRiddleAssigned(
+    GameEvent.NextTeamRiddleAssigned(
         gameId = escapeCampId,
         version = 7,
         assignedAt = lockedAndLoadedFirstRiddleAssignedAt,
@@ -115,10 +111,11 @@ val lockedAndLoadedFirstRiddleAssigned =
                     .add(theEscapePeasTeam.toJson())
                     .add(sherUnlockTeam.toJson()))
     )
+
 val eventsAfterLockedAndLoadedFirstRiddleAssigned = listOf(escapeCampCreated, lockedAndLoadedTeamAdded, jeepersKeypersTeamAdded, theEscapePeasTeamAdded, sherUnlockTeamAdded, escapeCampStarted, lockedAndLoadedFirstRiddleAssigned)
 
 val sherUnlockFirstRiddleAssigned =
-    GameEvent.TeamNextRiddleAssigned(
+    GameEvent.NextTeamRiddleAssigned(
         gameId = escapeCampId,
         version = 8,
         assignedAt = sherUnlockFirstRiddleAssignedAt,

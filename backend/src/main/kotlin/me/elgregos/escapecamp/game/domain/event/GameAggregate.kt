@@ -52,6 +52,6 @@ class GameAggregate(private val gameId: UUID, private val userId: UUID, eventSto
             .map { game -> game.assignRiddleToTeam(userId, Riddle(riddleNames[game.teamRegistrationOrder(userId)], assignedAt)) }
             .flatMapMany { game ->
                 nextVersion()
-                    .map { nextVersion -> TeamNextRiddleAssigned(gameId, nextVersion, assignedAt, userId, game.teams) }
+                    .map { nextVersion -> NextTeamRiddleAssigned(gameId, nextVersion, assignedAt, userId, game.teams) }
             }
 }

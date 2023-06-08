@@ -35,7 +35,7 @@ class AddTeamApiStepDefinition : En {
         }
 
         And("a team with name {string} has been added to the game") { teamName: String ->
-            gameClient.addTeam(gameId!!, teamName)
+            gameClient.addTeam(teamName)
                 .expectBody(JsonNode::class.java).consumeWith {
                     responseBody = it.responseBody!!
                     assertThat(responseBody.get("teamId")).isNotNull()
@@ -43,12 +43,12 @@ class AddTeamApiStepDefinition : En {
         }
 
         When("he adds his team to the game with name {string}") { teamName: String ->
-            response = gameClient.addTeam(gameId!!, teamName)
+            response = gameClient.addTeam(teamName)
         }
 
         When("{int} teams have been added to the game") { _: Int, teamNamesTable: DataTable ->
             teamNamesTable.asList()
-                .forEach { gameClient.addTeam(gameId!!, it).expectStatus().isCreated }
+                .forEach { gameClient.addTeam(it).expectStatus().isCreated }
         }
 
         Then("the team is added") {
@@ -73,7 +73,7 @@ class AddTeamApiStepDefinition : En {
         }
 
         And("a game started notification is sent") {
-            sseResponseBody = gameClient.serverSentEventStream(gameId!!).responseBody
+            sseResponseBody = gameClient.serverSentEventStream().responseBody
             StepVerifier.create(sseResponseBody)
                 .assertNext { assertThat(it.event()).isEqualTo("GameCreated") }
                 .assertNext { assertThat(it.event()).isEqualTo("TeamAdded") }
