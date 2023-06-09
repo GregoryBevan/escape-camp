@@ -60,7 +60,7 @@ class GameTest {
 
     @Test
     fun `should find last unsolved riddle for team`() {
-        assertThat(escapeCampAfterGameStarted.teamLastUnsolvedRiddle(jeepersKeypersTeamId))
+        assertThat(escapeCampAfterAllFirstRiddleAssigned.teamLastUnsolvedRiddle(jeepersKeypersTeamId))
             .isEqualTo(jeepersKeypersFirstRiddle)
     }
 
