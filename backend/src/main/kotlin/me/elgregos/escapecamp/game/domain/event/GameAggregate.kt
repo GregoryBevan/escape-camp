@@ -1,7 +1,10 @@
 package me.elgregos.escapecamp.game.domain.event
 
-import me.elgregos.escapecamp.config.exception.GameException
-import me.elgregos.escapecamp.game.domain.entity.*
+import me.elgregos.escapecamp.config.exception.GameException.*
+import me.elgregos.escapecamp.game.domain.entity.Game
+import me.elgregos.escapecamp.game.domain.entity.Riddle
+import me.elgregos.escapecamp.game.domain.entity.Team
+import me.elgregos.escapecamp.game.domain.entity.riddles
 import me.elgregos.escapecamp.game.domain.event.GameEvent.*
 import me.elgregos.escapecamp.game.domain.service.RiddleSolutionChecker
 import me.elgregos.reakteves.domain.EventStore
@@ -26,12 +29,12 @@ class GameAggregate(
     fun addTeam(team: Team, addedAt: LocalDateTime): Flux<GameEvent> =
         previousState()
             .filter { !it.isEmpty }
-            .switchIfEmpty(Mono.error { GameException.GameNotFoundException(gameId) })
+            .switchIfEmpty(Mono.error { GameNotFoundException(gameId) })
             .map { JsonConvertible.fromJson(it, Game::class.java) }
             .filter { game -> game.isTeamNameAvailable(team.name) }
-            .switchIfEmpty(Mono.error { GameException.TeamNameNotAvailableException(team.name) })
+            .switchIfEmpty(Mono.error { TeamNameNotAvailableException(team.name) })
             .filter { game -> game.teams.size < 4 }
-            .switchIfEmpty(Mono.error { GameException.TeamNumberLimitExceededException() })
+            .switchIfEmpty(Mono.error { TeamNumberLimitExceededException() })
             .map { game -> game.addTeam(team, addedAt) }
             .flatMapMany { game ->
                 nextVersion()
@@ -46,12 +49,12 @@ class GameAggregate(
     fun assignTeamNextRiddle(assignedAt: LocalDateTime): Flux<GameEvent> =
         previousState()
             .filter { !it.isEmpty }
-            .switchIfEmpty(Mono.error { GameException.GameNotFoundException(gameId) })
+            .switchIfEmpty(Mono.error { GameNotFoundException(gameId) })
             .map { JsonConvertible.fromJson(it, Game::class.java) }
             .filter { game -> game.checkIfTeamExists(userId)}
-            .switchIfEmpty(Mono.error { GameException.TeamNotFoundException(userId) })
+            .switchIfEmpty(Mono.error { TeamNotFoundException(userId) })
              .filter { game -> game.canAssignRiddleToTeam(userId)}
-            .switchIfEmpty(Mono.error { GameException.PreviousRiddleNotSolvedException() })
+            .switchIfEmpty(Mono.error { PreviousRiddleNotSolvedException() })
             .map { game -> game.assignRiddleToTeam(userId, Riddle(riddles[game.teamRegistrationOrder(userId)].first, assignedAt)) }
             .flatMapMany { game ->
                 nextVersion()
@@ -61,10 +64,12 @@ class GameAggregate(
     fun checkRiddleSolution(riddleName: String, submittedSolution: String, submittedAt: LocalDateTime): Flux<GameEvent> =
         previousState()
             .filter { !it.isEmpty }
-            .switchIfEmpty(Mono.error { GameException.GameNotFoundException(gameId) })
+            .switchIfEmpty(Mono.error { GameNotFoundException(gameId) })
             .map { JsonConvertible.fromJson(it, Game::class.java) }
             .filter { riddleSolutionChecker.isCorrect(riddleName, submittedSolution) }
-            .switchIfEmpty(Mono.error { GameException.IncorrectSolutionException(riddleName, submittedSolution) })
+            .switchIfEmpty(Mono.error { IncorrectSolutionException(riddleName, submittedSolution) })
+            .filter { game -> game.teamLastUnsolvedRiddle(userId)?.name == riddleName }
+            .switchIfEmpty(Mono.error { UnexpectedRiddleSolutionException(riddleName) })
             .map { game -> game.solveLastAssignedRiddleOfTeam(userId, submittedAt) }
             .flatMapMany { game ->
                 nextVersion()

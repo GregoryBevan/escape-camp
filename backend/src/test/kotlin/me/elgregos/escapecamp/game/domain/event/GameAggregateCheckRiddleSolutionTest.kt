@@ -49,6 +49,20 @@ class GameAggregateCheckRiddleSolutionTest {
     }
 
     @Test
+    fun `should fail if team last unsolved riddle is not the one checked`() {
+        every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterAllFirstRiddleAssigned)
+
+        GameAggregate(escapeCampId, jeepersKeypersTeamId, MockedRiddleSolutionChecker(), gameEventStore)
+            .checkRiddleSolution("riddle-2", "solution-2", jeepersKeypersFirstRiddleSolvedAt)
+            .`as`(StepVerifier::create)
+            .verifyErrorMatches { throwable ->
+                throwable is GameException.UnexpectedRiddleSolutionException || throwable.message.equals(
+                    "The riddle riddle-2 doesn't correspond to last unsolved riddle of the team"
+                )
+            }
+    }
+
+    @Test
     fun `should fail to check submitted solution for non-existent game`() {
         every { gameEventStore.loadAllEvents(unknownGameId) } returns Flux.empty()
 

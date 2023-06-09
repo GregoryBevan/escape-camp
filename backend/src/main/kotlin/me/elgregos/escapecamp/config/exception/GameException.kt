@@ -24,6 +24,9 @@ sealed class GameException(
     class PreviousRiddleNotSolvedException :
         GameException("Previous riddle not solved yet", status = HttpStatus.BAD_REQUEST)
 
+    class UnexpectedRiddleSolutionException(riddleName: String) :
+        GameException("The riddle $riddleName doesn't correspond to last unsolved riddle of the team", status = HttpStatus.BAD_REQUEST)
+
     class IncorrectSolutionException(riddleName: String, solution: String) :
         GameException("The submitted solution \"$solution\" for riddle $riddleName is incorrect", status = HttpStatus.BAD_REQUEST)
 
