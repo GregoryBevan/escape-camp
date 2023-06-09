@@ -4,9 +4,11 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.cucumber.java8.En
 import io.cucumber.java8.Scenario
 import me.elgregos.escapecamp.game.api.GameClient
+import me.elgregos.reakteves.libs.genericObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.test.StepVerifier
@@ -16,7 +18,7 @@ val teamNames: List<String> = listOf("Locked and Loaded", "Jeepers Keypers", "Th
 var scenario: Scenario? = null
 var organizerJwt: String? = null
 var gameId: UUID? = null
-val teams: MutableList<RegisteredTeam> = mutableListOf()
+var teams: MutableList<RegisteredTeam>? = null
 var currentTeam: RegisteredTeam? = null
 var response: WebTestClient.ResponseSpec? = null
 
@@ -40,8 +42,9 @@ class SharedGivenStepDefinition : En {
 
         Given("the {string} team registered for a game") { teamName: String ->
             createGame(gameClient)
+            teams = mutableListOf()
             addAllTeams(gameClient)
-            currentTeam = teams.first { it.name == teamName }
+            currentTeam = teams!!.first { it.name == teamName }
         }
 
         And("the game has started") {
@@ -50,6 +53,10 @@ class SharedGivenStepDefinition : En {
                 .assertNext { assertThat(it.event()).isEqualTo("GameStarted") }
                 .thenCancel()
                 .verify()
+        }
+
+        And("the team has an assigned riddle") {
+            assignNextTeamRiddle(gameClient)
         }
     }
 
@@ -82,11 +89,26 @@ fun addTeam(gameClient: GameClient, teamName: String) {
             val accessToken = it.responseBody!!.get("accessToken").asText()
             assertThat(teamId).isNotNull()
             assertThat(accessToken).isNotNull()
-            teams.add(RegisteredTeam(UUID.fromString(teamId), teamName, accessToken))
+            teams!!.add(RegisteredTeam(UUID.fromString(teamId), teamName, accessToken, teams!!.size + 1))
             scenario?.log("Team $teamName with identifier $teamId is added")
         }
 }
 
-data class RegisteredTeam(val id: UUID, val name: String, val accessToken: String)
+fun assignNextTeamRiddle(gameClient: GameClient) {
+    gameClient.requestNextRiddle(currentTeam!!)
+        .expectStatus().isOk
+        .expectBody(JsonNode::class.java).consumeWith {
+            val riddle = genericObjectMapper.readValue<AssignedRiddle>(it.responseBody!!.get("riddle").toString())
+            assertThat(riddle.name).isEqualTo("riddle-${currentTeam!!.order}")
+            scenario?.log(
+                    """
+                    Next riddle for ${currentTeam!!.name}:
+                    $riddle
+                    """
+            )
+        }
+}
+
+data class RegisteredTeam(val id: UUID, val name: String, val accessToken: String, val order: Int)
 
 data class AssignedRiddle(val name: String, val content: String)

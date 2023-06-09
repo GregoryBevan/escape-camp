@@ -4,4 +4,4 @@ import me.elgregos.escapecamp.game.infrastructure.event.GameEventEntity
 import me.elgregos.reakteves.infrastructure.EventEntityRepository
 import java.util.*
 
-interface GameEventRepository: EventEntityRepository<GameEventEntity, GameEvent, UUID>
+interface GameEventRepository : EventEntityRepository<GameEventEntity, GameEvent, UUID>

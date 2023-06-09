@@ -6,6 +6,7 @@ import io.mockk.every
 import io.mockk.mockk
 import me.elgregos.escapecamp.config.exception.GameException
 import me.elgregos.escapecamp.game.domain.entity.*
+import me.elgregos.escapecamp.game.domain.service.MockedRiddleSolutionChecker
 import me.elgregos.reakteves.domain.EventStore
 import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
@@ -27,7 +28,7 @@ class GameAggregateAddTeamTest {
     fun `should add first team to game`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.just(escapeCampCreated)
 
-        GameAggregate(escapeCampId, lockedAndLoadedTeamId, gameEventStore)
+        GameAggregate(escapeCampId, lockedAndLoadedTeamId, MockedRiddleSolutionChecker(), gameEventStore)
             .addTeam(lockedAndLoadedTeam, lockedAndLoadedTeamAddedAt)
             .`as`(StepVerifier::create)
             .assertNext { assertThat(it).isEqualTo(lockedAndLoadedTeamAdded.copy(id = it.id)) }
@@ -43,7 +44,7 @@ class GameAggregateAddTeamTest {
             theEscapePeasTeamAdded
         )
 
-        GameAggregate(escapeCampId, sherUnlockTeamId, gameEventStore)
+        GameAggregate(escapeCampId, sherUnlockTeamId, MockedRiddleSolutionChecker(), gameEventStore)
             .addTeam(sherUnlockTeam, sherUnlockTeamAddedAt)
             .`as`(StepVerifier::create)
             .assertNext { assertThat(it).isEqualTo(sherUnlockTeamAdded.copy(id = it.id)) }
@@ -62,7 +63,7 @@ class GameAggregateAddTeamTest {
         )
         val unexpectedTeamId = UUID.randomUUID()
 
-        GameAggregate(escapeCampId, unexpectedTeamId, gameEventStore)
+        GameAggregate(escapeCampId, unexpectedTeamId, MockedRiddleSolutionChecker(), gameEventStore)
             .addTeam(Team(unexpectedTeamId, "unexpectedTeam"), LocalDateTime.now())
             .`as`(StepVerifier::create)
             .verifyErrorMatches { throwable -> throwable is GameException.TeamNumberLimitExceededException }
@@ -75,7 +76,7 @@ class GameAggregateAddTeamTest {
             lockedAndLoadedTeamAdded
         )
 
-        GameAggregate(escapeCampId, lockedAndLoadedTeamId, gameEventStore)
+        GameAggregate(escapeCampId, lockedAndLoadedTeamId, MockedRiddleSolutionChecker(), gameEventStore)
             .addTeam(lockedAndLoadedTeam, LocalDateTime.now())
             .`as`(StepVerifier::create)
             .verifyErrorMatches { throwable ->
@@ -89,7 +90,7 @@ class GameAggregateAddTeamTest {
     fun `should fail to add team to non-existent game`() {
         every { gameEventStore.loadAllEvents(unknownGameId) } returns Flux.empty()
 
-        GameAggregate(unknownGameId, lockedAndLoadedTeamId, gameEventStore)
+        GameAggregate(unknownGameId, lockedAndLoadedTeamId, MockedRiddleSolutionChecker(), gameEventStore)
             .addTeam(lockedAndLoadedTeam, lockedAndLoadedTeamAddedAt)
             .`as`(StepVerifier::create)
             .verifyErrorMatches { throwable ->

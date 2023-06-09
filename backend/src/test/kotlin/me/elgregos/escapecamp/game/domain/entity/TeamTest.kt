@@ -29,6 +29,12 @@ class TeamTest {
             .isEqualTo(lockedAndLoadedFirstRiddle)
     }
 
+    @Test
+    fun `should solve last unsolved riddle`() {
+        assertThat(jeepersKeypersTeamAfterFirstRiddleAssigned.solveLastUnsolvedRiddle(jeepersKeypersFirstRiddleSolvedAt))
+            .isEqualTo(jeepersKeypersTeamAfterFirstRiddleSolved)
+    }
+
     companion object {
         @JvmStatic
         fun hasPreviousRiddleSolvedTestCases(): Stream<Arguments> =
