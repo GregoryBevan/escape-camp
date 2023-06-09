@@ -21,8 +21,10 @@ sealed class GameException(
     class TeamNotFoundException(teamId: UUID) :
         GameException("Team with id $teamId has not been found", status = HttpStatus.BAD_REQUEST)
 
-
     class PreviousRiddleNotSolvedException :
         GameException("Previous riddle not solved yet", status = HttpStatus.BAD_REQUEST)
+
+    class IncorrectSolutionException(riddleName: String, solution: String) :
+        GameException("The submitted solution \"$solution\" for riddle $riddleName is incorrect", status = HttpStatus.BAD_REQUEST)
 
 }

@@ -35,6 +35,13 @@ data class Game(
 
     fun checkIfTeamExists(teamId: UUID) = teams.map{ team -> team.id }.contains(teamId)
 
+    fun solveLastAssignedRiddleOfTeam(teamId: UUID, solvedAt: LocalDateTime) =
+        copy(
+            updatedAt = solvedAt,
+            updatedBy = teamId,
+            teams = teams.map { team -> if(team.id == teamId) team.solveLastUnsolvedRiddle(solvedAt) else team })
+
+
 
 }
 

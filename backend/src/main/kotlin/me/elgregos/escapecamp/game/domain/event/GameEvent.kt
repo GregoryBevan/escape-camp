@@ -147,4 +147,36 @@ sealed class GameEvent(
                 .find { team -> team.id == assignedBy }!!
                 .lastUnsolvedRiddle()
     }
+
+    data class RiddleSolved(
+        override val id: UUID = UUID.randomUUID(),
+        override val sequenceNum: Long? = null,
+        override val version: Int,
+        val solvedAt: LocalDateTime = nowUTC(),
+        val solvedBy: UUID,
+        val gameId: UUID,
+        override val event: JsonNode
+    ): GameEvent(
+        id,
+        sequenceNum,
+        version,
+        solvedAt,
+        solvedBy,
+        gameId,
+        RiddleSolved::class.simpleName!!,
+        event
+    ) {
+
+        constructor(gameId: UUID, version: Int, solvedAt: LocalDateTime, solvedBy: UUID, teams: List<Team>) : this(
+            gameId = gameId,
+            version = version,
+            solvedAt = solvedAt,
+            solvedBy = solvedBy,
+            event = genericObjectMapper.createObjectNode()
+                .put("id", "$gameId")
+                .put("updatedAt", "$solvedAt")
+                .put("updatedBy", "$solvedBy")
+                .set("teams", genericObjectMapper.valueToTree(teams))
+        )
+    }
 }

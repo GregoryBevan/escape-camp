@@ -20,10 +20,11 @@ val sherUnlockTeam = Team(sherUnlockTeamId, sherUnlockTeamName)
 
 val unknownTeamId: UUID = UUID.fromString("4f5ddf39-4a5c-4317-b4a6-db2d6c50dd18")
 
-val lockedAndLoadedTeamAfterFirstRiddleAssigned = Team(lockedAndLoadedTeamId, lockedAndLoadedTeamName, listOf(lockedAndLoadedFirstRiddle))
-val sherUnlockTeamAfterFirstRiddleAssigned = Team(sherUnlockTeamId, sherUnlockTeamName, listOf(sherUnlockFirstRiddle))
-val theEscapePeasTeamAfterFirstRiddleAssigned = Team(theEscapePeasTeamId, theEscapePeasTeamName, listOf(theEscapePeasFirstRiddle))
-val jeepersKeypersTeamAfterFirstRiddleAssigned = Team(jeepersKeypersTeamId, jeepersKeypersTeamName, listOf(jeepersKeypersFirstRiddleFirstRiddle))
+val lockedAndLoadedTeamAfterFirstRiddleAssigned = lockedAndLoadedTeam.copy(riddles = listOf(lockedAndLoadedFirstRiddle))
+val sherUnlockTeamAfterFirstRiddleAssigned = sherUnlockTeam.copy(riddles = listOf(sherUnlockFirstRiddle))
+val theEscapePeasTeamAfterFirstRiddleAssigned = theEscapePeasTeam.copy(riddles = listOf(theEscapePeasFirstRiddle))
+val jeepersKeypersTeamAfterFirstRiddleAssigned = jeepersKeypersTeam.copy(riddles = listOf(jeepersKeypersFirstRiddle))
 
 
-val lockedAndLoadedTeamAfterFirstRiddleSolved = Team(lockedAndLoadedTeamId, lockedAndLoadedTeamName, listOf(lockedAndLoadedFirstSolvedRiddle))
+val jeepersKeypersTeamAfterFirstRiddleSolved =  jeepersKeypersTeam.copy(riddles = listOf(jeepersKeypersFirstSolvedRiddle))
+val lockedAndLoadedTeamAfterFirstRiddleSolved = lockedAndLoadedTeam.copy(riddles = listOf(lockedAndLoadedFirstSolvedRiddle))

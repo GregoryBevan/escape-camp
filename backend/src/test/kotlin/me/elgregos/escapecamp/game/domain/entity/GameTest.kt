@@ -58,6 +58,12 @@ class GameTest {
             .isEqualTo(escapeCampAfterLockedAndLoadedFirstRiddleAssigned)
     }
 
+    @Test
+    fun `should solve last assigned riddle of team`() {
+        assertThat(escapeCampAfterAllFirstRiddleAssigned.solveLastAssignedRiddleOfTeam(jeepersKeypersTeamId, jeepersKeypersFirstRiddleSolvedAt))
+            .isEqualTo(escapeCampAfterJeepersKeypersFirstRiddleSolved)
+    }
+
     companion object {
 
         @JvmStatic
