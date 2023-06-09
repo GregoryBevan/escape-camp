@@ -46,6 +46,18 @@ class GameAggregateAssignTeamNextRiddleTest {
     }
 
     @Test
+    fun `should fail to assign riddle to first registered team if game not yet started`() {
+        every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterLockedAndLoadedAdded)
+
+        GameAggregate(escapeCampId, lockedAndLoadedTeamId, MockedRiddleSolutionChecker(), gameEventStore)
+            .assignTeamNextRiddle(lockedAndLoadedFirstRiddleAssignedAt)
+            .`as`(StepVerifier::create)
+            .verifyErrorMatches { throwable ->  throwable is GameException.GameNotStartedException || throwable.message.equals(
+                "Game has not yet started. Wait for other teams to be added"
+            ) }
+    }
+
+    @Test
     fun `should fail to assign riddle to first registered team if previous riddle not solved`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterLockedAndLoadedFirstRiddleAssigned)
 

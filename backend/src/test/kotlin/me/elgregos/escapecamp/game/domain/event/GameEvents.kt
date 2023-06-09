@@ -32,6 +32,7 @@ val lockedAndLoadedTeamAdded = TeamAdded(
         ),
 )
 
+val eventsAfterLockedAndLoadedAdded = listOf(escapeCampCreated, lockedAndLoadedTeamAdded)
 
 val jeepersKeypersTeamAddedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 32)
 val jeepersKeypersTeamAdded = TeamAdded(

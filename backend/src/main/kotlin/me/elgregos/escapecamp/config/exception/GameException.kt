@@ -19,7 +19,10 @@ sealed class GameException(
         GameException("Team with name $teamName already exists", status = HttpStatus.BAD_REQUEST)
 
     class TeamNotFoundException(teamId: UUID) :
-        GameException("Team with id $teamId has not been found", status = HttpStatus.BAD_REQUEST)
+        GameException("Team with id $teamId has not been found", status = HttpStatus.NOT_FOUND)
+
+    class GameNotStartedException :
+        GameException("Game has not yet started. Wait for other teams to be added", status = HttpStatus.BAD_REQUEST)
 
     class PreviousRiddleNotSolvedException :
         GameException("Previous riddle not solved yet", status = HttpStatus.BAD_REQUEST)

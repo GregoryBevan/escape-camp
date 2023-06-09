@@ -5,6 +5,7 @@ import me.elgregos.escapecamp.config.security.AuthenticatedUser
 import me.elgregos.escapecamp.config.security.Role
 import me.elgregos.escapecamp.config.security.jwt.TokenProvider
 import me.elgregos.escapecamp.config.sse.ServerSentEventService
+import me.elgregos.escapecamp.game.api.dto.RiddleSolutionDTO
 import me.elgregos.escapecamp.game.api.dto.TeamCreationDTO
 import me.elgregos.escapecamp.game.application.GameCommand
 import me.elgregos.escapecamp.game.application.GameCommandHandler
@@ -74,6 +75,23 @@ class GameController(
                     )
                 )
             }
+
+    @PostMapping("{gameId}/teams/{teamId}/riddle/{riddleName}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('PLAYER')")
+    fun submitRiddleSolution(
+        @PathVariable @Valid gameId: UUID,
+        @PathVariable @Valid teamId: UUID,
+        @PathVariable @Valid riddleName: String,
+        @RequestBody @Valid riddleSolutionDTO: RiddleSolutionDTO
+    ): Mono<Void> =
+        gameCommandHandler.handle(GameCommand.SubmitRiddleSolution(
+            gameId,
+            submittedBy = teamId,
+            riddleName = riddleName,
+            solution = riddleSolutionDTO.solution
+        ))
+            .then()
 
     @GetMapping(path = ["{id}/events-stream"], produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     @PreAuthorize("hasAnyAuthority('ORGANIZER','PLAYER')")

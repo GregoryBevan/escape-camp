@@ -20,6 +20,7 @@ class GameCommandHandler(
             is CreateGame -> createGame(gameCommand)
             is AddTeam -> addTeam(gameCommand)
             is AssignTeamNextRiddle -> assignTeamNextRiddle(gameCommand)
+            is SubmitRiddleSolution -> checkRiddleSolution(gameCommand)
         }
             .flatMap { gameEventStore.save(it) }
             .doOnNext { eventPublisher.publish(it) }
@@ -35,5 +36,9 @@ class GameCommandHandler(
     private fun assignTeamNextRiddle(gameCommand: AssignTeamNextRiddle) =
         GameAggregate(gameCommand.gameId, gameCommand.assignedBy, riddleService, gameEventStore)
             .assignTeamNextRiddle(gameCommand.assignedAt)
+
+    private fun checkRiddleSolution(gameCommand: SubmitRiddleSolution) =
+        GameAggregate(gameCommand.gameId, gameCommand.submittedBy, riddleService, gameEventStore)
+            .checkRiddleSolution(gameCommand.riddleName, gameCommand.solution, gameCommand.submittedAt)
 
 }

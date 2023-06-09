@@ -57,6 +57,14 @@ class GameClient(private val webTestClient: WebTestClient) {
             .accept(APPLICATION_JSON)
             .exchange()
 
+    fun checkRiddleSolution(team: RegisteredTeam, riddleName: String, solution: String) =
+        webTestClient.post()
+            .uri { it.path(rootPath).pathSegment("$gameId", "teams", "${team.id}", "riddle", riddleName).build() }
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ${team.accessToken}")
+            .accept(APPLICATION_JSON)
+            .body(BodyInserters.fromValue(genericObjectMapper.createObjectNode().put("solution", solution)))
+            .exchange()
+
     fun serverSentEventStream() =
         webTestClient.get()
             .uri { it.path(rootPath).pathSegment("$gameId", "events-stream").build() }

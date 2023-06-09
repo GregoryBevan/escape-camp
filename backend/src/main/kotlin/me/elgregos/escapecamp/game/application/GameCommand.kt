@@ -27,4 +27,12 @@ sealed class GameCommand(open val gameId: UUID) : Command {
         val assignedAt: LocalDateTime = nowUTC(),
         val assignedBy: UUID,
     ) : GameCommand(gameId)
+
+    data class SubmitRiddleSolution(
+        override val gameId: UUID,
+        val submittedAt: LocalDateTime = nowUTC(),
+        val submittedBy: UUID,
+        val riddleName: String,
+        val solution: String
+    ) : GameCommand(gameId)
 }

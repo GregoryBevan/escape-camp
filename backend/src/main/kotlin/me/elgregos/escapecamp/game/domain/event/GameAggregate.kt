@@ -53,6 +53,8 @@ class GameAggregate(
             .map { JsonConvertible.fromJson(it, Game::class.java) }
             .filter { game -> game.checkIfTeamExists(userId)}
             .switchIfEmpty(Mono.error { TeamNotFoundException(userId) })
+            .filter { game -> game.teams.size == 4 }
+            .switchIfEmpty(Mono.error { GameNotStartedException() })
              .filter { game -> game.canAssignRiddleToTeam(userId)}
             .switchIfEmpty(Mono.error { PreviousRiddleNotSolvedException() })
             .map { game -> game.assignRiddleToTeam(userId, Riddle(riddles[game.teamRegistrationOrder(userId)].first, assignedAt)) }

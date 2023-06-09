@@ -8,3 +8,10 @@ Feature: Assign next team riddle
     And the game has started
     When the team requests the next riddle
     Then the response contains the riddle
+
+  Scenario: Assign next team riddle when team has already an unsolved riddle
+    Given the "Locked and Loaded" team registered for a game
+    And the game has started
+    And the team has an assigned riddle
+    When the team requests the next riddle
+    Then the response contains a previous riddle not solved error
