@@ -96,6 +96,7 @@ class GameTest {
                 Arguments.of(Named.named("Third registered team - First riddle", escapeCampAfterSherUnlockFirstRiddleAssigned), theEscapePeasTeamId, theEscapePeasFirstRiddleAssignedAt, escapeCampAfterTheEscapePeasFirstRiddleAssigned),
                 Arguments.of(Named.named("Second registered team - First riddle", escapeCampAfterTheEscapePeasFirstRiddleAssigned), jeepersKeypersTeamId, jeepersKeypersFirstRiddleAssignedAt, escapeCampAfterAllFirstRiddleAssigned),
                 Arguments.of(Named.named("Second registered team - Second riddle", escapeCampAfterJeepersKeypersFirstRiddleSolved), jeepersKeypersTeamId, jeepersKeypersSecondRiddleAssignedAt, escapeCampAfterJeepersKeypersSecondRiddleAssigned),
+                Arguments.of(Named.named("Fourth registered team - Second riddle", escapeCampAfterSherUnlockFirstRiddleSolved), sherUnlockTeamId, sherUnlockSecondRiddleAssignedAt, escapeCampAfterSherUnlockSecondRiddleAssigned),
             )
     }
 

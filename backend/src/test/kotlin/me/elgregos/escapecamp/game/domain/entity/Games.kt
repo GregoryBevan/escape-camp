@@ -69,6 +69,20 @@ val escapeCampAfterJeepersKeypersSecondRiddleAssigned =
         teams = listOf(lockedAndLoadedTeamAfterFirstRiddleAssigned, jeepersKeypersTeamAfterSecondRiddleAssigned, theEscapePeasTeamAfterFirstRiddleAssigned, sherUnlockTeamAfterFirstRiddleAssigned)
     )
 
+val escapeCampAfterSherUnlockFirstRiddleSolved =
+    escapeCamp.copy(
+        updatedAt = sherUnlockFirstRiddleSolvedAt,
+        updatedBy = sherUnlockTeamId,
+        teams = listOf(lockedAndLoadedTeamAfterFirstRiddleAssigned, jeepersKeypersTeamAfterSecondRiddleAssigned, theEscapePeasTeamAfterFirstRiddleAssigned, sherUnlockTeamAfterFirstRiddleSolved)
+    )
+
+val escapeCampAfterSherUnlockSecondRiddleAssigned =
+    escapeCamp.copy(
+        updatedAt = sherUnlockSecondRiddleAssignedAt,
+        updatedBy = sherUnlockTeamId,
+        teams = listOf(lockedAndLoadedTeamAfterFirstRiddleAssigned, jeepersKeypersTeamAfterSecondRiddleAssigned, theEscapePeasTeamAfterFirstRiddleAssigned, sherUnlockTeamAfterSecondRiddleAssigned)
+    )
+
 val escapeCampAfterLockedAndLoadedFirstRiddleSolved =
     escapeCamp.copy(
         updatedAt = lockedAndLoadedFirstRiddleSolvedAt,

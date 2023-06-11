@@ -17,8 +17,15 @@ val jeepersKeypersFirstRiddle = Riddle("riddle-2", jeepersKeypersFirstRiddleAssi
 val jeepersKeypersFirstRiddleSolvedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 41, 45)
 val jeepersKeypersFirstSolvedRiddle = Riddle("riddle-2", jeepersKeypersFirstRiddleAssignedAt, jeepersKeypersFirstRiddleSolvedAt)
 
+val jeepersKeypersSecondRiddleAssignedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 42, 28)
+val jeepersKeypersSecondRiddle = Riddle("riddle-3", jeepersKeypersSecondRiddleAssignedAt)
+
+val sherUnlockFirstRiddleSolvedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 43, 23)
+val sherUnlockFirstSolvedRiddle = Riddle("riddle-4", sherUnlockFirstRiddleAssignedAt, sherUnlockFirstRiddleSolvedAt)
+
+val sherUnlockSecondRiddleAssignedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 43, 42)
+val sherUnlockSecondRiddle = Riddle("riddle-1", sherUnlockSecondRiddleAssignedAt)
+
 val lockedAndLoadedFirstRiddleSolvedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 41, 56)
 val lockedAndLoadedFirstSolvedRiddle = Riddle("riddle-1", lockedAndLoadedFirstRiddleAssignedAt, lockedAndLoadedFirstRiddleSolvedAt)
 
-val jeepersKeypersSecondRiddleAssignedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 42, 28)
-val jeepersKeypersSecondRiddle = Riddle("riddle-3", jeepersKeypersSecondRiddleAssignedAt)

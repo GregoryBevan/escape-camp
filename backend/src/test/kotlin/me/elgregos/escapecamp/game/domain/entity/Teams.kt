@@ -25,8 +25,11 @@ val sherUnlockTeamAfterFirstRiddleAssigned = sherUnlockTeam.copy(riddles = listO
 val theEscapePeasTeamAfterFirstRiddleAssigned = theEscapePeasTeam.copy(riddles = listOf(theEscapePeasFirstRiddle))
 val jeepersKeypersTeamAfterFirstRiddleAssigned = jeepersKeypersTeam.copy(riddles = listOf(jeepersKeypersFirstRiddle))
 
-
 val jeepersKeypersTeamAfterFirstRiddleSolved =  jeepersKeypersTeam.copy(riddles = listOf(jeepersKeypersFirstSolvedRiddle))
+val jeepersKeypersTeamAfterSecondRiddleAssigned =  jeepersKeypersTeam.copy(riddles = listOf(jeepersKeypersFirstSolvedRiddle, jeepersKeypersSecondRiddle))
+
+val sherUnlockTeamAfterFirstRiddleSolved =  sherUnlockTeam.copy(riddles = listOf(sherUnlockFirstSolvedRiddle))
+val sherUnlockTeamAfterSecondRiddleAssigned =  sherUnlockTeam.copy(riddles = listOf(sherUnlockFirstSolvedRiddle, sherUnlockSecondRiddle))
+
 val lockedAndLoadedTeamAfterFirstRiddleSolved = lockedAndLoadedTeam.copy(riddles = listOf(lockedAndLoadedFirstSolvedRiddle))
 
-val jeepersKeypersTeamAfterSecondRiddleAssigned =  jeepersKeypersTeam.copy(riddles = listOf(jeepersKeypersFirstSolvedRiddle, jeepersKeypersSecondRiddle))
