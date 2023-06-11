@@ -46,7 +46,7 @@ data class Game(
             teams = teams.map { team -> if (team.id == teamId) team.solveLastUnsolvedRiddle(solvedAt) else team })
 
     private fun nextTeamRiddleIndex(teamId: UUID) =
-        teamRegistrationOrder(teamId) + numberOfSolvedRiddleByTeam(teamId)
+        (teamRegistrationOrder(teamId) + numberOfSolvedRiddleByTeam(teamId)).mod(4)
 
     private fun numberOfSolvedRiddleByTeam(teamId: UUID) =
         teams.find { it.id == teamId }?.numberOfSolvedRiddles() ?: 0
