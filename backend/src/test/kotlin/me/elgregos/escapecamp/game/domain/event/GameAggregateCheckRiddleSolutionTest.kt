@@ -28,9 +28,9 @@ class GameAggregateCheckRiddleSolutionTest {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterAllFirstRiddleAssigned)
 
         GameAggregate(escapeCampId, jeepersKeypersTeamId, MockedRiddleSolutionChecker(),  gameEventStore)
-            .checkRiddleSolution("riddle-3", "solution-3", jeepersKeypersFirstRiddleSolvedAt)
+            .checkRiddleSolution("riddle-2", "solution-2", jeepersKeypersFirstRiddleSolvedAt)
             .`as`(StepVerifier::create)
-            .assertNext { assertThat(it).isEqualTo(jeepersKeypersTeamFirstRiddleSolved.copy(id = it.id)) }
+            .assertNext { assertThat(it).isEqualTo(jeepersKeypersFirstRiddleSolved.copy(id = it.id)) }
             .verifyComplete()
     }
 
@@ -39,11 +39,11 @@ class GameAggregateCheckRiddleSolutionTest {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterAllFirstRiddleAssigned)
 
         GameAggregate(escapeCampId, jeepersKeypersTeamId, MockedRiddleSolutionChecker(), gameEventStore)
-            .checkRiddleSolution("riddle-3", "wrong", jeepersKeypersFirstRiddleSolvedAt)
+            .checkRiddleSolution("riddle-2", "wrong", jeepersKeypersFirstRiddleSolvedAt)
             .`as`(StepVerifier::create)
             .verifyErrorMatches { throwable ->
-                throwable is GameException.IncorrectSolutionException || throwable.message.equals(
-                    "The submitted solution \"wrong\" for riddle riddle-3 is incorrect"
+                throwable is GameException.IncorrectSolutionException && throwable.message.equals(
+                    "The submitted solution \"wrong\" for riddle riddle-2 is incorrect"
                 )
             }
     }
@@ -53,11 +53,11 @@ class GameAggregateCheckRiddleSolutionTest {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterAllFirstRiddleAssigned)
 
         GameAggregate(escapeCampId, jeepersKeypersTeamId, MockedRiddleSolutionChecker(), gameEventStore)
-            .checkRiddleSolution("riddle-2", "solution-2", jeepersKeypersFirstRiddleSolvedAt)
+            .checkRiddleSolution("riddle-3", "solution-3", jeepersKeypersFirstRiddleSolvedAt)
             .`as`(StepVerifier::create)
             .verifyErrorMatches { throwable ->
-                throwable is GameException.UnexpectedRiddleSolutionException || throwable.message.equals(
-                    "The riddle riddle-2 doesn't correspond to last unsolved riddle of the team"
+                throwable is GameException.UnexpectedRiddleSolutionException && throwable.message.equals(
+                    "The riddle riddle-3 doesn't correspond to last unsolved riddle of the team"
                 )
             }
     }
@@ -70,7 +70,7 @@ class GameAggregateCheckRiddleSolutionTest {
             .checkRiddleSolution("riddle-3", "", jeepersKeypersFirstRiddleSolvedAt)
             .`as`(StepVerifier::create)
             .verifyErrorMatches { throwable ->
-                throwable is GameException.GameNotFoundException || throwable.message.equals(
+                throwable is GameException.GameNotFoundException && throwable.message.equals(
                     "Game with id 07c905e7-8179-4b59-a65a-510a4e1de4d3 has not been found"
                 )
             }

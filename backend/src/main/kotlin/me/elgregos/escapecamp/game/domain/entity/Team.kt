@@ -27,4 +27,7 @@ data class Team(
                 .apply { set(riddles.size-1, lastUnsolvedRiddle().solved(solvedAt)) }
                 .toList()
         )
+
+    fun numberOfSolvedRiddles() =
+        riddles.filter { riddle -> riddle.solvedAt != null }.size
 }

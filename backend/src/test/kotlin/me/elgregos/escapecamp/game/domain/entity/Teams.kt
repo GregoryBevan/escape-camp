@@ -28,3 +28,5 @@ val jeepersKeypersTeamAfterFirstRiddleAssigned = jeepersKeypersTeam.copy(riddles
 
 val jeepersKeypersTeamAfterFirstRiddleSolved =  jeepersKeypersTeam.copy(riddles = listOf(jeepersKeypersFirstSolvedRiddle))
 val lockedAndLoadedTeamAfterFirstRiddleSolved = lockedAndLoadedTeam.copy(riddles = listOf(lockedAndLoadedFirstSolvedRiddle))
+
+val jeepersKeypersTeamAfterSecondRiddleAssigned =  jeepersKeypersTeam.copy(riddles = listOf(jeepersKeypersFirstSolvedRiddle, jeepersKeypersSecondRiddle))

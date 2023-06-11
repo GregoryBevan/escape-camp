@@ -2,9 +2,7 @@ package me.elgregos.escapecamp.game.domain.event
 
 import me.elgregos.escapecamp.config.exception.GameException.*
 import me.elgregos.escapecamp.game.domain.entity.Game
-import me.elgregos.escapecamp.game.domain.entity.Riddle
 import me.elgregos.escapecamp.game.domain.entity.Team
-import me.elgregos.escapecamp.game.domain.entity.riddles
 import me.elgregos.escapecamp.game.domain.event.GameEvent.*
 import me.elgregos.escapecamp.game.domain.service.RiddleSolutionChecker
 import me.elgregos.reakteves.domain.EventStore
@@ -57,7 +55,7 @@ class GameAggregate(
             .switchIfEmpty(Mono.error { GameNotStartedException() })
              .filter { game -> game.canAssignRiddleToTeam(userId)}
             .switchIfEmpty(Mono.error { PreviousRiddleNotSolvedException() })
-            .map { game -> game.assignRiddleToTeam(userId, Riddle(riddles[game.teamRegistrationOrder(userId)].first, assignedAt)) }
+            .map { game -> game.assignRiddleToTeam(userId, assignedAt) }
             .flatMapMany { game ->
                 nextVersion()
                     .map { nextVersion -> NextTeamRiddleAssigned(gameId, nextVersion, assignedAt, userId, game.teams) }

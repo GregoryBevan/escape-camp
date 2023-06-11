@@ -12,11 +12,13 @@ val theEscapePeasFirstRiddleAssignedAt: LocalDateTime = LocalDateTime.of(2023, 6
 val theEscapePeasFirstRiddle = Riddle("riddle-3", theEscapePeasFirstRiddleAssignedAt)
 
 val jeepersKeypersFirstRiddleAssignedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 37, 4)
-val jeepersKeypersFirstRiddle = Riddle("riddle-3", jeepersKeypersFirstRiddleAssignedAt)
-
+val jeepersKeypersFirstRiddle = Riddle("riddle-2", jeepersKeypersFirstRiddleAssignedAt)
 
 val jeepersKeypersFirstRiddleSolvedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 41, 45)
-val jeepersKeypersFirstSolvedRiddle = Riddle("riddle-3", jeepersKeypersFirstRiddleAssignedAt, jeepersKeypersFirstRiddleSolvedAt)
+val jeepersKeypersFirstSolvedRiddle = Riddle("riddle-2", jeepersKeypersFirstRiddleAssignedAt, jeepersKeypersFirstRiddleSolvedAt)
 
 val lockedAndLoadedFirstRiddleSolvedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 41, 56)
 val lockedAndLoadedFirstSolvedRiddle = Riddle("riddle-1", lockedAndLoadedFirstRiddleAssignedAt, lockedAndLoadedFirstRiddleSolvedAt)
+
+val jeepersKeypersSecondRiddleAssignedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 42, 28)
+val jeepersKeypersSecondRiddle = Riddle("riddle-3", jeepersKeypersSecondRiddleAssignedAt)

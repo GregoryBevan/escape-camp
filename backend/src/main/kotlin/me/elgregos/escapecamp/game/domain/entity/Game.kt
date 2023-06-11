@@ -22,18 +22,18 @@ data class Game(
     fun isTeamNameAvailable(teamName: String) = teams.none { it.name == teamName }
 
     fun canAssignRiddleToTeam(teamId: UUID) =
-        teams.find { it.id == teamId }?.hasPreviousRiddleSolved()?:false
+        teams.find { it.id == teamId }?.hasPreviousRiddleSolved() ?: false
 
     fun teamRegistrationOrder(teamId: UUID) =
         teams.indexOfFirst { it.id == teamId }
 
-    fun assignRiddleToTeam(teamId: UUID, riddle: Riddle) =
+    fun assignRiddleToTeam(teamId: UUID, assignedAt: LocalDateTime) =
         copy(
-            updatedAt = riddle.assignedAt,
+            updatedAt = assignedAt,
             updatedBy = teamId,
-            teams = teams.map { team -> if(team.id == teamId) team.assignRiddle(riddle) else team })
+            teams = teams.map { team -> if (team.id == teamId) team.assignRiddle(Riddle(riddles[nextTeamRiddleIndex(teamId)].first, assignedAt)) else team })
 
-    fun checkIfTeamExists(teamId: UUID) = teams.map{ team -> team.id }.contains(teamId)
+    fun checkIfTeamExists(teamId: UUID) = teams.map { team -> team.id }.contains(teamId)
 
     fun teamLastUnsolvedRiddle(teamId: UUID) =
         teams.find { it.id == teamId }?.lastUnsolvedRiddle()
@@ -43,10 +43,13 @@ data class Game(
         copy(
             updatedAt = solvedAt,
             updatedBy = teamId,
-            teams = teams.map { team -> if(team.id == teamId) team.solveLastUnsolvedRiddle(solvedAt) else team })
+            teams = teams.map { team -> if (team.id == teamId) team.solveLastUnsolvedRiddle(solvedAt) else team })
 
+    private fun nextTeamRiddleIndex(teamId: UUID) =
+        teamRegistrationOrder(teamId) + numberOfSolvedRiddleByTeam(teamId)
 
-
+    private fun numberOfSolvedRiddleByTeam(teamId: UUID) =
+        teams.find { it.id == teamId }?.numberOfSolvedRiddles() ?: 0
 
 }
 
