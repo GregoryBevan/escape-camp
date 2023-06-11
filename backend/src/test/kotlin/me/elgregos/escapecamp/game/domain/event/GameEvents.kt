@@ -174,7 +174,7 @@ val jeepersKeypersFirstRiddleAssigned =
 
 val eventsAfterAllFirstRiddleAssigned = listOf(escapeCampCreated, lockedAndLoadedTeamAdded, jeepersKeypersTeamAdded, theEscapePeasTeamAdded, sherUnlockTeamAdded, escapeCampStarted, lockedAndLoadedFirstRiddleAssigned, sherUnlockFirstRiddleAssigned, theEscapePeasFirstRiddleAssigned, jeepersKeypersFirstRiddleAssigned)
 
-val jeepersKeypersTeamFirstRiddleSolved =
+val jeepersKeypersFirstRiddleSolved =
     GameEvent.RiddleSolved(
         gameId = escapeCampId,
         version = 10,
@@ -189,6 +189,39 @@ val jeepersKeypersTeamFirstRiddleSolved =
                 genericObjectMapper.createArrayNode()
                     .add(lockedAndLoadedTeamAfterFirstRiddleAssigned.toJson())
                     .add(jeepersKeypersTeamAfterFirstRiddleSolved.toJson())
+                    .add(theEscapePeasTeamAfterFirstRiddleAssigned.toJson())
+                    .add(sherUnlockTeamAfterFirstRiddleAssigned.toJson()))
+    )
+
+val eventsAfterJeepersKeypersFirstRiddleSolved = listOf(
+    escapeCampCreated,
+    lockedAndLoadedTeamAdded,
+    jeepersKeypersTeamAdded,
+    theEscapePeasTeamAdded,
+    sherUnlockTeamAdded,
+    escapeCampStarted,
+    lockedAndLoadedFirstRiddleAssigned,
+    sherUnlockFirstRiddleAssigned,
+    theEscapePeasFirstRiddleAssigned,
+    jeepersKeypersFirstRiddleAssigned,
+    jeepersKeypersFirstRiddleSolved
+)
+
+val jeepersKeypersSecondRiddleAssigned =
+    GameEvent.NextTeamRiddleAssigned(
+        gameId = escapeCampId,
+        version = 11,
+        assignedAt = jeepersKeypersSecondRiddleAssignedAt,
+        assignedBy = jeepersKeypersTeamId,
+        event = genericObjectMapper.createObjectNode()
+            .put("id", "981e1b04-ecc6-48b3-b750-58f20faa5e05")
+            .put("updatedAt", "2023-06-15T13:42:28")
+            .put("updatedBy", "3a66dce7-ca96-4cd0-af56-6bd7e082edd5")
+            .set(
+                "teams",
+                genericObjectMapper.createArrayNode()
+                    .add(lockedAndLoadedTeamAfterFirstRiddleAssigned.toJson())
+                    .add(jeepersKeypersTeamAfterSecondRiddleAssigned.toJson())
                     .add(theEscapePeasTeamAfterFirstRiddleAssigned.toJson())
                     .add(sherUnlockTeamAfterFirstRiddleAssigned.toJson()))
     )

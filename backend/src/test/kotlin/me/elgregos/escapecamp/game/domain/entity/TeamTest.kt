@@ -35,6 +35,12 @@ class TeamTest {
             .isEqualTo(jeepersKeypersTeamAfterFirstRiddleSolved)
     }
 
+    @Test
+    fun `should get number of solved riddle`() {
+        assertThat(jeepersKeypersTeamAfterFirstRiddleSolved.numberOfSolvedRiddles())
+            .isEqualTo(1)
+    }
+
     companion object {
         @JvmStatic
         fun hasPreviousRiddleSolvedTestCases(): Stream<Arguments> =

@@ -34,10 +34,24 @@ val escapeCampAfterLockedAndLoadedFirstRiddleAssigned =
         teams = listOf(lockedAndLoadedTeamAfterFirstRiddleAssigned, jeepersKeypersTeam, theEscapePeasTeam, sherUnlockTeam)
     )
 
+val escapeCampAfterSherUnlockFirstRiddleAssigned =
+    escapeCamp.copy(
+        updatedAt = sherUnlockFirstRiddleAssignedAt,
+        updatedBy = sherUnlockTeamId,
+        teams = listOf(lockedAndLoadedTeamAfterFirstRiddleAssigned, jeepersKeypersTeam, theEscapePeasTeam, sherUnlockTeamAfterFirstRiddleAssigned)
+    )
+
+val escapeCampAfterTheEscapePeasFirstRiddleAssigned =
+    escapeCamp.copy(
+        updatedAt = theEscapePeasFirstRiddleAssignedAt,
+        updatedBy = theEscapePeasTeamId,
+        teams = listOf(lockedAndLoadedTeamAfterFirstRiddleAssigned, jeepersKeypersTeam, theEscapePeasTeamAfterFirstRiddleAssigned, sherUnlockTeamAfterFirstRiddleAssigned)
+    )
+
 val escapeCampAfterAllFirstRiddleAssigned =
     escapeCamp.copy(
-        updatedAt = lockedAndLoadedFirstRiddleAssignedAt,
-        updatedBy = lockedAndLoadedTeamId,
+        updatedAt = jeepersKeypersFirstRiddleAssignedAt,
+        updatedBy = jeepersKeypersTeamId,
         teams = listOf( lockedAndLoadedTeamAfterFirstRiddleAssigned, jeepersKeypersTeamAfterFirstRiddleAssigned, theEscapePeasTeamAfterFirstRiddleAssigned, sherUnlockTeamAfterFirstRiddleAssigned)
     )
 
@@ -46,6 +60,13 @@ val escapeCampAfterJeepersKeypersFirstRiddleSolved =
         updatedAt = jeepersKeypersFirstRiddleSolvedAt,
         updatedBy = jeepersKeypersTeamId,
         teams = listOf(lockedAndLoadedTeamAfterFirstRiddleAssigned, jeepersKeypersTeamAfterFirstRiddleSolved, theEscapePeasTeamAfterFirstRiddleAssigned, sherUnlockTeamAfterFirstRiddleAssigned)
+    )
+
+val escapeCampAfterJeepersKeypersSecondRiddleAssigned =
+    escapeCamp.copy(
+        updatedAt = jeepersKeypersSecondRiddleAssignedAt,
+        updatedBy = jeepersKeypersTeamId,
+        teams = listOf(lockedAndLoadedTeamAfterFirstRiddleAssigned, jeepersKeypersTeamAfterSecondRiddleAssigned, theEscapePeasTeamAfterFirstRiddleAssigned, sherUnlockTeamAfterFirstRiddleAssigned)
     )
 
 val escapeCampAfterLockedAndLoadedFirstRiddleSolved =
