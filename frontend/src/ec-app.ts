@@ -37,7 +37,7 @@ export class EscapeCampApp extends LitElement {
     override render() {
         const hash = window.location.hash;
         let page = "home";
-        let m: RegExpMatchArray|null = null;
+        let m: RegExpMatchArray | null = null;
         let riddle = "";
         if (m = hash.match(/^#admin$/)) {
             page = "admin";
