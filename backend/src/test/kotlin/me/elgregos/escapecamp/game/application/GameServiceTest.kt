@@ -2,23 +2,24 @@ package me.elgregos.escapecamp.game.application
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import io.mockk.mockk
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
-class RiddleServiceTest {
+class GameServiceTest {
 
-    private lateinit var riddleService: RiddleService
+    private lateinit var gameService: GameService
 
     @BeforeTest
     fun setUp() {
-        riddleService = RiddleService()
+        gameService = GameService(mockk())
     }
 
     @Test
     fun `should retrieve riddle content`() {
-        assertThat(riddleService.retrieveRiddleContent("riddle-1"))
+        assertThat(gameService.retrieveRiddleContent("riddle-1"))
             .isEqualTo("# First riddle")
     }
 
@@ -28,7 +29,7 @@ class RiddleServiceTest {
         "riddle-1, solution-2, false",
         "unknown, solution-2, false")
     fun `should check riddle solution`(riddleName: String, solution: String, expectedResult: Boolean) {
-        assertThat(riddleService.isCorrect(riddleName, solution))
+        assertThat(gameService.isCorrect(riddleName, solution))
             .isEqualTo(expectedResult)
     }
 }

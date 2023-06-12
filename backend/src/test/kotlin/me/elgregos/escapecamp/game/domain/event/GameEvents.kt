@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 val escapeCampCreated = GameCreated(
     gameId = escapeCampId,
     createdAt = escapeCampCreatedAt,
-    createdBy = escapeCampCreatorId,
+    createdBy = organizerId,
     event = genericObjectMapper.createObjectNode().put("id", "$escapeCampId").put("createdAt", "$escapeCampCreatedAt")
         .put("createdBy", "$organizerId")
 )
@@ -156,7 +156,7 @@ val theEscapePeasFirstRiddleAssigned =
 val jeepersKeypersFirstRiddleAssigned =
     GameEvent.NextTeamRiddleAssigned(
         gameId = escapeCampId,
-        version = 9,
+        version = 10,
         assignedAt = jeepersKeypersFirstRiddleAssignedAt,
         assignedBy = jeepersKeypersTeamId,
         event = genericObjectMapper.createObjectNode()
@@ -177,7 +177,7 @@ val eventsAfterAllFirstRiddleAssigned = listOf(escapeCampCreated, lockedAndLoade
 val jeepersKeypersFirstRiddleSolved =
     GameEvent.RiddleSolved(
         gameId = escapeCampId,
-        version = 10,
+        version = 11,
         solvedAt = jeepersKeypersFirstRiddleSolvedAt,
         solvedBy = jeepersKeypersTeamId,
         event = genericObjectMapper.createObjectNode()
@@ -210,7 +210,7 @@ val eventsAfterJeepersKeypersFirstRiddleSolved = listOf(
 val jeepersKeypersSecondRiddleAssigned =
     GameEvent.NextTeamRiddleAssigned(
         gameId = escapeCampId,
-        version = 11,
+        version = 12,
         assignedAt = jeepersKeypersSecondRiddleAssignedAt,
         assignedBy = jeepersKeypersTeamId,
         event = genericObjectMapper.createObjectNode()

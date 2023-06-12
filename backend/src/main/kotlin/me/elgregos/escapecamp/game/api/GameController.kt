@@ -9,7 +9,7 @@ import me.elgregos.escapecamp.game.api.dto.RiddleSolutionDTO
 import me.elgregos.escapecamp.game.api.dto.TeamCreationDTO
 import me.elgregos.escapecamp.game.application.GameCommand
 import me.elgregos.escapecamp.game.application.GameCommandHandler
-import me.elgregos.escapecamp.game.application.RiddleService
+import me.elgregos.escapecamp.game.application.GameService
 import me.elgregos.escapecamp.game.domain.event.GameEvent.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -28,7 +28,7 @@ import java.util.*
 class GameController(
     private val gameCommandHandler: GameCommandHandler,
     private val tokenProvider: TokenProvider,
-    private val riddleService: RiddleService,
+    private val gameService: GameService,
     private val serverSentEventService: ServerSentEventService
 ) {
 
@@ -70,7 +70,7 @@ class GameController(
             .map { riddle ->
                 mapOf(Pair("riddle", mapOf(
                             Pair("name", riddle.name),
-                            Pair("content", riddleService.retrieveRiddleContent(riddle.name))
+                            Pair("content", gameService.retrieveRiddleContent(riddle.name))
                         )
                     )
                 )
