@@ -140,3 +140,5 @@ val copyFrontendAssetsTask = tasks.register<Copy>("copyFrontendAssets") {
     from("${projectDir.parent}/frontend/dist")
     into("$projectDir/src/main/resources/static")
 }
+
+tasks.build { dependsOn(copyFrontendAssetsTask) }
