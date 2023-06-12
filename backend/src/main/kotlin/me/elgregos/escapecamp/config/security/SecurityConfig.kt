@@ -31,6 +31,7 @@ class SecurityConfig(
             .authenticationManager(authenticationManager)
             .securityContextRepository(securityContextRepository)
             .authorizeExchange()
+            .pathMatchers(HttpMethod.GET, "/index.html", "/assets/**").permitAll()
             .pathMatchers(HttpMethod.POST, "/api/tokens").permitAll()
             .pathMatchers(
                 HttpMethod.POST,
