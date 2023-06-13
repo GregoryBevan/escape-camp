@@ -1,6 +1,5 @@
 import {LitElement, html, css} from 'lit';
-import {customElement, property, query} from 'lit/decorators.js';
-import {choose} from 'lit/directives/choose.js';
+import {customElement} from 'lit/decorators.js';
 import {styles} from './styles';
 
 @customElement('ec-admin')

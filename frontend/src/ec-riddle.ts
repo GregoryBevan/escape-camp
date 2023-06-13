@@ -1,6 +1,6 @@
 import {LitElement, html, css} from 'lit';
-import {customElement, property, state, query} from 'lit/decorators.js';
-import {choose} from 'lit/directives/choose.js';
+import {customElement, property, state} from 'lit/decorators.js';
+import {resolveMarkdown} from 'lit-markdown';
 import {styles} from './styles';
 
 @customElement('ec-riddle')
@@ -20,7 +20,7 @@ export class EscapeCampRiddle extends LitElement {
 
     override render() {
         return html`
-            <p>${this.riddle}</p>
+            <p>${resolveMarkdown(this.riddle || "")}</p>
             <input id="guess" type="text" @input="${this._onInput}" />
             <button @click="${this._onGoClick}" ?disabled="${!this.isValid()}">GO</button>
         `;

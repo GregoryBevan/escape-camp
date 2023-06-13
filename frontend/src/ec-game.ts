@@ -1,6 +1,5 @@
 import {LitElement, html, css} from 'lit';
-import {customElement, property, state, query} from 'lit/decorators.js';
-import {choose} from 'lit/directives/choose.js';
+import {customElement, property, state} from 'lit/decorators.js';
 import {styles} from './styles';
 
 @customElement('ec-game')
@@ -14,7 +13,7 @@ export class EscapeCampGame extends LitElement {
     static styles = [
         styles,
         css`
-        :host { display: block; background-color: var(--dark-blue); }
+        :host { display: block; }
         `,
     ];
 
