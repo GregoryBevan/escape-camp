@@ -2,7 +2,7 @@ package me.elgregos.escapecamp.game.domain.entity
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import org.junit.jupiter.api.Named
+import org.junit.jupiter.api.Named.*
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.CsvSource
@@ -71,6 +71,12 @@ class GameTest {
             .isEqualTo(escapeCampAfterJeepersKeypersFirstRiddleSolved)
     }
 
+    @ParameterizedTest
+    @MethodSource("isFirstTeamToSolveAllRiddleTestCases")
+    fun `should check if game has a winner`(game: Game, expectedResult: Boolean) {
+        assertThat(game.checkIfIsFirstTeamToSolveAllRiddle()).isEqualTo(expectedResult)
+    }
+
     companion object {
 
         @JvmStatic
@@ -83,20 +89,28 @@ class GameTest {
         @JvmStatic
         fun canAssignRiddleToTeamTestCases(): Stream<Arguments> =
             Stream.of(
-                Arguments.of(Named.named("No previous riddle assigned to the team", escapeCampAfterGameStarted), true),
-                Arguments.of(Named.named("After riddle assigned to the team", escapeCampAfterLockedAndLoadedFirstRiddleAssigned), false),
-                Arguments.of(Named.named("After riddle solved by team", escapeCampAfterLockedAndLoadedFirstRiddleSolved), true),
+                Arguments.of(named("No previous riddle assigned to the team", escapeCampAfterGameStarted), true),
+                Arguments.of(named("After riddle assigned to the team", escapeCampAfterLockedAndLoadedFirstRiddleAssigned), false),
+                Arguments.of(named("After riddle solved by team", escapeCampAfterLockedAndLoadedFirstRiddleSolved), true),
             )
 
         @JvmStatic
         fun assignRiddleTeamTestCases(): Stream<Arguments> =
             Stream.of(
-                Arguments.of(Named.named("First registered team - First riddle", escapeCampAfterGameStarted), lockedAndLoadedTeamId, lockedAndLoadedFirstRiddleAssignedAt, escapeCampAfterLockedAndLoadedFirstRiddleAssigned),
-                Arguments.of(Named.named("Fourth registered team - First riddle", escapeCampAfterLockedAndLoadedFirstRiddleAssigned), sherUnlockTeamId, sherUnlockFirstRiddleAssignedAt, escapeCampAfterSherUnlockFirstRiddleAssigned),
-                Arguments.of(Named.named("Third registered team - First riddle", escapeCampAfterSherUnlockFirstRiddleAssigned), theEscapePeasTeamId, theEscapePeasFirstRiddleAssignedAt, escapeCampAfterTheEscapePeasFirstRiddleAssigned),
-                Arguments.of(Named.named("Second registered team - First riddle", escapeCampAfterTheEscapePeasFirstRiddleAssigned), jeepersKeypersTeamId, jeepersKeypersFirstRiddleAssignedAt, escapeCampAfterAllFirstRiddleAssigned),
-                Arguments.of(Named.named("Second registered team - Second riddle", escapeCampAfterJeepersKeypersFirstRiddleSolved), jeepersKeypersTeamId, jeepersKeypersSecondRiddleAssignedAt, escapeCampAfterJeepersKeypersSecondRiddleAssigned),
-                Arguments.of(Named.named("Fourth registered team - Second riddle", escapeCampAfterSherUnlockFirstRiddleSolved), sherUnlockTeamId, sherUnlockSecondRiddleAssignedAt, escapeCampAfterSherUnlockSecondRiddleAssigned),
+                Arguments.of(named("First registered team - First riddle", escapeCampAfterGameStarted), lockedAndLoadedTeamId, lockedAndLoadedFirstRiddleAssignedAt, escapeCampAfterLockedAndLoadedFirstRiddleAssigned),
+                Arguments.of(named("Fourth registered team - First riddle", escapeCampAfterLockedAndLoadedFirstRiddleAssigned), sherUnlockTeamId, sherUnlockFirstRiddleAssignedAt, escapeCampAfterSherUnlockFirstRiddleAssigned),
+                Arguments.of(named("Third registered team - First riddle", escapeCampAfterSherUnlockFirstRiddleAssigned), theEscapePeasTeamId, theEscapePeasFirstRiddleAssignedAt, escapeCampAfterTheEscapePeasFirstRiddleAssigned),
+                Arguments.of(named("Second registered team - First riddle", escapeCampAfterTheEscapePeasFirstRiddleAssigned), jeepersKeypersTeamId, jeepersKeypersFirstRiddleAssignedAt, escapeCampAfterAllFirstRiddleAssigned),
+                Arguments.of(named("Second registered team - Second riddle", escapeCampAfterJeepersKeypersFirstRiddleSolved), jeepersKeypersTeamId, jeepersKeypersSecondRiddleAssignedAt, escapeCampAfterJeepersKeypersSecondRiddleAssigned),
+                Arguments.of(named("Fourth registered team - Second riddle", escapeCampAfterSherUnlockFirstRiddleSolved), sherUnlockTeamId, sherUnlockSecondRiddleAssignedAt, escapeCampAfterSherUnlockSecondRiddleAssigned),
+            )
+
+        @JvmStatic
+        fun isFirstTeamToSolveAllRiddleTestCases(): Stream<Arguments> =
+            Stream.of(
+                Arguments.of(named("No team has solved all riddles", escapeCampAfterTheEscapePeasFourthRiddleAssigned), false),
+                Arguments.of(named("First team to solve all riddle", escapeCampAfterJeepersKeypersFourthRiddleSolved), true),
+                Arguments.of(named("Second team to solve all riddle", escapeCampAfterSherUnlockFourthRiddleSolved), false)
             )
     }
 

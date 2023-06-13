@@ -99,3 +99,38 @@ val escapeCampAfterLockedAndLoadedFirstRiddleSolved =
         updatedBy = lockedAndLoadedTeamId,
         teams = listOf(lockedAndLoadedTeamAfterFirstRiddleSolved, jeepersKeypersTeamAfterFirstRiddleSolved, theEscapePeasTeamAfterFirstRiddleAssigned, sherUnlockTeamAfterFirstRiddleAssigned)
     )
+
+
+val escapeCampAfterTheEscapePeasFourthRiddleAssigned =
+    escapeCamp.copy(
+        version = 34,
+        updatedAt = theEscapePeasFourthRiddleAssignedAt,
+        updatedBy = theEscapePeasTeamId,
+        teams = listOf(lockedAndLoadedTeamAfterFourthRiddleAssigned, jeepersKeypersTeamAfterFourthRiddleAssigned, theEscapePeasTeamAfterFourthRiddleAssigned, sherUnlockTeamAfterFourthRiddleAssigned)
+    )
+
+val escapeCampAfterJeepersKeypersFourthRiddleSolved =
+    escapeCamp.copy(
+        version = 35,
+        updatedAt = jeepersKeypersFourthRiddleSolvedAt,
+        updatedBy = jeepersKeypersTeamId,
+        teams = listOf(lockedAndLoadedTeamAfterFourthRiddleAssigned, jeepersKeypersTeamAfterFourthRiddleSolved, theEscapePeasTeamAfterFourthRiddleAssigned, sherUnlockTeamAfterFourthRiddleAssigned)
+    )
+
+val escapeCampWithWinner =
+    escapeCamp.copy(
+        version = 36,
+        updatedAt = jeepersKeypersFourthRiddleSolvedAt,
+        updatedBy = jeepersKeypersTeamId,
+        teams = listOf(lockedAndLoadedTeamAfterFourthRiddleAssigned, jeepersKeypersTeamAfterFourthRiddleSolved, theEscapePeasTeamAfterFourthRiddleAssigned, sherUnlockTeamAfterFourthRiddleAssigned),
+        winner = jeepersKeypersTeamId
+    )
+
+val escapeCampAfterSherUnlockFourthRiddleSolved =
+    escapeCamp.copy(
+        version = 37,
+        updatedAt = sherUnlockFourthRiddleSolvedAt,
+        updatedBy = sherUnlockTeamId,
+        teams = listOf(lockedAndLoadedTeamAfterFourthRiddleAssigned, jeepersKeypersTeamAfterFourthRiddleSolved, theEscapePeasTeamAfterFourthRiddleAssigned, sherUnlockTeamAfterFourthRiddleSolved),
+        winner = jeepersKeypersTeamId
+    )

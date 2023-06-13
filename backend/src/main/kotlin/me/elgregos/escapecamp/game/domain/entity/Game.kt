@@ -12,7 +12,8 @@ data class Game(
     val updatedAt: LocalDateTime = createdAt,
     val updatedBy: UUID = createdBy,
     val teams: List<Team> = listOf(),
-    val startedAt: LocalDateTime? = null
+    val startedAt: LocalDateTime? = null,
+    val winner: UUID? = null
 ): JsonConvertible {
     fun addTeam(team: Team, addedAt: LocalDateTime) =
         copy(
@@ -49,6 +50,9 @@ data class Game(
 
     fun teamLastUnsolvedRiddle(teamId: UUID) =
         teams.find { it.id == teamId }?.lastUnsolvedRiddle()
+
+    fun checkIfIsFirstTeamToSolveAllRiddle() =
+        winner == null && teams.any { it.hasSolvedAllRiddles() }
 
     private fun nextTeamRiddleIndex(teamId: UUID) =
         (teamRegistrationOrder(teamId) + numberOfSolvedRiddleByTeam(teamId)).mod(4)

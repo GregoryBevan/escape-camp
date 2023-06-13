@@ -41,6 +41,12 @@ class TeamTest {
             .isEqualTo(1)
     }
 
+    @ParameterizedTest
+    @MethodSource("hasSolvedAllRiddlesTestCases")
+    fun `should check if team has solved all riddles`(team: Team, expectedResult: Boolean) {
+        assertThat(team.hasSolvedAllRiddles()).isEqualTo(expectedResult)
+    }
+
     companion object {
         @JvmStatic
         fun hasPreviousRiddleSolvedTestCases(): Stream<Arguments> =
@@ -48,6 +54,13 @@ class TeamTest {
                 Arguments.of(named("No previous riddle assigned", lockedAndLoadedTeam), true),
                 Arguments.of(named("Previous riddle not solved", lockedAndLoadedTeamAfterFirstRiddleAssigned), false),
                 Arguments.of(named("Previous riddle solved", lockedAndLoadedTeamAfterFirstRiddleSolved), true)
+            )
+
+        @JvmStatic
+        fun hasSolvedAllRiddlesTestCases(): Stream<Arguments> =
+            Stream.of(
+                Arguments.of(named("All riddles not solved", jeepersKeypersTeamAfterFirstRiddleSolved), false),
+                Arguments.of(named("All riddles  solved", jeepersKeypersTeamAfterFourthRiddleSolved), true)
             )
     }
 }

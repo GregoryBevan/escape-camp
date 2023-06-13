@@ -33,3 +33,23 @@ val sherUnlockTeamAfterSecondRiddleAssigned =  sherUnlockTeam.copy(riddles = lis
 
 val lockedAndLoadedTeamAfterFirstRiddleSolved = lockedAndLoadedTeam.copy(riddles = listOf(lockedAndLoadedFirstSolvedRiddle))
 
+val jeepersKeypersTeamAfterFourthRiddleAssigned =  jeepersKeypersTeam.copy(riddles = listOf(jeepersKeypersFirstSolvedRiddle,
+    jeepersKeypersSecondSolvedRiddle, jeepersKeypersThirdSolvedRiddle, jeepersKeypersFourthRiddle))
+
+val sherUnlockTeamAfterFourthRiddleAssigned =  sherUnlockTeam.copy(riddles = listOf(sherUnlockFirstSolvedRiddle,
+    sherUnlockSecondSolvedRiddle, sherUnlockThirdSolvedRiddle, sherUnlockFourthRiddle))
+
+val lockedAndLoadedTeamAfterFourthRiddleAssigned =  lockedAndLoadedTeam.copy(riddles = listOf(lockedAndLoadedFirstSolvedRiddle,
+    lockedAndLoadedSecondSolvedRiddle, lockedAndLoadedThirdSolvedRiddle, lockedAndLoadedFourthRiddle))
+
+val theEscapePeasTeamAfterFourthRiddleAssigned =  theEscapePeasTeam.copy(riddles = listOf(theEscapePeasFirstSolvedRiddle,
+    theEscapePeasSecondSolvedRiddle, theEscapePeasThirdSolvedRiddle, theEscapePeasFourthRiddle))
+
+val jeepersKeypersTeamAfterFourthRiddleSolved =  jeepersKeypersTeam.copy(riddles = listOf(jeepersKeypersFirstSolvedRiddle,
+    jeepersKeypersSecondSolvedRiddle, jeepersKeypersThirdSolvedRiddle, jeepersKeypersFourthSolvedRiddle))
+
+val sherUnlockTeamAfterFourthRiddleSolved =  sherUnlockTeam.copy(riddles = listOf(sherUnlockFirstSolvedRiddle,
+    sherUnlockSecondSolvedRiddle, sherUnlockThirdSolvedRiddle, sherUnlockFourthSolvedRiddle))
+
+
+
