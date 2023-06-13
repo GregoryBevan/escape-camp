@@ -32,6 +32,16 @@ class GameController(
     private val serverSentEventService: ServerSentEventService
 ) {
 
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ORGANIZER')")
+    fun games() = gameService.games()
+
+    @GetMapping("{gameId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ORGANIZER')")
+    fun game(@PathVariable @Valid gameId: UUID) = gameService.game(gameId)
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ORGANIZER')")

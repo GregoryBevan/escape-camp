@@ -13,5 +13,5 @@ interface GameRepository {
 
     fun insert(game: Game): Mono<Game>
 
-    fun update(game: Game): Mono<Game>
+    fun update(game: Game, sequenceNum: Long): Mono<Game>
 }

@@ -3,6 +3,7 @@ package me.elgregos.escapecamp.game.application
 import me.elgregos.escapecamp.game.domain.repository.GameRepository
 import me.elgregos.escapecamp.game.domain.service.RiddleSolutionChecker
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class GameService(private val gameRepository: GameRepository): RiddleSolutionChecker {
@@ -10,5 +11,11 @@ class GameService(private val gameRepository: GameRepository): RiddleSolutionChe
     fun retrieveRiddleContent(riddleName: String): String =
         GameService::class.java.getResource("/riddles/$riddleName.md")
             ?.readText()!!
+
+    fun games() =
+        gameRepository.list()
+
+    fun game(gameId: UUID) =
+        gameRepository.find(gameId)
 
 }

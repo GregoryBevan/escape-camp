@@ -38,7 +38,6 @@ class GameProjectionSubscriber(
                     is GameStarted,
                     is NextTeamRiddleAssigned,
                     is RiddleSolved -> updateGame(it)
-
                     else -> Mono.empty()
                 }
             }
@@ -51,9 +50,9 @@ class GameProjectionSubscriber(
 
 
     private fun updateGame(event: GameEvent) =
-        gameProjectionRepository.find(event.aggregateId)
+        gameProjectionRepository.findById(event.aggregateId)
             .flatMap {
-                gameProjectionRepository.update(mergeGame(it, event))
+                gameProjectionRepository.update(mergeGame(it.toGame(), event), it.sequenceNum!!)
             }
 
     private fun mergeGame(previousGame: Game, event: GameEvent): Game =
