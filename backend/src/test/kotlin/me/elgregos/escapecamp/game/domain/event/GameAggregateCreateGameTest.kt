@@ -4,8 +4,8 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.mockk.every
 import io.mockk.mockk
+import me.elgregos.escapecamp.config.security.organizerId
 import me.elgregos.escapecamp.game.domain.entity.escapeCampCreatedAt
-import me.elgregos.escapecamp.game.domain.entity.escapeCampCreatorId
 import me.elgregos.escapecamp.game.domain.entity.escapeCampId
 import me.elgregos.escapecamp.game.domain.service.MockedRiddleSolutionChecker
 import me.elgregos.reakteves.domain.EventStore
@@ -28,7 +28,7 @@ class GameAggregateCreateGameTest {
     fun `should create new game`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.empty()
 
-        GameAggregate(escapeCampId, escapeCampCreatorId, MockedRiddleSolutionChecker(), gameEventStore)
+        GameAggregate(escapeCampId, organizerId, MockedRiddleSolutionChecker(), gameEventStore)
             .createGame(escapeCampCreatedAt)
             .`as`(StepVerifier::create)
             .assertNext { assertThat(it).isEqualTo(escapeCampCreated.copy(id = it.id)) }

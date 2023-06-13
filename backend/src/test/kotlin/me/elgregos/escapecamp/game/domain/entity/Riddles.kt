@@ -26,6 +26,6 @@ val sherUnlockFirstSolvedRiddle = Riddle("riddle-4", sherUnlockFirstRiddleAssign
 val sherUnlockSecondRiddleAssignedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 43, 42)
 val sherUnlockSecondRiddle = Riddle("riddle-1", sherUnlockSecondRiddleAssignedAt)
 
-val lockedAndLoadedFirstRiddleSolvedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 41, 56)
+val lockedAndLoadedFirstRiddleSolvedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 43, 56)
 val lockedAndLoadedFirstSolvedRiddle = Riddle("riddle-1", lockedAndLoadedFirstRiddleAssignedAt, lockedAndLoadedFirstRiddleSolvedAt)
 

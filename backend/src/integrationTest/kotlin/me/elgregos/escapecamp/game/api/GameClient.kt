@@ -34,6 +34,15 @@ class GameClient(private val webTestClient: WebTestClient) {
             organizerJwt = it.responseBody?.get("accessToken")?.asText()
         }
 
+
+
+    fun listGame() =
+        webTestClient.get()
+            .uri(rootPath)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer $organizerJwt")
+            .accept(APPLICATION_JSON)
+            .exchange()
+
     fun createGame() =
         webTestClient.post()
             .uri(rootPath)

@@ -10,7 +10,7 @@ import java.util.*
 
 @Service
 class GameCommandHandler(
-    val riddleService: RiddleService,
+    val gameService: GameService,
     val gameEventStore: EventStore<GameEvent, UUID>,
     val eventPublisher: ReactorEventPublisher<UUID>,
 ) {
@@ -26,19 +26,19 @@ class GameCommandHandler(
             .doOnNext { eventPublisher.publish(it) }
 
     private fun createGame(gameCommand: CreateGame) =
-        GameAggregate(gameCommand.gameId, gameCommand.createdBy, riddleService, gameEventStore)
+        GameAggregate(gameCommand.gameId, gameCommand.createdBy, gameService, gameEventStore)
             .createGame(gameCommand.createdAt)
 
     private fun addTeam(gameCommand: AddTeam) =
-        GameAggregate(gameCommand.gameId, gameCommand.addedBy, riddleService, gameEventStore)
+        GameAggregate(gameCommand.gameId, gameCommand.addedBy, gameService, gameEventStore)
             .addTeam(gameCommand.team, gameCommand.addedAt)
 
     private fun assignTeamNextRiddle(gameCommand: AssignTeamNextRiddle) =
-        GameAggregate(gameCommand.gameId, gameCommand.assignedBy, riddleService, gameEventStore)
+        GameAggregate(gameCommand.gameId, gameCommand.assignedBy, gameService, gameEventStore)
             .assignTeamNextRiddle(gameCommand.assignedAt)
 
     private fun checkRiddleSolution(gameCommand: SubmitRiddleSolution) =
-        GameAggregate(gameCommand.gameId, gameCommand.submittedBy, riddleService, gameEventStore)
+        GameAggregate(gameCommand.gameId, gameCommand.submittedBy, gameService, gameEventStore)
             .checkRiddleSolution(gameCommand.riddleName, gameCommand.solution, gameCommand.submittedAt)
 
 }
