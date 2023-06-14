@@ -42,13 +42,15 @@ sealed class GameEvent(
         event
     ) {
 
-        constructor(gameId: UUID, createdBy: UUID, createdAt: LocalDateTime) : this(
+        constructor(gameId: UUID, createdBy: UUID, createdAt: LocalDateTime, riddles: List<Pair<String, String>>) : this(
             gameId = gameId,
             createdAt = createdAt,
             createdBy = createdBy,
-            event = genericObjectMapper.createObjectNode().put("id", "$gameId")
+            event = genericObjectMapper.createObjectNode()
+                .put("id", "$gameId")
                 .put("createdAt", "$createdAt")
-                .put("createdBy", "$createdBy"))
+                .put("createdBy", "$createdBy")
+                .set("riddles", genericObjectMapper.valueToTree(riddles)))
     }
 
     data class TeamAdded(
@@ -177,6 +179,36 @@ sealed class GameEvent(
                 .put("updatedAt", "$solvedAt")
                 .put("updatedBy", "$solvedBy")
                 .set("teams", genericObjectMapper.valueToTree(teams))
+        )
+    }
+
+    data class WinnerAnnounced(
+        override val id: UUID = UUID.randomUUID(),
+        override val sequenceNum: Long? = null,
+        override val version: Int,
+        val definedAt: LocalDateTime = nowUTC(),
+        val definedBy: UUID,
+        val gameId: UUID,
+        override val event: JsonNode
+    ): GameEvent(
+        id,
+        sequenceNum,
+        version,
+        definedAt,
+        definedBy,
+        gameId,
+        WinnerAnnounced::class.simpleName!!,
+        event
+    ) {
+
+        constructor(gameId: UUID, version: Int, definedAt: LocalDateTime, teamId: UUID) : this(
+            gameId = gameId,
+            version = version,
+            definedAt = definedAt,
+            definedBy = teamId,
+            event = genericObjectMapper.createObjectNode()
+                .put("id", "$gameId")
+                .put("winner", "$teamId")
         )
     }
 }

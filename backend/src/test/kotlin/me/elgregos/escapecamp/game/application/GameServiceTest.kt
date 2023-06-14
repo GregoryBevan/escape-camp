@@ -3,6 +3,7 @@ package me.elgregos.escapecamp.game.application
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.mockk.mockk
+import me.elgregos.escapecamp.game.domain.entity.riddles
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import kotlin.test.BeforeTest
@@ -14,7 +15,7 @@ class GameServiceTest {
 
     @BeforeTest
     fun setUp() {
-        gameService = GameService(mockk())
+        gameService = GameService(mockk(), riddles)
     }
 
     @Test

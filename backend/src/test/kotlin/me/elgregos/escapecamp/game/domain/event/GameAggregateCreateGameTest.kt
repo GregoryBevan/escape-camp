@@ -7,6 +7,7 @@ import io.mockk.mockk
 import me.elgregos.escapecamp.config.security.organizerId
 import me.elgregos.escapecamp.game.domain.entity.escapeCampCreatedAt
 import me.elgregos.escapecamp.game.domain.entity.escapeCampId
+import me.elgregos.escapecamp.game.domain.entity.riddles
 import me.elgregos.escapecamp.game.domain.service.MockedRiddleSolutionChecker
 import me.elgregos.reakteves.domain.EventStore
 import reactor.core.publisher.Flux
@@ -28,8 +29,8 @@ class GameAggregateCreateGameTest {
     fun `should create new game`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.empty()
 
-        GameAggregate(escapeCampId, organizerId, MockedRiddleSolutionChecker(), gameEventStore)
-            .createGame(escapeCampCreatedAt)
+        GameAggregate(escapeCampId, organizerId, MockedRiddleSolutionChecker(riddles), gameEventStore)
+            .createGame(riddles, escapeCampCreatedAt)
             .`as`(StepVerifier::create)
             .assertNext { assertThat(it).isEqualTo(escapeCampCreated.copy(id = it.id)) }
             .verifyComplete()

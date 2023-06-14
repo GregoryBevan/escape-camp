@@ -32,7 +32,8 @@ data class GameEntity(
         isNew = true
     }
 
-    fun toGame() = JsonConvertible.fromJson(details, Game::class.java)
+    fun toGame() =
+        JsonConvertible.fromJson(details, Game::class.java)
 
     companion object {
         fun fromGame(game: Game) =

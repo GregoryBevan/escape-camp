@@ -4,7 +4,10 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.fasterxml.jackson.databind.JsonNode
 import io.cucumber.java8.En
+import org.springframework.http.codec.ServerSentEvent
+import reactor.core.publisher.Flux
 
+var sseResponseBody: Flux<ServerSentEvent<JsonNode>>? = null
 
 class SharedThenStepDefinition : En {
 
