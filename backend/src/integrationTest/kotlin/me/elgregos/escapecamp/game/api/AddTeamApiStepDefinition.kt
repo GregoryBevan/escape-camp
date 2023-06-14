@@ -6,7 +6,10 @@ import assertk.assertions.isNotNull
 import com.fasterxml.jackson.databind.JsonNode
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
-import me.elgregos.escapecamp.features.*
+import me.elgregos.escapecamp.features.createGame
+import me.elgregos.escapecamp.features.gameId
+import me.elgregos.escapecamp.features.response
+import me.elgregos.escapecamp.features.scenario
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.codec.ServerSentEvent
 import reactor.core.publisher.Flux
@@ -99,7 +102,7 @@ class AddTeamApiStepDefinition : En {
                 .expectBody(JsonNode::class.java).consumeWith {
                     assertThat(
                         it.responseBody!!.get("message").asText()
-                    ).isEqualTo("Number of team is limited to 4")
+                    ).isEqualTo("Number of team limit reached")
                 }
         }
     }

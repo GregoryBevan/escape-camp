@@ -21,8 +21,8 @@ class GameAggregate(
 ) :
     JsonAggregate<GameEvent, UUID>(gameId, eventStore) {
 
-    fun createGame(startedAt: LocalDateTime): Flux<GameEvent> =
-        Flux.just(GameCreated(gameId, userId, startedAt))
+    fun createGame(riddles: List<Pair<String, String>>, startedAt: LocalDateTime): Flux<GameEvent> =
+        Flux.just(GameCreated(gameId, userId, startedAt, riddles))
 
     fun addTeam(team: Team, addedAt: LocalDateTime): Flux<GameEvent> =
         previousState()
@@ -31,7 +31,7 @@ class GameAggregate(
             .map { JsonConvertible.fromJson(it, Game::class.java) }
             .filter { game -> game.isTeamNameAvailable(team.name) }
             .switchIfEmpty(Mono.error { TeamNameNotAvailableException(team.name) })
-            .filter { game -> game.teams.size < 4 }
+            .filter { game -> game.teams.size < game.riddles.size }
             .switchIfEmpty(Mono.error { TeamNumberLimitExceededException() })
             .map { game -> game.addTeam(team, addedAt) }
             .flatMapMany { game ->
@@ -40,7 +40,7 @@ class GameAggregate(
                     .flatMap { this.applyNewEvent(it) }
                     .cast(GameEvent::class.java)
                     .concatWith(nextVersion()
-                        .filter { game.teams.size == 4 }
+                        .filter { game.teams.size == game.riddles.size }
                         .map { version -> GameStarted(gameId, version,userId, addedAt) })
             }
 
@@ -51,7 +51,7 @@ class GameAggregate(
             .map { JsonConvertible.fromJson(it, Game::class.java) }
             .filter { game -> game.checkIfTeamExists(userId)}
             .switchIfEmpty(Mono.error { TeamNotFoundException(userId) })
-            .filter { game -> game.teams.size == 4 }
+            .filter { game -> game.teams.size == game.riddles.size }
             .switchIfEmpty(Mono.error { GameNotStartedException() })
              .filter { game -> game.canAssignRiddleToTeam(userId)}
             .switchIfEmpty(Mono.error { PreviousRiddleNotSolvedException() })

@@ -13,6 +13,7 @@ class GameCommandHandler(
     val gameService: GameService,
     val gameEventStore: EventStore<GameEvent, UUID>,
     val eventPublisher: ReactorEventPublisher<UUID>,
+    val riddles: List<Pair<String, String>>
 ) {
 
     fun handle(gameCommand: GameCommand) =
@@ -27,7 +28,7 @@ class GameCommandHandler(
 
     private fun createGame(gameCommand: CreateGame) =
         GameAggregate(gameCommand.gameId, gameCommand.createdBy, gameService, gameEventStore)
-            .createGame(gameCommand.createdAt)
+            .createGame(riddles, gameCommand.createdAt)
 
     private fun addTeam(gameCommand: AddTeam) =
         GameAggregate(gameCommand.gameId, gameCommand.addedBy, gameService, gameEventStore)

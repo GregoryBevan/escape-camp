@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service
 import java.util.UUID
 
 @Service
-class GameService(private val gameRepository: GameRepository): RiddleSolutionChecker {
+class GameService(
+    private val gameRepository: GameRepository,
+    override val riddles: List<Pair<String, String>>): RiddleSolutionChecker {
 
     fun retrieveRiddleContent(riddleName: String): String =
         GameService::class.java.getResource("/riddles/$riddleName.md")

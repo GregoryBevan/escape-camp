@@ -42,13 +42,15 @@ sealed class GameEvent(
         event
     ) {
 
-        constructor(gameId: UUID, createdBy: UUID, createdAt: LocalDateTime) : this(
+        constructor(gameId: UUID, createdBy: UUID, createdAt: LocalDateTime, riddles: List<Pair<String, String>>) : this(
             gameId = gameId,
             createdAt = createdAt,
             createdBy = createdBy,
-            event = genericObjectMapper.createObjectNode().put("id", "$gameId")
+            event = genericObjectMapper.createObjectNode()
+                .put("id", "$gameId")
                 .put("createdAt", "$createdAt")
-                .put("createdBy", "$createdBy"))
+                .put("createdBy", "$createdBy")
+                .set("riddles", genericObjectMapper.valueToTree(riddles)))
     }
 
     data class TeamAdded(

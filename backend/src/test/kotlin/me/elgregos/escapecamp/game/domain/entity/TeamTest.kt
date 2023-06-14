@@ -44,7 +44,7 @@ class TeamTest {
     @ParameterizedTest
     @MethodSource("hasSolvedAllRiddlesTestCases")
     fun `should check if team has solved all riddles`(team: Team, expectedResult: Boolean) {
-        assertThat(team.hasSolvedAllRiddles()).isEqualTo(expectedResult)
+        assertThat(team.hasSolvedAllRiddles(riddles)).isEqualTo(expectedResult)
     }
 
     companion object {
@@ -60,7 +60,7 @@ class TeamTest {
         fun hasSolvedAllRiddlesTestCases(): Stream<Arguments> =
             Stream.of(
                 Arguments.of(named("All riddles not solved", jeepersKeypersTeamAfterFirstRiddleSolved), false),
-                Arguments.of(named("All riddles  solved", jeepersKeypersTeamAfterFourthRiddleSolved), true)
+                Arguments.of(named("All riddles  solved", jeepersKeypersTeamAfterSecondRiddleSolved), true)
             )
     }
 }

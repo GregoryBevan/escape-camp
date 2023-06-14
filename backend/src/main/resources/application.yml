@@ -21,6 +21,16 @@ jwt:
   issuer: ${JWT_ISSUER:https://escamp-camp.elgregos.me}
   secretKey: ${JWT_SECRET_KEY:youllneverguesswhatismysecretbutyoucantry}
 
+game:
+  riddles:
+    - riddle-1:
+        solution: solution-1
+    - riddle-2:
+        solution: solution-2
+    - riddle-3:
+        solution: solution-3
+    - riddle-4:
+        solution: solution-4
 
 logging:
   level:

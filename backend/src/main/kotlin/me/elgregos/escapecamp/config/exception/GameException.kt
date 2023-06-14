@@ -13,7 +13,7 @@ sealed class GameException(
         GameException("Game with id $gameId has not been found", status = HttpStatus.NOT_FOUND)
 
     class TeamNumberLimitExceededException :
-        GameException("Number of team is limited to 4", status = HttpStatus.BAD_REQUEST)
+        GameException("Number of team limit reached", status = HttpStatus.BAD_REQUEST)
 
     class TeamNameNotAvailableException(teamName: String) :
         GameException("Team with name $teamName already exists", status = HttpStatus.BAD_REQUEST)

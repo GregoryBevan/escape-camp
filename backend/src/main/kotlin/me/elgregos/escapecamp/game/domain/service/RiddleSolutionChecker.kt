@@ -1,8 +1,8 @@
 package me.elgregos.escapecamp.game.domain.service
 
-import me.elgregos.escapecamp.game.domain.entity.riddles
-
 interface RiddleSolutionChecker {
+
+    val riddles: List<Pair<String, String>>
 
     fun isCorrect(riddleName: String, solution: String): Boolean =
         riddles.find { it.first == riddleName }
