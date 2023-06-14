@@ -181,4 +181,34 @@ sealed class GameEvent(
                 .set("teams", genericObjectMapper.valueToTree(teams))
         )
     }
+
+    data class WinnerDefined(
+        override val id: UUID = UUID.randomUUID(),
+        override val sequenceNum: Long? = null,
+        override val version: Int,
+        val definedAt: LocalDateTime = nowUTC(),
+        val definedBy: UUID,
+        val gameId: UUID,
+        override val event: JsonNode
+    ): GameEvent(
+        id,
+        sequenceNum,
+        version,
+        definedAt,
+        definedBy,
+        gameId,
+        WinnerDefined::class.simpleName!!,
+        event
+    ) {
+
+        constructor(gameId: UUID, version: Int, definedAt: LocalDateTime, teamId: UUID) : this(
+            gameId = gameId,
+            version = version,
+            definedAt = definedAt,
+            definedBy = teamId,
+            event = genericObjectMapper.createObjectNode()
+                .put("id", "$gameId")
+                .put("winner", "$teamId")
+        )
+    }
 }

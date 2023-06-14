@@ -41,7 +41,7 @@ class GameAggregate(
                     .cast(GameEvent::class.java)
                     .concatWith(nextVersion()
                         .filter { game.teams.size == game.riddles.size }
-                        .map { version -> GameStarted(gameId, version,userId, addedAt) })
+                        .map { version -> GameStarted(gameId, version, userId, addedAt) })
             }
 
     fun assignTeamNextRiddle(assignedAt: LocalDateTime): Flux<GameEvent> =
@@ -49,11 +49,11 @@ class GameAggregate(
             .filter { !it.isEmpty }
             .switchIfEmpty(Mono.error { GameNotFoundException(gameId) })
             .map { JsonConvertible.fromJson(it, Game::class.java) }
-            .filter { game -> game.checkIfTeamExists(userId)}
+            .filter { game -> game.checkIfTeamExists(userId) }
             .switchIfEmpty(Mono.error { TeamNotFoundException(userId) })
             .filter { game -> game.teams.size == game.riddles.size }
             .switchIfEmpty(Mono.error { GameNotStartedException() })
-             .filter { game -> game.canAssignRiddleToTeam(userId)}
+            .filter { game -> game.canAssignRiddleToTeam(userId) }
             .switchIfEmpty(Mono.error { PreviousRiddleNotSolvedException() })
             .map { game -> game.assignRiddleToTeam(userId, assignedAt) }
             .flatMapMany { game ->
@@ -61,7 +61,11 @@ class GameAggregate(
                     .map { nextVersion -> NextTeamRiddleAssigned(gameId, nextVersion, assignedAt, userId, game.teams) }
             }
 
-    fun checkRiddleSolution(riddleName: String, submittedSolution: String, submittedAt: LocalDateTime): Flux<GameEvent> =
+    fun checkRiddleSolution(
+        riddleName: String,
+        submittedSolution: String,
+        submittedAt: LocalDateTime
+    ): Flux<GameEvent> =
         previousState()
             .filter { !it.isEmpty }
             .switchIfEmpty(Mono.error { GameNotFoundException(gameId) })
@@ -74,5 +78,10 @@ class GameAggregate(
             .flatMapMany { game ->
                 nextVersion()
                     .map { nextVersion -> RiddleSolved(gameId, nextVersion, submittedAt, userId, game.teams) }
+                    .flatMap { this.applyNewEvent(it) }
+                    .cast(GameEvent::class.java)
+                    .concatWith(nextVersion()
+                        .filter { game.checkIfIsFirstTeamToSolveAllRiddle() }
+                        .map { version -> WinnerDefined(gameId, version, submittedAt, userId) })
             }
 }

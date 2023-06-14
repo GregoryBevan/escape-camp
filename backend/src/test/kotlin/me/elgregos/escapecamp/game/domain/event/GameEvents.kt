@@ -15,7 +15,8 @@ val escapeCampCreated = GameCreated(
         .put("id", "$escapeCampId")
         .put("createdAt", "$escapeCampCreatedAt")
         .put("createdBy", "$organizerId")
-        .set("riddles", genericObjectMapper.valueToTree(riddles)))
+        .set("riddles", genericObjectMapper.valueToTree(riddles))
+)
 
 val lockedAndLoadedTeamAdded = TeamAdded(
     gameId = escapeCampId,
@@ -29,7 +30,8 @@ val lockedAndLoadedTeamAdded = TeamAdded(
         .set(
             "teams",
             genericObjectMapper.createArrayNode()
-                .add(lockedAndLoadedTeam.toJson()))
+                .add(lockedAndLoadedTeam.toJson())
+        )
 )
 
 val eventsAfterLockedAndLoadedAdded = listOf(escapeCampCreated, lockedAndLoadedTeamAdded)
@@ -52,9 +54,15 @@ val jeepersKeypersTeamAdded = TeamAdded(
 )
 
 val escapeCampStarted =
-    GameEvent.GameStarted(gameId = escapeCampId, version = 4, startedAt = jeepersKeypersTeamAddedAt, startedBy = jeepersKeypersTeamId)
+    GameEvent.GameStarted(
+        gameId = escapeCampId,
+        version = 4,
+        startedAt = jeepersKeypersTeamAddedAt,
+        startedBy = jeepersKeypersTeamId
+    )
 
-val eventsAfterEscapeCampStarted = listOf(escapeCampCreated, lockedAndLoadedTeamAdded, jeepersKeypersTeamAdded, escapeCampStarted)
+val eventsAfterEscapeCampStarted =
+    listOf(escapeCampCreated, lockedAndLoadedTeamAdded, jeepersKeypersTeamAdded, escapeCampStarted)
 
 val lockedAndLoadedFirstRiddleAssigned =
     GameEvent.NextTeamRiddleAssigned(
@@ -70,10 +78,17 @@ val lockedAndLoadedFirstRiddleAssigned =
                 "teams",
                 genericObjectMapper.createArrayNode()
                     .add(lockedAndLoadedTeamAfterFirstRiddleAssigned.toJson())
-                    .add(jeepersKeypersTeam.toJson()))
+                    .add(jeepersKeypersTeam.toJson())
+            )
     )
 
-val eventsAfterLockedAndLoadedFirstRiddleAssigned = listOf(escapeCampCreated, lockedAndLoadedTeamAdded, jeepersKeypersTeamAdded, escapeCampStarted, lockedAndLoadedFirstRiddleAssigned)
+val eventsAfterLockedAndLoadedFirstRiddleAssigned = listOf(
+    escapeCampCreated,
+    lockedAndLoadedTeamAdded,
+    jeepersKeypersTeamAdded,
+    escapeCampStarted,
+    lockedAndLoadedFirstRiddleAssigned
+)
 
 val jeepersKeypersFirstRiddleAssigned =
     GameEvent.NextTeamRiddleAssigned(
@@ -89,10 +104,18 @@ val jeepersKeypersFirstRiddleAssigned =
                 "teams",
                 genericObjectMapper.createArrayNode()
                     .add(lockedAndLoadedTeamAfterFirstRiddleAssigned.toJson())
-                    .add(jeepersKeypersTeamAfterFirstRiddleAssigned.toJson()))
+                    .add(jeepersKeypersTeamAfterFirstRiddleAssigned.toJson())
+            )
     )
 
-val eventsAfterAllFirstRiddleAssigned = listOf(escapeCampCreated, lockedAndLoadedTeamAdded, jeepersKeypersTeamAdded, escapeCampStarted, lockedAndLoadedFirstRiddleAssigned, jeepersKeypersFirstRiddleAssigned)
+val eventsAfterAllFirstRiddleAssigned = listOf(
+    escapeCampCreated,
+    lockedAndLoadedTeamAdded,
+    jeepersKeypersTeamAdded,
+    escapeCampStarted,
+    lockedAndLoadedFirstRiddleAssigned,
+    jeepersKeypersFirstRiddleAssigned
+)
 
 val jeepersKeypersFirstRiddleSolved =
     GameEvent.RiddleSolved(
@@ -108,7 +131,8 @@ val jeepersKeypersFirstRiddleSolved =
                 "teams",
                 genericObjectMapper.createArrayNode()
                     .add(lockedAndLoadedTeamAfterFirstRiddleAssigned.toJson())
-                    .add(jeepersKeypersTeamAfterFirstRiddleSolved.toJson()))
+                    .add(jeepersKeypersTeamAfterFirstRiddleSolved.toJson())
+            )
     )
 
 val eventsAfterJeepersKeypersFirstRiddleSolved = listOf(
@@ -135,7 +159,8 @@ val jeepersKeypersSecondRiddleAssigned =
                 "teams",
                 genericObjectMapper.createArrayNode()
                     .add(lockedAndLoadedTeamAfterFirstRiddleAssigned.toJson())
-                    .add(jeepersKeypersTeamAfterSecondRiddleAssigned.toJson()))
+                    .add(jeepersKeypersTeamAfterSecondRiddleAssigned.toJson())
+            )
     )
 
 val lockedAndLoadedSecondRiddleAssigned =
@@ -151,9 +176,22 @@ val lockedAndLoadedSecondRiddleAssigned =
             .set(
                 "teams",
                 genericObjectMapper.createArrayNode()
-                    .add(lockedAndLoadedTeamAfterFirstRiddleAssigned.toJson())
-                    .add(lockedAndLoadedTeamAfterSecondRiddleAssigned.toJson()))
+                    .add(lockedAndLoadedTeamAfterSecondRiddleAssigned.toJson())
+                    .add(jeepersKeypersTeamAfterSecondRiddleAssigned.toJson())
+            )
     )
+
+val eventsAfterLockedAndLoadedSecondRiddleAssigned = listOf(
+    escapeCampCreated,
+    lockedAndLoadedTeamAdded,
+    jeepersKeypersTeamAdded,
+    escapeCampStarted,
+    lockedAndLoadedFirstRiddleAssigned,
+    jeepersKeypersFirstRiddleAssigned,
+    jeepersKeypersFirstRiddleSolved,
+    jeepersKeypersSecondRiddleAssigned,
+    lockedAndLoadedSecondRiddleAssigned
+)
 
 val jeepersKeypersSecondRiddleSolved =
     GameEvent.RiddleSolved(
@@ -168,11 +206,24 @@ val jeepersKeypersSecondRiddleSolved =
             .set(
                 "teams",
                 genericObjectMapper.createArrayNode()
-                    .add(lockedAndLoadedTeamAfterFirstRiddleAssigned.toJson())
-                    .add(jeepersKeypersTeamAfterSecondRiddleSolved.toJson()))
+                    .add(lockedAndLoadedTeamAfterSecondRiddleAssigned.toJson())
+                    .add(jeepersKeypersTeamAfterSecondRiddleSolved.toJson())
+            )
     )
 
-val eventsAfterJeepersKeypersSecondRiddleSolved = listOf(
+val escapeCampWinnerDefined =
+    GameEvent.WinnerDefined(
+        gameId = escapeCampId,
+        version = 11,
+        definedAt = jeepersKeypersSecondRiddleSolvedAt,
+        definedBy = jeepersKeypersTeamId,
+        event = genericObjectMapper.createObjectNode()
+            .put("id", "981e1b04-ecc6-48b3-b750-58f20faa5e05")
+            .put("winner", "3a66dce7-ca96-4cd0-af56-6bd7e082edd5"))
+
+
+
+val eventsAfterWinnerDefined = listOf(
     escapeCampCreated,
     lockedAndLoadedTeamAdded,
     jeepersKeypersTeamAdded,
@@ -182,5 +233,24 @@ val eventsAfterJeepersKeypersSecondRiddleSolved = listOf(
     jeepersKeypersFirstRiddleSolved,
     jeepersKeypersSecondRiddleAssigned,
     lockedAndLoadedSecondRiddleAssigned,
-    jeepersKeypersSecondRiddleSolved
+    jeepersKeypersSecondRiddleSolved,
+    escapeCampWinnerDefined
 )
+
+val lockedAndLoadedSecondRiddleSolved =
+    GameEvent.RiddleSolved(
+        gameId = escapeCampId,
+        version = 12,
+        solvedAt = lockedAndLoadedSecondRiddleSolvedAt,
+        solvedBy = lockedAndLoadedTeamId,
+        event = genericObjectMapper.createObjectNode()
+            .put("id", "981e1b04-ecc6-48b3-b750-58f20faa5e05")
+            .put("updatedAt", "2023-06-15T13:50:05")
+            .put("updatedBy", "0bfce65c-dff9-4f2e-8e8f-11ed6151b205")
+            .set(
+                "teams",
+                genericObjectMapper.createArrayNode()
+                    .add(lockedAndLoadedTeamAfterSecondRiddleSolved.toJson())
+                    .add(jeepersKeypersTeamAfterSecondRiddleSolved.toJson())
+            )
+    )

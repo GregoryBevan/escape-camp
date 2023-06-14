@@ -27,7 +27,7 @@ class GameAggregateCheckRiddleSolutionTest {
     fun `should succeed to check right submitted solution`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterAllFirstRiddleAssigned)
 
-        GameAggregate(escapeCampId, jeepersKeypersTeamId, MockedRiddleSolutionChecker(riddles),  gameEventStore)
+        GameAggregate(escapeCampId, jeepersKeypersTeamId, MockedRiddleSolutionChecker(riddles), gameEventStore)
             .checkRiddleSolution("riddle-2", "solution-2", jeepersKeypersFirstRiddleSolvedAt)
             .`as`(StepVerifier::create)
             .assertNext { assertThat(it).isEqualTo(jeepersKeypersFirstRiddleSolved.copy(id = it.id)) }
@@ -36,12 +36,26 @@ class GameAggregateCheckRiddleSolutionTest {
 
     @Test
     fun `should set first team to solve all riddle has the winner`() {
-        every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterAllFirstRiddleAssigned)
+        every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(
+            eventsAfterLockedAndLoadedSecondRiddleAssigned
+        )
 
-        GameAggregate(escapeCampId, jeepersKeypersTeamId, MockedRiddleSolutionChecker(riddles),  gameEventStore)
-            .checkRiddleSolution("riddle-2", "solution-2", jeepersKeypersFirstRiddleSolvedAt)
+        GameAggregate(escapeCampId, jeepersKeypersTeamId, MockedRiddleSolutionChecker(riddles), gameEventStore)
+            .checkRiddleSolution("riddle-1", "solution-1", jeepersKeypersSecondRiddleSolvedAt)
             .`as`(StepVerifier::create)
-            .assertNext { assertThat(it).isEqualTo(jeepersKeypersFirstRiddleSolved.copy(id = it.id)) }
+            .assertNext { assertThat(it).isEqualTo(jeepersKeypersSecondRiddleSolved.copy(id = it.id)) }
+            .assertNext { assertThat(it).isEqualTo(escapeCampWinnerDefined.copy(id = it.id)) }
+            .verifyComplete()
+    }
+
+    @Test
+    fun `should not change winner after another team has solved all riddle`() {
+        every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterWinnerDefined)
+
+        GameAggregate(escapeCampId, lockedAndLoadedTeamId, MockedRiddleSolutionChecker(riddles), gameEventStore)
+            .checkRiddleSolution("riddle-2", "solution-2", lockedAndLoadedSecondRiddleSolvedAt)
+            .`as`(StepVerifier::create)
+            .assertNext { assertThat(it).isEqualTo(lockedAndLoadedSecondRiddleSolved.copy(id = it.id)) }
             .verifyComplete()
     }
 
