@@ -2,6 +2,7 @@ import {LitElement, html, css, unsafeCSS} from 'lit';
 import {customElement} from 'lit/decorators.js';
 import {choose} from 'lit/directives/choose.js';
 import {styles} from './styles';
+import {EscapeCampController} from './ec-controller';
 import './ec-home';
 import './ec-admin';
 import './ec-game';
@@ -24,6 +25,8 @@ export class EscapeCampApp extends LitElement {
         `,
     ];
 
+    private controller = new EscapeCampController(this);
+
     override async connectedCallback() {
         super.connectedCallback();
         window.addEventListener("hashchange", this._onHashChange);
@@ -43,13 +46,12 @@ export class EscapeCampApp extends LitElement {
             page = "admin";
         } else if (m = hash.match(/^#game\/([^/]+)$/)) {
             page = "game";
+            this.controller.gameId = m[1];
+        } else if (m = hash.match(/^#game\/([^/]+)\/team\/([^/]+)$/)) {
+
         } else if (m = hash.match(/^#riddle$/)) {
             page = "riddle";
-            riddle = `
-# First riddle
-
-Hello, *world*
-            `;
+            riddle = this.controller.getRiddle();
         }
 
         return html`
@@ -70,7 +72,7 @@ Hello, *world*
     }
 
     private _onAddTeam(e: CustomEvent) {
-        console.log(e.detail.teamName);
+        this.controller.addTeam(e.detail.teamName)
     }
 
     private _onGuess(e: CustomEvent) {
