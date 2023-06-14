@@ -182,7 +182,7 @@ sealed class GameEvent(
         )
     }
 
-    data class WinnerDefined(
+    data class WinnerAnnounced(
         override val id: UUID = UUID.randomUUID(),
         override val sequenceNum: Long? = null,
         override val version: Int,
@@ -197,7 +197,7 @@ sealed class GameEvent(
         definedAt,
         definedBy,
         gameId,
-        WinnerDefined::class.simpleName!!,
+        WinnerAnnounced::class.simpleName!!,
         event
     ) {
 

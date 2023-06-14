@@ -6,13 +6,8 @@ import assertk.assertions.isNotNull
 import com.fasterxml.jackson.databind.JsonNode
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
-import me.elgregos.escapecamp.features.createGame
-import me.elgregos.escapecamp.features.gameId
-import me.elgregos.escapecamp.features.response
-import me.elgregos.escapecamp.features.scenario
+import me.elgregos.escapecamp.features.*
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.codec.ServerSentEvent
-import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
 import java.util.*
 
@@ -22,8 +17,6 @@ class AddTeamApiStepDefinition : En {
     private lateinit var gameClient: GameClient
 
     private lateinit var responseBody: JsonNode
-
-    private lateinit var sseResponseBody: Flux<ServerSentEvent<JsonNode>>
 
     init {
 
@@ -76,13 +69,8 @@ class AddTeamApiStepDefinition : En {
         }
 
         And("a game started notification is sent") {
-            sseResponseBody = gameClient.serverSentEventStream().responseBody
-            StepVerifier.create(sseResponseBody)
-                .assertNext { assertThat(it.event()).isEqualTo("GameCreated") }
-                .assertNext { assertThat(it.event()).isEqualTo("TeamAdded") }
-                .assertNext { assertThat(it.event()).isEqualTo("TeamAdded") }
-                .assertNext { assertThat(it.event()).isEqualTo("TeamAdded") }
-                .assertNext { assertThat(it.event()).isEqualTo("TeamAdded") }
+            sseResponseBody = gameClient.serverSentEventStream().responseBody.filter{ it.event() == "GameStarted" }
+            StepVerifier.create(sseResponseBody!!)
                 .assertNext { assertThat(it.event()).isEqualTo("GameStarted") }
                 .thenCancel()
                 .verify()

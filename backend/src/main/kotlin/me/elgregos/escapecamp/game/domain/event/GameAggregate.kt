@@ -82,6 +82,6 @@ class GameAggregate(
                     .cast(GameEvent::class.java)
                     .concatWith(nextVersion()
                         .filter { game.checkIfIsFirstTeamToSolveAllRiddle() }
-                        .map { version -> WinnerDefined(gameId, version, submittedAt, userId) })
+                        .map { version -> WinnerAnnounced(gameId, version, submittedAt, userId) })
             }
 }

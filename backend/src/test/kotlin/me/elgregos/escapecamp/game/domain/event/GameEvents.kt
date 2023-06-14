@@ -211,8 +211,8 @@ val jeepersKeypersSecondRiddleSolved =
             )
     )
 
-val escapeCampWinnerDefined =
-    GameEvent.WinnerDefined(
+val escapeCampWinnerAnnounced =
+    GameEvent.WinnerAnnounced(
         gameId = escapeCampId,
         version = 11,
         definedAt = jeepersKeypersSecondRiddleSolvedAt,
@@ -223,7 +223,7 @@ val escapeCampWinnerDefined =
 
 
 
-val eventsAfterWinnerDefined = listOf(
+val eventsAfterWinnerAnnounced = listOf(
     escapeCampCreated,
     lockedAndLoadedTeamAdded,
     jeepersKeypersTeamAdded,
@@ -234,7 +234,7 @@ val eventsAfterWinnerDefined = listOf(
     jeepersKeypersSecondRiddleAssigned,
     lockedAndLoadedSecondRiddleAssigned,
     jeepersKeypersSecondRiddleSolved,
-    escapeCampWinnerDefined
+    escapeCampWinnerAnnounced
 )
 
 val lockedAndLoadedSecondRiddleSolved =
