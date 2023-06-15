@@ -41,7 +41,7 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation("me.elgregos:reakt-eves:1.1.0-SNAPSHOT")
+    implementation("me.elgregos:reakt-eves:1.1.0")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     implementation("org.springframework.boot:spring-boot-starter-validation")
