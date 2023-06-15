@@ -16,7 +16,9 @@ import java.util.*
 @Service
 class ServerSentEventService(
     private val streamEventBus: Sinks.Many<ServerSentEvent<JsonNode>>,
-    @Value("\${game.heartbeatPeriod:PT20S}") private val heartbeatPeriod: Duration) {
+    @Value("\${game.sseHeartbeatPeriod:PT20S}") private val sseHeartbeatPeriod: Duration,
+    @Value("\${game.maxDuration:PT90M}") private val gameMaxDuration: Duration
+) {
 
     fun sseEmit(gameStreamEvent: GameStreamEvent) = streamEventBus.emitNext(
         ServerSentEvent.builder<JsonNode>()
@@ -31,7 +33,7 @@ class ServerSentEventService(
     fun heartBeat(gameId: UUID, createdAt: LocalDateTime) =
         Flux.just(UUID.randomUUID())
             .flatMap {
-                Flux.interval(heartbeatPeriod)
+                Flux.interval(sseHeartbeatPeriod)
                     .map { interval ->
                         sseEmit(
                             GameStreamEvent(
@@ -44,7 +46,7 @@ class ServerSentEventService(
                             )
                         )
                     }
-                    .takeUntil{ nowUTC().isAfter(createdAt.plus(Duration.ofHours(2))) }
+                    .takeUntil{ nowUTC().isAfter(createdAt.plus(gameMaxDuration)) }
             }
             .subscribe()
 }
