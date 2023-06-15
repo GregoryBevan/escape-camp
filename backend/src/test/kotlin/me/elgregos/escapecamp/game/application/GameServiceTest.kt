@@ -33,6 +33,7 @@ class GameServiceTest {
     @ParameterizedTest
     @CsvSource(
         "riddle-1, solution-1, true",
+        "riddle-1, Solution-1, true",
         "riddle-1, solution-2, false",
         "unknown, solution-2, false")
     fun `should check riddle solution`(riddleName: String, solution: String, expectedResult: Boolean) {
