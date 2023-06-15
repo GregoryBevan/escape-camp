@@ -21,7 +21,13 @@ class GameServiceTest {
     @Test
     fun `should retrieve riddle content`() {
         assertThat(gameService.retrieveRiddleContent("riddle-1"))
-            .isEqualTo("# First riddle")
+            .isEqualTo("""
+            # A la piscine
+
+            Si vous vous placez au bon endroit,
+            la réponse se révèlera.
+
+            """.trimIndent())
     }
 
     @ParameterizedTest
