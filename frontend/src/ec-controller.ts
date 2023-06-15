@@ -112,7 +112,11 @@ export class EscapeCampController implements ReactiveController {
     }
 
     subscribeEvents() {
-        console.log("Subscribed");
+        if (!("Notification" in window)) {
+            alert("This browser does not support notifications");
+        } else if (Notification.permission === "default") {
+            Notification.requestPermission();
+        }
         this.eventSource = new EventSourcePolyfill(`/api/games/${this.gameId}/events-stream`, {
             headers: {
                 "Authorization": `Bearer ${this.accessToken}`,
@@ -126,6 +130,12 @@ export class EscapeCampController implements ReactiveController {
             if (this.solvedRiddleCount < 4) {
                 this.host.onGameStarted();
             }
+        });
+        this.eventSource.addEventListener("RiddleSolved", async event => {
+            await this.notifyRiddleSolved(event.data);
+        });
+        this.eventSource.addEventListener("WinnerAnnounced", async event => {
+            await this.notifyWinnerAnnounced(event.data);
         });
     }
 
@@ -144,5 +154,17 @@ export class EscapeCampController implements ReactiveController {
             accessToken: this.accessToken,
         };
         window.localStorage.setItem("controller", JSON.stringify(data));
+    }
+
+    async notifyRiddleSolved(data: any) {
+        if (Notification.permission === "granted") {
+            const notification = new Notification("Escape Camp", {body: "Une équipe a résolu une énigme"});
+        }
+    }
+
+    async notifyWinnerAnnounced(data: any) {
+        if (Notification.permission === "granted") {
+            const notification = new Notification("Escape Camp", {body: "Une équipe a gagné"});
+        }
     }
 }
