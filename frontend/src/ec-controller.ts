@@ -9,7 +9,7 @@ export class EscapeCampController implements ReactiveController {
     teamName?: string;
     riddleId?: string;
     riddleText?: string;
-    private solvedRiddleCount: number = 0;
+    solvedRiddleCount: number = 0;
     private accessToken?: string;
     private eventSource?: EventSourcePolyfill;
 
