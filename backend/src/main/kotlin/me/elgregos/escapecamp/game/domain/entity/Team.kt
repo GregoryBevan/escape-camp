@@ -30,4 +30,8 @@ data class Team(
 
     fun numberOfSolvedRiddles() =
         riddles.filter { riddle -> riddle.solvedAt != null }.size
+
+    fun hasSolvedAllRiddles(riddles: List<Pair<String, String>>) = numberOfSolvedRiddles() == riddles.size
+
+
 }

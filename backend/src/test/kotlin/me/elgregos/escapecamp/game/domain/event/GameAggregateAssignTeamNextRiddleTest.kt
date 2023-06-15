@@ -27,7 +27,7 @@ class GameAggregateAssignTeamNextRiddleTest {
     fun `should assign riddle-1 to first registered team after game has started`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterEscapeCampStarted)
 
-        GameAggregate(escapeCampId, lockedAndLoadedTeamId, MockedRiddleSolutionChecker(), gameEventStore)
+        GameAggregate(escapeCampId, lockedAndLoadedTeamId, MockedRiddleSolutionChecker(riddles), gameEventStore)
             .assignTeamNextRiddle(lockedAndLoadedFirstRiddleAssignedAt)
             .`as`(StepVerifier::create)
             .assertNext { assertThat(it).isEqualTo(lockedAndLoadedFirstRiddleAssigned.copy(id = it.id)) }
@@ -35,13 +35,13 @@ class GameAggregateAssignTeamNextRiddleTest {
     }
 
     @Test
-    fun `should assign riddle-4 to fourth registered team after game has started`() {
+    fun `should assign riddle-2 to second registered team after game has started`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterLockedAndLoadedFirstRiddleAssigned)
 
-        GameAggregate(escapeCampId, sherUnlockTeamId, MockedRiddleSolutionChecker(), gameEventStore)
-            .assignTeamNextRiddle(sherUnlockFirstRiddleAssignedAt)
+        GameAggregate(escapeCampId, jeepersKeypersTeamId, MockedRiddleSolutionChecker(riddles), gameEventStore)
+            .assignTeamNextRiddle(jeepersKeypersFirstRiddleAssignedAt)
             .`as`(StepVerifier::create)
-            .assertNext { assertThat(it).isEqualTo(sherUnlockFirstRiddleAssigned.copy(id = it.id)) }
+            .assertNext { assertThat(it).isEqualTo(jeepersKeypersFirstRiddleAssigned.copy(id = it.id)) }
             .verifyComplete()
     }
 
@@ -49,7 +49,7 @@ class GameAggregateAssignTeamNextRiddleTest {
     fun `should assign riddle-2 to first registered team after first riddle solved`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterJeepersKeypersFirstRiddleSolved)
 
-        GameAggregate(escapeCampId, jeepersKeypersTeamId, MockedRiddleSolutionChecker(), gameEventStore)
+        GameAggregate(escapeCampId, jeepersKeypersTeamId, MockedRiddleSolutionChecker(riddles), gameEventStore)
             .assignTeamNextRiddle(jeepersKeypersSecondRiddleAssignedAt)
             .`as`(StepVerifier::create)
             .assertNext { assertThat(it).isEqualTo(jeepersKeypersSecondRiddleAssigned.copy(id = it.id)) }
@@ -60,7 +60,7 @@ class GameAggregateAssignTeamNextRiddleTest {
     fun `should fail to assign riddle to first registered team if game not yet started`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterLockedAndLoadedAdded)
 
-        GameAggregate(escapeCampId, lockedAndLoadedTeamId, MockedRiddleSolutionChecker(), gameEventStore)
+        GameAggregate(escapeCampId, lockedAndLoadedTeamId, MockedRiddleSolutionChecker(riddles), gameEventStore)
             .assignTeamNextRiddle(lockedAndLoadedFirstRiddleAssignedAt)
             .`as`(StepVerifier::create)
             .verifyErrorMatches { throwable ->  throwable is GameException.GameNotStartedException && throwable.message.equals(
@@ -72,7 +72,7 @@ class GameAggregateAssignTeamNextRiddleTest {
     fun `should fail to assign riddle to first registered team if previous riddle not solved`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterLockedAndLoadedFirstRiddleAssigned)
 
-        GameAggregate(escapeCampId, lockedAndLoadedTeamId, MockedRiddleSolutionChecker(), gameEventStore)
+        GameAggregate(escapeCampId, lockedAndLoadedTeamId, MockedRiddleSolutionChecker(riddles), gameEventStore)
             .assignTeamNextRiddle(lockedAndLoadedFirstRiddleAssignedAt.plusSeconds(30))
             .`as`(StepVerifier::create)
             .verifyErrorMatches { throwable ->  throwable is GameException.PreviousRiddleNotSolvedException && throwable.message.equals(
@@ -84,7 +84,7 @@ class GameAggregateAssignTeamNextRiddleTest {
     fun `should fail to assign riddle to a non-existing team`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterLockedAndLoadedFirstRiddleAssigned)
 
-        GameAggregate(escapeCampId, unknownTeamId, MockedRiddleSolutionChecker(), gameEventStore)
+        GameAggregate(escapeCampId, unknownTeamId, MockedRiddleSolutionChecker(riddles), gameEventStore)
             .assignTeamNextRiddle(lockedAndLoadedFirstRiddleAssignedAt.plusSeconds(30))
             .`as`(StepVerifier::create)
             .verifyErrorMatches { throwable ->  throwable is GameException.TeamNotFoundException && throwable.message.equals(
@@ -96,7 +96,7 @@ class GameAggregateAssignTeamNextRiddleTest {
     fun `should fail to assign riddle to team when game is not existing`() {
         every { gameEventStore.loadAllEvents(unknownGameId) } returns Flux.empty()
 
-        GameAggregate(unknownGameId, lockedAndLoadedTeamId, MockedRiddleSolutionChecker(), gameEventStore)
+        GameAggregate(unknownGameId, lockedAndLoadedTeamId, MockedRiddleSolutionChecker(riddles), gameEventStore)
             .assignTeamNextRiddle(lockedAndLoadedFirstRiddleAssignedAt)
             .`as`(StepVerifier::create)
             .verifyErrorMatches { throwable ->

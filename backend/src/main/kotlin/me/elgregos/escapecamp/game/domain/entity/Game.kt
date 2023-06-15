@@ -11,9 +11,11 @@ data class Game(
     val createdBy: UUID,
     val updatedAt: LocalDateTime = createdAt,
     val updatedBy: UUID = createdBy,
+    val riddles: List<Pair<String, String>>,
     val teams: List<Team> = listOf(),
-    val startedAt: LocalDateTime? = null
-): JsonConvertible {
+    val startedAt: LocalDateTime? = null,
+    val winner: UUID? = null
+) : JsonConvertible {
     fun addTeam(team: Team, addedAt: LocalDateTime) =
         copy(
             version = version + 1,
@@ -27,7 +29,15 @@ data class Game(
             version = version + 1,
             updatedAt = assignedAt,
             updatedBy = teamId,
-            teams = teams.map { team -> if (team.id == teamId) team.assignRiddle(Riddle(riddles[nextTeamRiddleIndex(teamId)].first, assignedAt)) else team })
+            teams = teams.map { team ->
+                if (team.id == teamId) team.assignRiddle(
+                    Riddle(
+                        riddles[nextTeamRiddleIndex(
+                            teamId
+                        )].first, assignedAt
+                    )
+                ) else team
+            })
 
 
     fun solveLastAssignedRiddleOfTeam(teamId: UUID, solvedAt: LocalDateTime) =
@@ -50,8 +60,11 @@ data class Game(
     fun teamLastUnsolvedRiddle(teamId: UUID) =
         teams.find { it.id == teamId }?.lastUnsolvedRiddle()
 
+    fun checkIfIsFirstTeamToSolveAllRiddle() =
+        winner == null && teams.any { it.hasSolvedAllRiddles(riddles) }
+
     private fun nextTeamRiddleIndex(teamId: UUID) =
-        (teamRegistrationOrder(teamId) + numberOfSolvedRiddleByTeam(teamId)).mod(4)
+        (teamRegistrationOrder(teamId) + numberOfSolvedRiddleByTeam(teamId)).mod(riddles.size)
 
     private fun numberOfSolvedRiddleByTeam(teamId: UUID) =
         teams.find { it.id == teamId }?.numberOfSolvedRiddles() ?: 0

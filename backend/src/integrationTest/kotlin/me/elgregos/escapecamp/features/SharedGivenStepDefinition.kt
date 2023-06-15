@@ -58,6 +58,16 @@ class SharedGivenStepDefinition : En {
         And("the team has an assigned riddle") {
             assignNextTeamRiddle(gameClient)
         }
+
+        And("the team has his last riddle assigned") {
+            assignNextTeamRiddle(gameClient)
+            solveTeamRiddle(gameClient, "riddle-4", "solution-4")
+            assignNextTeamRiddle(gameClient)
+            solveTeamRiddle(gameClient, "riddle-1", "solution-1")
+            assignNextTeamRiddle(gameClient)
+            solveTeamRiddle(gameClient, "riddle-2", "solution-2")
+            assignNextTeamRiddle(gameClient)
+        }
     }
 
 }
@@ -99,14 +109,18 @@ fun assignNextTeamRiddle(gameClient: GameClient) {
         .expectStatus().isOk
         .expectBody(JsonNode::class.java).consumeWith {
             val riddle = genericObjectMapper.readValue<AssignedRiddle>(it.responseBody!!.get("riddle").toString())
-            assertThat(riddle.name).isEqualTo("riddle-${currentTeam!!.order}")
             scenario?.log(
-                    """
+                """
                     Next riddle for ${currentTeam!!.name}:
                     $riddle
                     """
             )
         }
+}
+
+fun solveTeamRiddle(gameClient: GameClient, riddleName: String, solution: String) {
+    gameClient.checkRiddleSolution(currentTeam!!, riddleName, solution)
+        .expectStatus().isOk
 }
 
 data class RegisteredTeam(val id: UUID, val name: String, val accessToken: String, val order: Int)
