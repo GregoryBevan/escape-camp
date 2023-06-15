@@ -141,4 +141,10 @@ val copyFrontendAssetsTask = tasks.register<Copy>("copyFrontendAssets") {
     into("$projectDir/src/main/resources/static")
 }
 
-tasks.build { dependsOn(copyFrontendAssetsTask) }
+val copyServiceWorkerAssetTask = tasks.register<Copy>("copyServiceWorkerAssetTask") {
+    dependsOn(copyFrontendAssetsTask)
+    from("${projectDir.parent}/frontend/sw.js")
+    into("$projectDir/src/main/resources/static")
+}
+
+tasks.build { dependsOn(copyServiceWorkerAssetTask) }
