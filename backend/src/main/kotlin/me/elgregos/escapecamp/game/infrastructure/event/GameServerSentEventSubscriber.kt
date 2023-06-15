@@ -25,7 +25,11 @@ class GameServerSentEventSubscriber(
         Mono.just(event)
             .filter { it is GameEvent }
             .cast(GameEvent::class.java)
-            .doOnNext { gameEvent: GameEvent -> serverSentEventService.sseEmit(fromGameEvent(gameEvent)) }
+            .doOnNext { gameEvent: GameEvent ->
+                if(gameEvent is GameEvent.GameCreated) serverSentEventService.heartBeat(gameEvent.gameId, gameEvent.createdAt)
+                serverSentEventService.sseEmit(fromGameEvent(gameEvent))
+
+            }
             .then()
 
 }
