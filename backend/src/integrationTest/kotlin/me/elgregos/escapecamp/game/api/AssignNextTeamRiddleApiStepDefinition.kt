@@ -26,7 +26,13 @@ class AssignNextTeamRiddleApiStepDefinition: En {
             response!!.expectStatus().isOk
                 .expectBody(JsonNode::class.java).consumeWith {
                 val riddle = genericObjectMapper.readValue<AssignedRiddle>(it.responseBody!!.get("riddle").toString())
-                    assertThat(riddle).isEqualTo(AssignedRiddle("riddle-1", "# First riddle"))
+                    assertThat(riddle).isEqualTo(AssignedRiddle("riddle-1", """
+                    # A la piscine
+
+                    Si vous vous placez au bon endroit,
+                    la réponse se révèlera.
+
+                    """.trimIndent()))
                     scenario?.log(
                         """
                         Next riddle for ${currentTeam!!.name}:
