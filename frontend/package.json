@@ -12,6 +12,7 @@
     "serve": "vite"
   },
   "dependencies": {
+    "@lit-labs/task": "^2.1.1",
     "event-source-polyfill": "^1.0.31",
     "immer": "^9.0.21",
     "lit": "^2.6.1",
