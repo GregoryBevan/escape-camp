@@ -82,7 +82,7 @@ export class EscapeCampController implements ReactiveController {
 
     async getRiddle(): Promise<string> {
         const response = await fetch(`/api/games/${this.gameId}/teams/${this.teamId}/riddle`, {
-            headers: { "Authorization": `Bearer ${this.accessToken}` },
+            headers: {"Authorization": `Bearer ${this.accessToken}`},
         });
         const riddle = await response.json();
         this.riddleId = riddle.riddle.name;
@@ -158,13 +158,17 @@ export class EscapeCampController implements ReactiveController {
 
     async notifyRiddleSolved(data: any) {
         if (Notification.permission === "granted") {
-            const notification = new Notification("Escape Camp", {body: "Une équipe a résolu une énigme"});
+            const registration = await navigator.serviceWorker.ready;
+            await registration.showNotification("Escape Camp", {body: "Une équipe a résolu une énigme"});
+
         }
     }
 
     async notifyWinnerAnnounced(data: any) {
         if (Notification.permission === "granted") {
-            const notification = new Notification("Escape Camp", {body: "Une équipe a gagné"});
+            const registration = await navigator.serviceWorker.ready;
+            await registration.showNotification("Escape Camp", {body: "Une équipe a gagné"});
+
         }
     }
 }
