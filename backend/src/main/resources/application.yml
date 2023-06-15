@@ -24,13 +24,13 @@ jwt:
 game:
   riddles:
     - riddle-1:
-        solution: solution-1
+        solution: event sourcing
     - riddle-2:
-        solution: solution-2
+        solution: reactive
     - riddle-3:
-        solution: solution-3
+        solution: craft
     - riddle-4:
-        solution: solution-4
+        solution: DDD
 
 logging:
   level:

@@ -15,17 +15,17 @@ export class EscapeCampController implements ReactiveController {
         return this._gameId;
     }
 
-    public set gameId(gameId: string) {
+    public set gameId(gameId: string | undefined) {
         if (gameId != this.gameId) {
             this._gameId = gameId;
-            this.teamId = null;
-            this.teamName = null;
-            this.accessToken = null;
+            this.teamId = undefined;
+            this.teamName = undefined;
+            this.accessToken = undefined;
             this.unsubscribeEvents();
         }
     }
 
-    constructor(host: ReactiveControllerHost) {
+    constructor(host: EscapeCampApp) {
         this.host = host;
 
         host.addController(this);
@@ -33,7 +33,7 @@ export class EscapeCampController implements ReactiveController {
 
     hostConnected() {
         console.log("Connected");
-        const item = JSON.parse(window.localStorage.getItem("controller"));
+        const item = JSON.parse(window.localStorage.getItem("controller") || "{}");
 
         if (item) {
             this.gameId = item.gameId;
@@ -52,7 +52,7 @@ export class EscapeCampController implements ReactiveController {
         this.unsubscribeEvents();
     }
 
-    async addTeam(teamName: string): string {
+    async addTeam(teamName: string): Promise<string> {
         const response = await fetch(`/api/games/${this.gameId}/teams`, {
             method: "POST",
             headers: {
@@ -73,7 +73,7 @@ export class EscapeCampController implements ReactiveController {
         return data.eventType;
     }
 
-    async getRiddle(): string {
+    async getRiddle(): Promise<string> {
         const response = await fetch(`/api/games/${this.gameId}/teams/${this.teamId}/riddle`, {
             headers: { "Authorization": `Bearer ${this.accessToken}` },
         });
@@ -82,7 +82,7 @@ export class EscapeCampController implements ReactiveController {
         return riddle.riddle.content;
     }
 
-    async guess(solution: string): boolean {
+    async guess(solution: string): Promise<boolean> {
         const response = await fetch(`/api/games/${this.gameId}/teams/${this.teamId}/riddle/${this.riddleId}`, {
             method: "POST",
             headers: {
