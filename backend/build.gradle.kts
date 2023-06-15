@@ -1,3 +1,4 @@
+import com.github.gradle.node.npm.task.NpmTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -7,6 +8,7 @@ plugins {
     kotlin("plugin.spring") version "1.7.22"
     id("pl.allegro.tech.build.axion-release") version "1.15.0"
     id("com.gorylenko.gradle-git-properties") version "2.4.1"
+    id("com.github.node-gradle.node") version "5.0.0"
 }
 
 group = "me.elgregos"
@@ -118,3 +120,25 @@ scmVersion {
         directory.set(project.rootProject.file("../"))
     }
 }
+
+node {
+    setVersion("18.15.0")
+    nodeProjectDir.set(File("${projectDir.parent}/frontend"))
+    nodeProjectDir
+}
+
+val buildTaskUsingNpm = tasks.register<NpmTask>("buildNpm") {
+    dependsOn(tasks.npmInstall)
+    workingDir.set(File("${projectDir.parent}/frontend"))
+    npmCommand.set(listOf("run", "build"))
+    args.set(listOf("--", "--out-dir", "${projectDir.parent}/frontend/dist"))
+    inputs.dir("src")
+}
+
+val copyFrontendAssetsTask = tasks.register<Copy>("copyFrontendAssets") {
+    dependsOn(buildTaskUsingNpm)
+    from("${projectDir.parent}/frontend/dist")
+    into("$projectDir/src/main/resources/static")
+}
+
+tasks.build { dependsOn(copyFrontendAssetsTask) }
