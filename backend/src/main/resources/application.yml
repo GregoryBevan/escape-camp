@@ -24,13 +24,15 @@ jwt:
 game:
   riddles:
     - riddle-1:
-        solution: event sourcing
+        solution: ${RIDDLE_1_SOLUTION:event sourcing}
     - riddle-2:
-        solution: reactive
+        solution: ${RIDDLE_2_SOLUTION:reactive}
     - riddle-3:
-        solution: craft
+        solution: ${RIDDLE_3_SOLUTION:craft}
     - riddle-4:
-        solution: DDD
+        solution: ${RIDDLE_4_SOLUTION:DDD}
+  sseHeartbeatPeriod: ${SSE_HEARTBEAT_PERIOD:PT20S}
+  maxDuration: ${GAME_MAX_DURATION:PT90M}
 
 logging:
   level:

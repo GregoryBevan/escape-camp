@@ -4,7 +4,7 @@
 :root {
     font-family: "Rubik", sans-serif;
     font-weight: 500;
-    font-size: 30pt;
+    font-size: 40pt;
     color: var(--fg);
 
     --fg: lightgray;
