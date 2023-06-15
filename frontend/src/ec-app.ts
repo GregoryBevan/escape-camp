@@ -28,7 +28,7 @@ export class EscapeCampApp extends LitElement {
     ];
 
     @state()
-    private _riddleText: string = "...";
+    private riddleText: string = "...";
 
     private controller = new EscapeCampController(this);
 
