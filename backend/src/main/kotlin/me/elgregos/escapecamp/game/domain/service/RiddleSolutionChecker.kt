@@ -6,6 +6,6 @@ interface RiddleSolutionChecker {
 
     fun isCorrect(riddleName: String, solution: String): Boolean =
         riddles.find { it.first == riddleName }
-            ?.let { it.second == solution }
+            ?.let { it.second.equals(solution, true) }
             ?: false
 }
