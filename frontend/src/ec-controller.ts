@@ -8,6 +8,8 @@ export class EscapeCampController implements ReactiveController {
     teamId?: string;
     teamName?: string;
     riddleId?: string;
+    riddleText?: string;
+    solvedRiddleCount: number = 0;
     private accessToken?: string;
     private eventSource?: EventSourcePolyfill;
 
@@ -21,6 +23,9 @@ export class EscapeCampController implements ReactiveController {
             this.teamId = undefined;
             this.teamName = undefined;
             this.accessToken = undefined;
+            this.riddleId = undefined;
+            this.riddleText = undefined;
+            this.solvedRiddleCount = 0;
             this.unsubscribeEvents();
         }
     }
@@ -40,6 +45,8 @@ export class EscapeCampController implements ReactiveController {
             this.teamId = item.teamId;
             this.teamName = item.teamName;
             this.riddleId = item.riddleId;
+            this.riddleText = item.riddleText;
+            this.solvedRiddleCount = item.solvedRiddleCount;
             this.accessToken = item.accessToken;
         }
 
@@ -79,6 +86,8 @@ export class EscapeCampController implements ReactiveController {
         });
         const riddle = await response.json();
         this.riddleId = riddle.riddle.name;
+        this.riddleText = riddle.riddle.content;
+        this.persistData();
         return riddle.riddle.content;
     }
 
@@ -91,8 +100,15 @@ export class EscapeCampController implements ReactiveController {
             },
             body: JSON.stringify({solution}),
         });
+        const result = response.status == 200;
+        if (result) {
+            this.solvedRiddleCount += 1;
+            this.riddleId = undefined;
+            this.riddleText = undefined;
+            this.persistData();
+        }
 
-        return response.status == 200
+        return result;
     }
 
     subscribeEvents() {
@@ -107,7 +123,9 @@ export class EscapeCampController implements ReactiveController {
             console.log(event.data);
         });
         this.eventSource.addEventListener("GameStarted", event => {
-            this.host.onGameStarted();
+            if (this.solvedRiddleCount < 4) {
+                this.host.onGameStarted();
+            }
         });
     }
 
@@ -121,7 +139,9 @@ export class EscapeCampController implements ReactiveController {
             teamName: this.teamName,
             teamId: this.teamId,
             riddleId: this.riddleId,
-            accessToken: this.accessToken
+            riddleText: this.riddleText,
+            solvedRiddleCount: this.solvedRiddleCount,
+            accessToken: this.accessToken,
         };
         window.localStorage.setItem("controller", JSON.stringify(data));
     }

@@ -27,9 +27,6 @@ export class EscapeCampApp extends LitElement {
         `,
     ];
 
-    @state()
-    private riddleText: string = "...";
-
     private controller = new EscapeCampController(this);
 
     override connectedCallback() {
@@ -56,7 +53,7 @@ export class EscapeCampApp extends LitElement {
             page = "team";
         } else if (m = hash.match(/^#riddle$/)) {
             page = "riddle";
-            this.controller.getRiddle().then(riddleText => { this.riddleText = riddleText; this.requestUpdate(); });
+            this.controller.getRiddle().then(riddleText => { this.requestUpdate(); });
         } else if (m = hash.match(/^#good$/)) {
             page = "good";
         } else if (m = hash.match(/^#try-again$/)) {
@@ -75,7 +72,7 @@ export class EscapeCampApp extends LitElement {
                 ["game", () => html`<ec-game game-id="${this.controller.gameId}" @addTeam="${this._onAddTeam}"></ec-game>`],
                 ["good", () => html`<p>Bonne réponse !</p><a class="button" href="#riddle">Suivant</a>`],
                 ["try-again", () => html`<p>Essayez encore !</p><a class="button" href="#riddle">OK</a>`],
-                ["riddle", () => html`<ec-riddle .riddle="${this.riddleText}" @guess="${this._onGuess}"></ec-riddle>`],
+                ["riddle", () => html`<ec-riddle .riddle="${this.controller.riddleText}" @guess="${this._onGuess}"></ec-riddle>`],
                 ["finished", () => html`<p>Bravo ! Vous avez terminé le jeu</p><p>Maintenant que vous avez les quatre mots-clés, vous pouvez deviner le sujet de notre conférence.</p>`],
             ])}
             </main>
@@ -101,7 +98,11 @@ export class EscapeCampApp extends LitElement {
 
     private async _onGuess(e: CustomEvent) {
         if (await this.controller.guess(e.detail.guess)) {
-            window.location.hash = "#good";
+            if (this.controller.solvedRiddleCount >= 4) {
+                window.location.hash = "#finished";
+            } else {
+                window.location.hash = "#good";
+            }
         } else {
             window.location.hash = "#try-again";
         }
