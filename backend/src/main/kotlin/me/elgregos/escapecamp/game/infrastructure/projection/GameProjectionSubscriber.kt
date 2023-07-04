@@ -37,8 +37,8 @@ class GameProjectionSubscriber(
                     is TeamAdded,
                     is GameStarted,
                     is NextTeamRiddleAssigned,
-                    is RiddleSolved -> updateGame(it)
-                    else -> Mono.empty()
+                    is RiddleSolved,
+                    is WinnerAnnounced -> updateGame(it)
                 }
             }
             .doOnError { error -> logger.error(error) { "An error occurred while processing event" } }
