@@ -6,10 +6,11 @@ import jakarta.annotation.PostConstruct
 import me.elgregos.escapecamp.game.domain.entity.Game
 import me.elgregos.escapecamp.game.domain.event.GameEvent
 import me.elgregos.escapecamp.game.domain.event.GameEvent.*
-import me.elgregos.reakteves.domain.Event
 import me.elgregos.reakteves.domain.JsonConvertible.Companion.fromJson
-import me.elgregos.reakteves.infrastructure.ReactorEventBus
-import me.elgregos.reakteves.infrastructure.ReactorEventSubscriber
+import me.elgregos.reakteves.domain.event.Event
+import me.elgregos.reakteves.domain.projection.ProjectionStore
+import me.elgregos.reakteves.infrastructure.event.ReactorEventBus
+import me.elgregos.reakteves.infrastructure.event.ReactorEventSubscriber
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import java.util.*
@@ -18,16 +19,16 @@ private val logger = KotlinLogging.logger {}
 
 @Component
 class GameProjectionSubscriber(
-    reactorEventBus: ReactorEventBus<UUID>,
-    private val gameProjectionRepository: GameProjectionRepository,
-) : ReactorEventSubscriber<UUID>(reactorEventBus) {
+    reactorEventBus: ReactorEventBus<UUID, UUID>,
+    private val gameProjectionStore: ProjectionStore<Game, UUID, UUID>,
+) : ReactorEventSubscriber<UUID, UUID>(reactorEventBus) {
 
     @PostConstruct
     fun initialize() {
         subscribe()
     }
 
-    override fun onEvent(event: Event<UUID>): Mono<Void> {
+    override fun onEvent(event: Event<UUID, UUID>): Mono<Void> {
         return Mono.just(event)
             .filter { e -> e is GameEvent }
             .cast(GameEvent::class.java)
@@ -46,14 +47,12 @@ class GameProjectionSubscriber(
     }
 
     private fun createGame(event: GameCreated) =
-        gameProjectionRepository.insert(fromJson(event.event, Game::class.java))
+        gameProjectionStore.insert(fromJson(event.event, Game::class.java))
 
 
     private fun updateGame(event: GameEvent) =
-        gameProjectionRepository.findById(event.aggregateId)
-            .flatMap {
-                gameProjectionRepository.update(mergeGame(it.toGame(), event), it.sequenceNum!!)
-            }
+        gameProjectionStore.find(event.aggregateId)
+            .flatMap { gameProjectionStore.update(mergeGame(it, event)) }
 
     private fun mergeGame(previousGame: Game, event: GameEvent): Game =
         fromJson(JsonMergePatch.fromJson(event.event).apply(previousGame.toJson()), Game::class.java)

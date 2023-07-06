@@ -1,21 +1,21 @@
 package me.elgregos.escapecamp.game.domain.entity
 
-import me.elgregos.reakteves.domain.JsonConvertible
+import me.elgregos.reakteves.domain.entity.DomainEntity
 import java.time.LocalDateTime
 import java.util.*
 
 data class Game(
-    val id: UUID,
-    val version: Int = 1,
-    val createdAt: LocalDateTime,
-    val createdBy: UUID,
-    val updatedAt: LocalDateTime = createdAt,
-    val updatedBy: UUID = createdBy,
+    override val id: UUID,
+    override val version: Int = 1,
+    override val createdAt: LocalDateTime,
+    override val createdBy: UUID,
+    override val updatedAt: LocalDateTime = createdAt,
+    override val updatedBy: UUID = createdBy,
     val riddles: List<Pair<String, String>>,
     val teams: List<Team> = listOf(),
     val startedAt: LocalDateTime? = null,
     val winner: UUID? = null
-) : JsonConvertible {
+) : DomainEntity<UUID, UUID> {
     fun addTeam(team: Team, addedAt: LocalDateTime) =
         copy(
             version = version + 1,

@@ -7,7 +7,7 @@ import io.mockk.mockk
 import me.elgregos.escapecamp.config.exception.GameException
 import me.elgregos.escapecamp.game.domain.entity.*
 import me.elgregos.escapecamp.game.domain.service.MockedRiddleSolutionChecker
-import me.elgregos.reakteves.domain.EventStore
+import me.elgregos.reakteves.domain.event.EventStore
 import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
 import java.util.*
@@ -16,7 +16,7 @@ import kotlin.test.Test
 
 class GameAggregateCheckRiddleSolutionTest {
 
-    private lateinit var gameEventStore: EventStore<GameEvent, UUID>
+    private lateinit var gameEventStore: EventStore<GameEvent, UUID, UUID>
 
     @BeforeTest
     fun setup() {

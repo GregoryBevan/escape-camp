@@ -2,7 +2,7 @@ package me.elgregos.escapecamp.game.infrastructure.event
 
 import com.fasterxml.jackson.databind.JsonNode
 import me.elgregos.escapecamp.game.domain.event.GameEvent
-import me.elgregos.reakteves.infrastructure.EventEntity
+import me.elgregos.reakteves.infrastructure.event.EventEntity
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
 import java.util.*
@@ -17,7 +17,7 @@ data class GameEventEntity(
     override val eventType: String,
     override val aggregateId: UUID = UUID.randomUUID(),
     override val event: JsonNode
-) : EventEntity<GameEvent, UUID>(
+) : EventEntity<GameEvent, UUID, UUID>(
     id,
     sequenceNum,
     version,

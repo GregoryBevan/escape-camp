@@ -3,16 +3,16 @@ package me.elgregos.escapecamp.game.application
 import me.elgregos.escapecamp.game.application.GameCommand.*
 import me.elgregos.escapecamp.game.domain.event.GameAggregate
 import me.elgregos.escapecamp.game.domain.event.GameEvent
-import me.elgregos.reakteves.domain.EventStore
-import me.elgregos.reakteves.infrastructure.ReactorEventPublisher
+import me.elgregos.reakteves.domain.event.EventStore
+import me.elgregos.reakteves.infrastructure.event.ReactorEventPublisher
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
 class GameCommandHandler(
     val gameService: GameService,
-    val gameEventStore: EventStore<GameEvent, UUID>,
-    val eventPublisher: ReactorEventPublisher<UUID>,
+    val gameEventStore: EventStore<GameEvent, UUID, UUID>,
+    val eventPublisher: ReactorEventPublisher<UUID, UUID>,
     val riddles: List<Pair<String, String>>
 ) {
 

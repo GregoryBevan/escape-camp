@@ -31,3 +31,7 @@ create table if not exists game (
  updated_at timestamp not null,
  details jsonb not null);
 --rollback drop table if exists game;
+
+-- changeset elgregos:add-user-fields-to-game-table
+alter table game add column created_by uuid not null default '2d399fb8-d137-47a5-b848-1755bb80e62e';
+alter table game add column updated_by uuid not null default '2d399fb8-d137-47a5-b848-1755bb80e62e';
