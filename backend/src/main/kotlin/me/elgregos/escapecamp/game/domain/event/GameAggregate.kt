@@ -5,9 +5,9 @@ import me.elgregos.escapecamp.game.domain.entity.Game
 import me.elgregos.escapecamp.game.domain.entity.Team
 import me.elgregos.escapecamp.game.domain.event.GameEvent.*
 import me.elgregos.escapecamp.game.domain.service.RiddleSolutionChecker
-import me.elgregos.reakteves.domain.EventStore
-import me.elgregos.reakteves.domain.JsonAggregate
 import me.elgregos.reakteves.domain.JsonConvertible
+import me.elgregos.reakteves.domain.event.EventStore
+import me.elgregos.reakteves.domain.event.JsonAggregate
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.LocalDateTime
@@ -17,9 +17,9 @@ class GameAggregate(
     private val gameId: UUID,
     private val userId: UUID,
     private val riddleSolutionChecker: RiddleSolutionChecker,
-    eventStore: EventStore<GameEvent, UUID>
+    eventStore: EventStore<GameEvent, UUID, UUID>
 ) :
-    JsonAggregate<GameEvent, UUID>(gameId, eventStore) {
+    JsonAggregate<GameEvent, UUID, UUID>(gameId, eventStore) {
 
     fun createGame(riddles: List<Pair<String, String>>, startedAt: LocalDateTime): Flux<GameEvent> =
         Flux.just(GameCreated(gameId, userId, startedAt, riddles))

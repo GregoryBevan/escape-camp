@@ -9,7 +9,7 @@ import me.elgregos.escapecamp.game.domain.entity.escapeCampCreatedAt
 import me.elgregos.escapecamp.game.domain.entity.escapeCampId
 import me.elgregos.escapecamp.game.domain.entity.riddles
 import me.elgregos.escapecamp.game.domain.service.MockedRiddleSolutionChecker
-import me.elgregos.reakteves.domain.EventStore
+import me.elgregos.reakteves.domain.event.EventStore
 import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
 import java.util.*
@@ -18,7 +18,7 @@ import kotlin.test.Test
 
 class GameAggregateCreateGameTest {
 
-    private lateinit var gameEventStore: EventStore<GameEvent, UUID>
+    private lateinit var gameEventStore: EventStore<GameEvent, UUID, UUID>
 
     @BeforeTest
     fun setup() {
