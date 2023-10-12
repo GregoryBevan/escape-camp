@@ -34,7 +34,7 @@ class ServerSentEventService(
         Flux.just(UUID.randomUUID())
             .flatMap {
                 Flux.interval(sseHeartbeatPeriod)
-                    .map { interval ->
+                    .map {
                         sseEmit(
                             GameStreamEvent(
                                 "$it",

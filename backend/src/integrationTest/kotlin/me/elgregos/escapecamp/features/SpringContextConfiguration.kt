@@ -11,7 +11,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 
 @CucumberContextConfiguration
 @SpringBootTest
-@AutoConfigureWebTestClient(timeout = "360000")
+@AutoConfigureWebTestClient(timeout = "PT30S")
 class SpringContextConfiguration {
 
     @TestConfiguration

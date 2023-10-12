@@ -1,7 +1,7 @@
 package me.elgregos.escapecamp.game.infrastructure.projection
 
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch
-import io.github.oshai.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
 import me.elgregos.escapecamp.game.domain.entity.Game
 import me.elgregos.escapecamp.game.domain.event.GameEvent
