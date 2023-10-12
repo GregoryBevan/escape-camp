@@ -52,7 +52,7 @@ class GameController(
 
     @PostMapping("{gameId}/teams")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createGame(
+    fun createTeam(
         @PathVariable @Valid gameId: UUID,
         @RequestBody @Valid teamCreationDTO: TeamCreationDTO
     ): Mono<Map<String, String>> =

@@ -2,13 +2,13 @@ import com.github.gradle.node.npm.task.NpmTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "3.0.5"
-    id("io.spring.dependency-management") version "1.1.0"
-    kotlin("jvm") version "1.7.22"
-    kotlin("plugin.spring") version "1.7.22"
-    id("pl.allegro.tech.build.axion-release") version "1.15.0"
+    id("org.springframework.boot") version "3.1.4"
+    id("io.spring.dependency-management") version "1.1.3"
+    kotlin("jvm") version "1.9.10"
+    kotlin("plugin.spring") version "1.9.10"
+    id("pl.allegro.tech.build.axion-release") version "1.15.5"
     id("com.gorylenko.gradle-git-properties") version "2.4.1"
-    id("com.github.node-gradle.node") version "5.0.0"
+    id("com.github.node-gradle.node") version "7.0.1"
 }
 
 group = "me.elgregos"
@@ -31,8 +31,8 @@ sourceSets {
 configurations["integrationTestRuntimeOnly"].extendsFrom(configurations.testRuntimeOnly.get())
 configurations["integrationTestImplementation"].extendsFrom(configurations.testImplementation.get())
 
-extra["testcontainersVersion"] = "1.17.6"
-ext["junit-jupiter.version"] = "5.9.2"
+extra["testcontainersVersion"] = "1.19.1"
+ext["junit-jupiter.version"] = "5.10.0"
 
 dependencyManagement {
     imports {
@@ -41,7 +41,7 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation("me.elgregos:reakt-eves:1.2.0-SNAPSHOT")
+    implementation("me.elgregos:reakt-eves:1.2.0")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -53,19 +53,18 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.liquibase:liquibase-core")
     implementation("org.springframework:spring-jdbc")
-    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
-    implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-api:0.12.2")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.12.2")
     implementation("org.postgresql:r2dbc-postgresql")
-    implementation("io.github.oshai:kotlin-logging-jvm:4.0.0-beta-27")
     implementation("com.github.java-json-tools:json-patch:1.13")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testImplementation("io.mockk:mockk:1.13.5")
     testImplementation("io.projectreactor:reactor-test")
-    testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.25")
+    testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.27.0")
     "integrationTestImplementation"(project)
     "integrationTestImplementation"("org.springframework.boot:spring-boot-starter-test")
     "integrationTestImplementation"("org.junit.platform:junit-platform-suite")
@@ -74,9 +73,9 @@ dependencies {
     "integrationTestImplementation"("org.testcontainers:junit-jupiter")
     "integrationTestImplementation"("org.testcontainers:postgresql")
     "integrationTestImplementation"("org.testcontainers:r2dbc")
-    "integrationTestImplementation"("io.cucumber:cucumber-java8:7.12.0")
-    "integrationTestImplementation"("io.cucumber:cucumber-junit-platform-engine:7.12.0")
-    "integrationTestImplementation"("io.cucumber:cucumber-spring:7.12.0")
+    "integrationTestImplementation"("io.cucumber:cucumber-java8:7.14.0")
+    "integrationTestImplementation"("io.cucumber:cucumber-junit-platform-engine:7.14.0")
+    "integrationTestImplementation"("io.cucumber:cucumber-spring:7.14.0")
 }
 
 tasks.withType<KotlinCompile> {
@@ -114,10 +113,9 @@ gitProperties {
 }
 
 scmVersion {
-
     repository {
         type.set("git") // type of repository
-        directory.set(project.rootProject.file("../"))
+        directory.set(project.rootProject.file("../").path)
     }
 }
 
@@ -147,4 +145,4 @@ val copyServiceWorkerAssetTask = tasks.register<Copy>("copyServiceWorkerAssetTas
     into("$projectDir/src/main/resources/static")
 }
 
-tasks.build { dependsOn(copyServiceWorkerAssetTask) }
+tasks.processResources { dependsOn(copyServiceWorkerAssetTask) }

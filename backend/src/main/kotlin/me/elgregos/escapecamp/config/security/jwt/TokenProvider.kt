@@ -26,20 +26,20 @@ class TokenProvider(private val jwtConfig: JwtConfig) {
         val issuedAt = Date()
         val expireAt = Date(issuedAt.time + jwtConfig.accessTokenExpiration.toMillis())
         return Jwts.builder()
-            .serializeToJsonWith(JacksonSerializer(genericObjectMapper))
-            .setSubject(subject.toString())
-            .setIssuer(jwtConfig.issuer)
-            .setIssuedAt(issuedAt)
-            .setExpiration(expireAt)
-            .addClaims(otherUserClaims(name, role))
-            .signWith(signingKey, SignatureAlgorithm.HS256)
+            .json(JacksonSerializer(genericObjectMapper))
+            .subject(subject.toString())
+            .issuer(jwtConfig.issuer)
+            .issuedAt(issuedAt)
+            .expiration(expireAt)
+            .claims().add(otherUserClaims(name, role))
+            .and()
+            .signWith(signingKey)
             .compact()
     }
 
     fun validateToken(token: String) = try {
-        val claims: Jws<Claims> = Jwts.parserBuilder().setSigningKey(signingKey).build()
-            .parseClaimsJws(token)
-        !claims.body.expiration.before(Date())
+        val claims: Jws<Claims> = parser().parseSignedClaims(token)
+        !claims.payload.expiration.before(Date())
     } catch (e: JwtException) {
         false
     } catch (e: IllegalArgumentException) {
@@ -47,7 +47,7 @@ class TokenProvider(private val jwtConfig: JwtConfig) {
     }
 
     fun authenticatedUser(token: String): AuthenticatedUser {
-        val claims: Claims = parser().parseClaimsJws(token).body
+        val claims: Claims = parser().parseSignedClaims(token).payload
         return AuthenticatedUser(
             id = UUID.fromString(claims.subject),
             username = claims["username", String::class.java],
@@ -59,6 +59,6 @@ class TokenProvider(private val jwtConfig: JwtConfig) {
 
 
     private fun parser(): JwtParser {
-        return Jwts.parserBuilder().setSigningKey(signingKey).build()
+        return Jwts.parser().verifyWith(signingKey).build()
     }
 }

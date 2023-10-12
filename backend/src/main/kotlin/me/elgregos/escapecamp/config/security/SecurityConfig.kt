@@ -25,19 +25,20 @@ class SecurityConfig(
     @Bean
     fun springSecurityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain =
         http
-            .csrf().disable()
-            .formLogin().disable()
-            .httpBasic().disable()
+            .csrf { it.disable() }
+            .formLogin { it.disable() }
+            .httpBasic { it.disable() }
             .authenticationManager(authenticationManager)
             .securityContextRepository(securityContextRepository)
-            .authorizeExchange()
-            .pathMatchers(HttpMethod.GET, "/index.html", "/assets/**","/sw.js", "/favicon.ico").permitAll()
-            .pathMatchers(HttpMethod.POST, "/api/tokens").permitAll()
-            .pathMatchers(
-                HttpMethod.POST,
-                "/api/games/{id:[a-fA-F0-9]{8}\\-[a-fA-F0-9]{4}\\-4[a-fA-F0-9]{3}\\-[89abAB][a-fA-F0-9]{3}\\-[a-fA-F0-9]{12}}/teams"
-            ).permitAll()
-            .anyExchange().authenticated()
-            .and()
+            .authorizeExchange { exc ->
+                exc.pathMatchers(HttpMethod.GET, "/index.html", "/assets/**", "/sw.js", "/favicon.ico").permitAll()
+                    .pathMatchers(HttpMethod.POST, "/api/tokens").permitAll()
+                    .pathMatchers(
+                        HttpMethod.POST,
+                        "/api/games/{id:[a-fA-F0-9]{8}\\-[a-fA-F0-9]{4}\\-4[a-fA-F0-9]{3}\\-[89abAB][a-fA-F0-9]{3}\\-[a-fA-F0-9]{12}}/teams"
+                    ).permitAll()
+                    .anyExchange()
+                    .authenticated()
+            }
             .build()
 }
