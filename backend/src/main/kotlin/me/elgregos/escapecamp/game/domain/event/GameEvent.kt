@@ -3,7 +3,7 @@ package me.elgregos.escapecamp.game.domain.event
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.readValue
 import me.elgregos.escapecamp.game.domain.entity.Riddle
-import me.elgregos.escapecamp.game.domain.entity.Team
+import me.elgregos.escapecamp.game.domain.entity.Contestant
 import me.elgregos.reakteves.domain.event.Event
 import me.elgregos.reakteves.libs.genericObjectMapper
 import me.elgregos.reakteves.libs.nowUTC
@@ -53,34 +53,34 @@ sealed class GameEvent(
                 .set("riddles", genericObjectMapper.valueToTree(riddles)))
     }
 
-    data class TeamAdded(
+    data class ContestantEnrolled(
         override val id: UUID = UUID.randomUUID(),
         override val sequenceNum: Long? = null,
         override val version: Int = 1,
-        val addedAt: LocalDateTime = nowUTC(),
-        val addedBy: UUID,
+        val enrolledAt: LocalDateTime = nowUTC(),
+        val enrolledBy: UUID,
         val gameId: UUID,
         override val event: JsonNode,
     ) : GameEvent(
         id,
         sequenceNum,
         version,
-        addedAt,
-        addedBy,
+        enrolledAt,
+        enrolledBy,
         gameId,
-        TeamAdded::class.simpleName!!,
+        ContestantEnrolled::class.simpleName!!,
         event
     ) {
-        constructor(gameId: UUID, version: Int, addedBy: UUID, addedAt: LocalDateTime, teams: List<Team>) : this(
+        constructor(gameId: UUID, version: Int, enrolledBy: UUID, enrolledAt: LocalDateTime, contestants: List<Contestant>) : this(
             gameId = gameId,
             version = version,
-            addedBy = addedBy,
-            addedAt = addedAt,
+            enrolledBy = enrolledBy,
+            enrolledAt = enrolledAt,
             event = genericObjectMapper.createObjectNode()
                 .put("id", "$gameId")
-                .put("updatedBy", "$addedBy")
-                .put("updatedAt", "$addedAt")
-                .set("teams", genericObjectMapper.valueToTree(teams))
+                .put("updatedBy", "$enrolledBy")
+                .put("updatedAt", "$enrolledAt")
+                .set("contestants", genericObjectMapper.valueToTree(contestants))
         )
     }
 
@@ -113,7 +113,7 @@ sealed class GameEvent(
         )
     }
 
-    data class NextTeamRiddleAssigned(
+    data class NextContestantRiddleAssigned(
         override val id: UUID = UUID.randomUUID(),
         override val sequenceNum: Long? = null,
         override val version: Int,
@@ -128,11 +128,11 @@ sealed class GameEvent(
         assignedAt,
         assignedBy,
         gameId,
-        NextTeamRiddleAssigned::class.simpleName!!,
+        NextContestantRiddleAssigned::class.simpleName!!,
         event
     ) {
 
-        constructor(gameId: UUID, version: Int, assignedAt: LocalDateTime, assignedBy: UUID, teams: List<Team>) : this(
+        constructor(gameId: UUID, version: Int, assignedAt: LocalDateTime, assignedBy: UUID, contestants: List<Contestant>) : this(
             gameId = gameId,
             version = version,
             assignedAt = assignedAt,
@@ -141,12 +141,12 @@ sealed class GameEvent(
                 .put("id", "$gameId")
                 .put("updatedAt", "$assignedAt")
                 .put("updatedBy", "$assignedBy")
-                .set("teams", genericObjectMapper.valueToTree(teams))
+                .set("contestants", genericObjectMapper.valueToTree(contestants))
         )
 
         fun assignedRiddle(): Riddle =
-            genericObjectMapper.readValue<List<Team>>(event.get("teams").toString())
-                .find { team -> team.id == assignedBy }!!
+            genericObjectMapper.readValue<List<Contestant>>(event.get("contestants").toString())
+                .find { contestant -> contestant.id == assignedBy }!!
                 .lastUnsolvedRiddle()
     }
 
@@ -169,7 +169,7 @@ sealed class GameEvent(
         event
     ) {
 
-        constructor(gameId: UUID, version: Int, solvedAt: LocalDateTime, solvedBy: UUID, teams: List<Team>) : this(
+        constructor(gameId: UUID, version: Int, solvedAt: LocalDateTime, solvedBy: UUID, contestants: List<Contestant>) : this(
             gameId = gameId,
             version = version,
             solvedAt = solvedAt,
@@ -178,7 +178,7 @@ sealed class GameEvent(
                 .put("id", "$gameId")
                 .put("updatedAt", "$solvedAt")
                 .put("updatedBy", "$solvedBy")
-                .set("teams", genericObjectMapper.valueToTree(teams))
+                .set("contestants", genericObjectMapper.valueToTree(contestants))
         )
     }
 
@@ -201,14 +201,14 @@ sealed class GameEvent(
         event
     ) {
 
-        constructor(gameId: UUID, version: Int, definedAt: LocalDateTime, teamId: UUID) : this(
+        constructor(gameId: UUID, version: Int, definedAt: LocalDateTime, contestantId: UUID) : this(
             gameId = gameId,
             version = version,
             definedAt = definedAt,
-            definedBy = teamId,
+            definedBy = contestantId,
             event = genericObjectMapper.createObjectNode()
                 .put("id", "$gameId")
-                .put("winner", "$teamId")
+                .put("winner", "$contestantId")
         )
     }
 }

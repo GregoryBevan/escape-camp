@@ -4,7 +4,7 @@ import me.elgregos.reakteves.domain.JsonConvertible
 import java.time.LocalDateTime
 import java.util.*
 
-data class Team(
+data class Contestant(
     val id: UUID,
     val name: String,
     val riddles: List<Riddle> = listOf()
