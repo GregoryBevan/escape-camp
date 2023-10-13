@@ -10,6 +10,7 @@ sealed class GameCommand(open val gameId: UUID) : Command {
 
     data class CreateGame(
         override val gameId: UUID = UUID.randomUUID(),
+        val riddles: List<Pair<String, String>>,
         val createdBy: UUID,
         val createdAt: LocalDateTime = nowUTC()
     ) : GameCommand(gameId)
@@ -19,7 +20,8 @@ sealed class GameCommand(open val gameId: UUID) : Command {
         val enrolledAt: LocalDateTime = nowUTC(),
         val enrolledBy: UUID = UUID.randomUUID(),
         val name: String,
-        val contestant: Contestant = Contestant(enrolledBy, name)
+        val contestant: Contestant = Contestant(enrolledBy, name),
+        val limitContestants: Boolean = true
     ) : GameCommand(gameId)
 
     data class AssignContestantNextRiddle(

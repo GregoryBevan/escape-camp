@@ -12,8 +12,7 @@ import java.util.*
 class GameCommandHandler(
     val gameService: GameService,
     val gameEventStore: EventStore<GameEvent, UUID, UUID>,
-    val eventPublisher: ReactorEventPublisher<UUID, UUID>,
-    val riddles: List<Pair<String, String>>
+    val eventPublisher: ReactorEventPublisher<UUID, UUID>
 ) {
 
     fun handle(gameCommand: GameCommand) =
@@ -28,11 +27,11 @@ class GameCommandHandler(
 
     private fun createGame(gameCommand: CreateGame) =
         GameAggregate(gameCommand.gameId, gameCommand.createdBy, gameService, gameEventStore)
-            .createGame(riddles, gameCommand.createdAt)
+            .createGame(gameCommand.riddles, gameCommand.createdAt)
 
     private fun enrollContestant(gameCommand: EnrollContestant) =
         GameAggregate(gameCommand.gameId, gameCommand.enrolledBy, gameService, gameEventStore)
-            .enrollContestant(gameCommand.contestant, gameCommand.enrolledAt)
+            .enrollContestant(gameCommand.contestant, gameCommand.enrolledAt, gameCommand.limitContestants)
 
     private fun assignContestantNextRiddle(gameCommand: AssignContestantNextRiddle) =
         GameAggregate(gameCommand.gameId, gameCommand.assignedBy, gameService, gameEventStore)

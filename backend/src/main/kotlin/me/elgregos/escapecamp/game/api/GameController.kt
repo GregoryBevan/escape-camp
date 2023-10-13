@@ -1,6 +1,7 @@
 package me.elgregos.escapecamp.game.api
 
 import jakarta.validation.Valid
+import me.elgregos.escapecamp.config.game.GameProperties
 import me.elgregos.escapecamp.config.security.AuthenticatedUser
 import me.elgregos.escapecamp.config.security.Role
 import me.elgregos.escapecamp.config.security.jwt.TokenProvider
@@ -29,7 +30,9 @@ class GameController(
     private val gameCommandHandler: GameCommandHandler,
     private val tokenProvider: TokenProvider,
     private val gameService: GameService,
-    private val serverSentEventService: ServerSentEventService
+    private val serverSentEventService: ServerSentEventService,
+    private val riddles: List<Pair<String, String>>,
+    private val gameProperties: GameProperties,
 ) {
 
     @GetMapping
@@ -46,7 +49,7 @@ class GameController(
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ORGANIZER')")
     fun createGame(@AuthenticationPrincipal authenticatedUser: AuthenticatedUser) =
-        gameCommandHandler.handle(GameCommand.CreateGame(createdBy = authenticatedUser.id))
+        gameCommandHandler.handle(GameCommand.CreateGame(createdBy = authenticatedUser.id, riddles = riddles))
             .toMono()
             .map { mapOf(Pair("gameId", it.aggregateId)) }
 
@@ -56,7 +59,13 @@ class GameController(
         @PathVariable @Valid gameId: UUID,
         @RequestBody @Valid contestantCreationDTO: ContestantCreationDTO
     ): Mono<Map<String, String>> =
-        gameCommandHandler.handle(GameCommand.EnrollContestant(gameId = gameId, name = contestantCreationDTO.name))
+        gameCommandHandler.handle(
+            GameCommand.EnrollContestant(
+                gameId = gameId,
+                name = contestantCreationDTO.name,
+                limitContestants = gameProperties.limitContestants
+            )
+        )
             .last()
             .map {
                 mapOf(

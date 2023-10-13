@@ -24,14 +24,14 @@ class GameAggregate(
     fun createGame(riddles: List<Pair<String, String>>, startedAt: LocalDateTime): Flux<GameEvent> =
         Flux.just(GameCreated(gameId, userId, startedAt, riddles))
 
-    fun enrollContestant(contestant: Contestant, enrolledAt: LocalDateTime): Flux<GameEvent> =
+    fun enrollContestant(contestant: Contestant, enrolledAt: LocalDateTime, limitContestants: Boolean = true): Flux<GameEvent> =
         previousState()
             .filter { !it.isEmpty }
             .switchIfEmpty(Mono.error { GameNotFoundException(gameId) })
             .map { JsonConvertible.fromJson(it, Game::class.java) }
             .filter { game -> game.isContestantNameAvailable(contestant.name) }
             .switchIfEmpty(Mono.error { ContestantNameNotAvailableException(contestant.name) })
-            .filter { game -> game.contestants.size < game.riddles.size }
+            .filter { game -> !limitContestants || game.contestants.size < game.riddles.size }
             .switchIfEmpty(Mono.error { ContestantNumberLimitExceededException() })
             .map { game -> game.enrollContestant(contestant, enrolledAt) }
             .flatMapMany { game ->
@@ -40,7 +40,7 @@ class GameAggregate(
                     .flatMap { this.applyNewEvent(it) }
                     .cast(GameEvent::class.java)
                     .concatWith(nextVersion()
-                        .filter { game.contestants.size == game.riddles.size }
+                        .filter { limitContestants && game.contestants.size == game.riddles.size }
                         .map { version -> GameStarted(gameId, version, userId, enrolledAt) })
             }
 

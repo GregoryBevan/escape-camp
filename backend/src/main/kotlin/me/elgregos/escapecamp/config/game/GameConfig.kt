@@ -10,13 +10,14 @@ import org.springframework.context.annotation.Configuration
 class GameConfig {
 
     @Bean
-    fun riddles(riddleConfig: RiddleConfig): List<Pair<String, String>> =
-        riddleConfig.riddles
+    fun riddles(gameProperties: GameProperties): List<Pair<String, String>> =
+        gameProperties.riddles
             .flatMap { it.toList() }
             .map { Pair(it.first.replace(".solution", ""), it.second)}
 }
 
 @ConfigurationProperties(prefix = "game")
-data class RiddleConfig @ConstructorBinding constructor(
+data class GameProperties @ConstructorBinding constructor(
+    val limitContestants: Boolean,
     val riddles: List<Map<String, String>>
 )

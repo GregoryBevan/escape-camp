@@ -53,6 +53,24 @@ val jeepersKeypersContestantEnrolled = ContestantEnrolled(
         ),
 )
 
+val sherUnlockContestantEnrolled = ContestantEnrolled(
+    gameId = escapeCampId,
+    version = 4,
+    enrolledAt = sherUnlockContestantEnrolledAt,
+    enrolledBy = sherUnlockContestantId,
+    event = genericObjectMapper.createObjectNode()
+        .put("id", "981e1b04-ecc6-48b3-b750-58f20faa5e05")
+        .put("updatedBy", "cbedf28e-eca2-49bc-b201-cc94f76ef587")
+        .put("updatedAt", "2023-06-15T13:36")
+        .set(
+            "contestants",
+            genericObjectMapper.createArrayNode()
+                .add(lockedAndLoadedContestant.toJson())
+                .add(jeepersKeypersContestant.toJson())
+                .add(sherUnlockContestant.toJson())
+        ),
+)
+
 val escapeCampStarted =
     GameEvent.GameStarted(
         gameId = escapeCampId,

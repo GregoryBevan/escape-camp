@@ -9,6 +9,7 @@ val escapeCampId: UUID = UUID.fromString("981e1b04-ecc6-48b3-b750-58f20faa5e05")
 val escapeCampCreatedAt: LocalDateTime = LocalDateTime.of(2023, 5, 19, 21, 40, 18)
 val lockedAndLoadedContestantEnrolledAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 31)
 val jeepersKeypersContestantEnrolledAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 35)
+val sherUnlockContestantEnrolledAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 36)
 
 val escapeCamp = Game(escapeCampId, createdAt = escapeCampCreatedAt, createdBy = organizerId, riddles = riddles)
 

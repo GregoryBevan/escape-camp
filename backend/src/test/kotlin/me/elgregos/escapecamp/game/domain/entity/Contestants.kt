@@ -10,6 +10,10 @@ val jeepersKeypersContestantId:UUID = UUID.fromString("3a66dce7-ca96-4cd0-af56-6
 const val jeepersKeypersContestantName = "Jeepers Keypers"
 val jeepersKeypersContestant = Contestant(jeepersKeypersContestantId, jeepersKeypersContestantName)
 
+val sherUnlockContestantId:UUID = UUID.fromString("cbedf28e-eca2-49bc-b201-cc94f76ef587")
+const val sherUnlockContestantName = "Sher-Unlock"
+val sherUnlockContestant = Contestant(sherUnlockContestantId, sherUnlockContestantName)
+
 val unknownContestantId: UUID = UUID.fromString("4f5ddf39-4a5c-4317-b4a6-db2d6c50dd18")
 
 val lockedAndLoadedContestantAfterFirstRiddleAssigned = lockedAndLoadedContestant.copy(riddles = listOf(lockedAndLoadedFirstRiddle))

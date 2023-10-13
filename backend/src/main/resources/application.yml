@@ -22,6 +22,7 @@ jwt:
   secretKey: ${JWT_SECRET_KEY:youllneverguesswhatismysecretbutyoucantry}
 
 game:
+  limitContestants: true
   riddles:
     - riddle-1:
         solution: ${RIDDLE_1_SOLUTION:event sourcing}
