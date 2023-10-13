@@ -61,14 +61,14 @@ class GameController(
             .map {
                 mapOf(
                     Pair("contestantId", "${it.createdBy}"),
-                    Pair("accessToken", tokenProvider.generateAccessToken(it.createdBy, contestantCreationDTO.name, Role.PLAYER)),
+                    Pair("accessToken", tokenProvider.generateAccessToken(it.createdBy, contestantCreationDTO.name, Role.CONTESTANT)),
                     Pair("eventType", it.eventType)
                 )
             }
 
     @GetMapping("{gameId}/contestants/{contestantId}/riddle")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAuthority('PLAYER')")
+    @PreAuthorize("hasAuthority('CONTESTANT')")
     fun assignRiddle(
         @PathVariable @Valid gameId: UUID,
         @PathVariable @Valid contestantId: UUID
@@ -88,7 +88,7 @@ class GameController(
 
     @PostMapping("{gameId}/contestants/{contestantId}/riddle/{riddleName}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAuthority('PLAYER')")
+    @PreAuthorize("hasAuthority('CONTESTANT')")
     fun submitRiddleSolution(
         @PathVariable @Valid gameId: UUID,
         @PathVariable @Valid contestantId: UUID,
@@ -104,7 +104,7 @@ class GameController(
             .then()
 
     @GetMapping(path = ["{id}/events-stream"], produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
-    @PreAuthorize("hasAnyAuthority('ORGANIZER','PLAYER')")
+    @PreAuthorize("hasAnyAuthority('ORGANIZER','CONTESTANT')")
     fun eventsStream(@PathVariable @Valid id: UUID) =
         serverSentEventService.sseFlux()
             .filter { it.data()?.get("id")?.asText() == id.toString() }

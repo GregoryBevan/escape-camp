@@ -20,11 +20,11 @@ class AddContestantApiStepDefinition : En {
 
     init {
 
-        Given("a contestant player with game identifier") {
+        Given("a contestant with game identifier") {
             createGame(gameClient)
         }
 
-        Given("a contestant player with an unknown game identifier") {
+        Given("a contestant with an unknown game identifier") {
             gameId = UUID.randomUUID()
             assertThat(gameId).isNotNull()
             scenario?.log("Unknown ame identifier $gameId")
