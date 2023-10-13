@@ -66,6 +66,7 @@ class GameController(
                 limitContestants = gameProperties.limitContestants
             )
         )
+            .doOnNext{ println(it)}
             .last()
             .map {
                 mapOf(
