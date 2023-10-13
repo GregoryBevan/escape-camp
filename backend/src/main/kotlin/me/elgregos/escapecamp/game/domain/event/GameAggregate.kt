@@ -37,14 +37,16 @@ class GameAggregate(
             .map { game -> game.enrollContestant(contestant, enrolledAt) }
             .flatMapMany { game ->
                 nextVersion()
-                    .publishOn(Schedulers.single())
                     .map { version -> ContestantEnrolled(gameId, version, userId, enrolledAt, game.contestants) }
                     .flatMap { this.applyNewEvent(it) }
-                    .cast(GameEvent::class.java)
-                    .concatWith(nextVersion()
-                        .filter { limitContestants && game.contestants.size == game.riddles.size }
-                        .map { version -> GameStarted(gameId, version, userId, enrolledAt) })
+                    .concatWith(
+                        nextVersion()
+                            .filter { limitContestants && game.contestants.size == game.riddles.size }
+                            .map { version -> GameStarted(gameId, version, userId, enrolledAt) }
+                    )
             }
+
+//            .doOnNext { println(it) }
 
     fun assignContestantNextRiddle(assignedAt: LocalDateTime): Flux<GameEvent> =
         previousState()
