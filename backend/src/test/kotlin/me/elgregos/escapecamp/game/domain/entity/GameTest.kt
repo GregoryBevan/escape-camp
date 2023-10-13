@@ -15,9 +15,9 @@ import kotlin.test.Test
 class GameTest {
 
     @Test
-    fun `should add team to game`() {
-        assertThat(escapeCamp.addTeam(lockedAndLoadedTeam, lockedAndLoadedTeamAddedAt))
-            .isEqualTo(escapeCampAfterLockedAndLoadedTeamAdded)
+    fun `should add contestant to game`() {
+        assertThat(escapeCamp.addContestant(lockedAndLoadedContestant, lockedAndLoadedContestantAddedAt))
+            .isEqualTo(escapeCampAfterLockedAndLoadedContestantAdded)
     }
 
     @ParameterizedTest
@@ -25,8 +25,8 @@ class GameTest {
         "Locked and Loaded, false",
         "Jeepers Keypers, true"
     )
-    fun `should check if team name is available`(teamName: String, expectedResult: Boolean) {
-        assertThat(escapeCampAfterLockedAndLoadedTeamAdded.isTeamNameAvailable(teamName)).isEqualTo(expectedResult)
+    fun `should check if contestant name is available`(contestantName: String, expectedResult: Boolean) {
+        assertThat(escapeCampAfterLockedAndLoadedContestantAdded.isContestantNameAvailable(contestantName)).isEqualTo(expectedResult)
     }
 
     @ParameterizedTest
@@ -34,79 +34,79 @@ class GameTest {
         "3a66dce7-ca96-4cd0-af56-6bd7e082edd5, 1",
         "0bfce65c-dff9-4f2e-8e8f-11ed6151b205, 0"
     )
-    fun `should get team registration order`(teamId: UUID, expectedOrder: Int) {
-        assertThat(escapeCampAfterGameStarted.teamRegistrationOrder(teamId))
+    fun `should get contestant registration order`(contestantId: UUID, expectedOrder: Int) {
+        assertThat(escapeCampAfterGameStarted.contestantRegistrationOrder(contestantId))
             .isEqualTo(expectedOrder)
     }
     @ParameterizedTest
-    @MethodSource("checkIfTeamExistsTestCases")
-    fun `should check if team exist`(teamId: UUID, expectedResult: Boolean) {
-        assertThat(escapeCampAfterGameStarted.checkIfTeamExists(teamId)).isEqualTo(expectedResult)
+    @MethodSource("checkIfContestantExistsTestCases")
+    fun `should check if contestant exist`(contestantId: UUID, expectedResult: Boolean) {
+        assertThat(escapeCampAfterGameStarted.checkIfContestantExists(contestantId)).isEqualTo(expectedResult)
     }
 
     @ParameterizedTest
-    @MethodSource("canAssignRiddleToTeamTestCases")
-    fun `should check if riddle is assignable to team`(game: Game, expectedResult: Boolean) {
-        assertThat(game.canAssignRiddleToTeam(lockedAndLoadedTeamId))
+    @MethodSource("canAssignRiddleToContestantTestCases")
+    fun `should check if riddle is assignable to contestant`(game: Game, expectedResult: Boolean) {
+        assertThat(game.canAssignRiddleToContestant(lockedAndLoadedContestantId))
             .isEqualTo(expectedResult)
     }
 
     @ParameterizedTest
-    @MethodSource("assignRiddleTeamTestCases")
-    fun `should assign riddle to team`(game: Game, teamId: UUID, assignedAt: LocalDateTime, expectedGame: Game) {
-        assertThat(game.assignRiddleToTeam(teamId, assignedAt)).isEqualTo(expectedGame)
+    @MethodSource("assignRiddleContestantTestCases")
+    fun `should assign riddle to contestant`(game: Game, contestantId: UUID, assignedAt: LocalDateTime, expectedGame: Game) {
+        assertThat(game.assignRiddleToContestant(contestantId, assignedAt)).isEqualTo(expectedGame)
     }
 
     @Test
-    fun `should find last unsolved riddle for team`() {
-        assertThat(escapeCampAfterAllFirstRiddleAssigned.teamLastUnsolvedRiddle(jeepersKeypersTeamId))
+    fun `should find last unsolved riddle for contestant`() {
+        assertThat(escapeCampAfterAllFirstRiddleAssigned.contestantLastUnsolvedRiddle(jeepersKeypersContestantId))
             .isEqualTo(jeepersKeypersFirstRiddle)
     }
 
     @Test
-    fun `should solve last assigned riddle of team`() {
-        assertThat(escapeCampAfterAllFirstRiddleAssigned.solveLastAssignedRiddleOfTeam(jeepersKeypersTeamId, jeepersKeypersFirstRiddleSolvedAt))
+    fun `should solve last assigned riddle of contestant`() {
+        assertThat(escapeCampAfterAllFirstRiddleAssigned.solveLastAssignedRiddleOfContestant(jeepersKeypersContestantId, jeepersKeypersFirstRiddleSolvedAt))
             .isEqualTo(escapeCampAfterJeepersKeypersFirstRiddleSolved)
     }
 
     @ParameterizedTest
-    @MethodSource("isFirstTeamToSolveAllRiddleTestCases")
+    @MethodSource("isFirstContestantToSolveAllRiddleTestCases")
     fun `should check if game has a winner`(game: Game, expectedResult: Boolean) {
-        assertThat(game.checkIfIsFirstTeamToSolveAllRiddle()).isEqualTo(expectedResult)
+        assertThat(game.checkIfIsFirstContestantToSolveAllRiddle()).isEqualTo(expectedResult)
     }
 
     companion object {
 
         @JvmStatic
-        fun checkIfTeamExistsTestCases(): Stream<Arguments> =
+        fun checkIfContestantExistsTestCases(): Stream<Arguments> =
             Stream.of(
-                Arguments.of(lockedAndLoadedTeamId, true),
-                Arguments.of(unknownTeamId, false),
+                Arguments.of(lockedAndLoadedContestantId, true),
+                Arguments.of(unknownContestantId, false),
             )
 
         @JvmStatic
-        fun canAssignRiddleToTeamTestCases(): Stream<Arguments> =
+        fun canAssignRiddleToContestantTestCases(): Stream<Arguments> =
             Stream.of(
-                Arguments.of(named("No previous riddle assigned to the team", escapeCampAfterGameStarted), true),
-                Arguments.of(named("After riddle assigned to the team", escapeCampAfterLockedAndLoadedFirstRiddleAssigned), false),
-                Arguments.of(named("After riddle solved by team", escapeCampAfterLockedAndLoadedFirstRiddleSolved), true),
+                Arguments.of(named("No previous riddle assigned to the contestant", escapeCampAfterGameStarted), true),
+                Arguments.of(named("After riddle assigned to the contestant", escapeCampAfterLockedAndLoadedFirstRiddleAssigned), false),
+                Arguments.of(named("After riddle solved by contestant", escapeCampAfterLockedAndLoadedFirstRiddleSolved), true),
             )
 
         @JvmStatic
-        fun assignRiddleTeamTestCases(): Stream<Arguments> =
+        fun assignRiddleContestantTestCases(): Stream<Arguments> =
             Stream.of(
-                Arguments.of(named("First registered team - First riddle", escapeCampAfterGameStarted), lockedAndLoadedTeamId, lockedAndLoadedFirstRiddleAssignedAt, escapeCampAfterLockedAndLoadedFirstRiddleAssigned),
-                Arguments.of(named("Second registered team - First riddle", escapeCampAfterLockedAndLoadedFirstRiddleAssigned), jeepersKeypersTeamId, jeepersKeypersFirstRiddleAssignedAt, escapeCampAfterAllFirstRiddleAssigned),
-                Arguments.of(named("Second registered team - Second riddle", escapeCampAfterJeepersKeypersFirstRiddleSolved), jeepersKeypersTeamId, jeepersKeypersSecondRiddleAssignedAt, escapeCampAfterJeepersKeypersSecondRiddleAssigned),
-                Arguments.of(named("First registered team - Second riddle", escapeCampAfterLockedAndLoadedFirstRiddleSolved), lockedAndLoadedTeamId, lockedAndLoadedSecondRiddleAssignedAt, escapeCampAfterLockedAndLoadedSecondRiddleAssigned),
+                Arguments.of(named("First registered contestant - First riddle", escapeCampAfterGameStarted), lockedAndLoadedContestantId, lockedAndLoadedFirstRiddleAssignedAt, escapeCampAfterLockedAndLoadedFirstRiddleAssigned),
+                Arguments.of(named("Second registered contestant - First riddle", escapeCampAfterLockedAndLoadedFirstRiddleAssigned), jeepersKeypersContestantId, jeepersKeypersFirstRiddleAssignedAt, escapeCampAfterAllFirstRiddleAssigned),
+                Arguments.of(named("Second registered contestant - Second riddle", escapeCampAfterJeepersKeypersFirstRiddleSolved), jeepersKeypersContestantId, jeepersKeypersSecondRiddleAssignedAt, escapeCampAfterJeepersKeypersSecondRiddleAssigned),
+                Arguments.of(named("First registered contestant - Second riddle", escapeCampAfterLockedAndLoadedFirstRiddleSolved), lockedAndLoadedContestantId, lockedAndLoadedSecondRiddleAssignedAt, escapeCampAfterLockedAndLoadedSecondRiddleAssigned),
             )
 
         @JvmStatic
-        fun isFirstTeamToSolveAllRiddleTestCases(): Stream<Arguments> =
+        fun isFirstContestantToSolveAllRiddleTestCases(): Stream<Arguments> =
             Stream.of(
-//                Arguments.of(named("No team has solved all riddles", escapeCampAfterLockedAndLoadedSecondRiddleAssigned), false),
-                Arguments.of(named("First team to solve all riddle", escapeCampAfterJeepersKeypersSecondRiddleSolved), true),
-//                Arguments.of(named("Second team to solve all riddle", escapeCampAfterLockAndLoadedSecondRiddleSolved), false)
+//                Arguments.of(named("No contestant has solved all riddles", escapeCampAfterLockedAndLoadedSecondRiddleAssigned), false),
+                Arguments.of(named("First contestant to solve all riddle", escapeCampAfterJeepersKeypersSecondRiddleSolved), true),
+//                Arguments.of(named("Second contestant to solve all riddle", escapeCampAfterLockAndLoadedSecondRiddleSolved), false)
             )
     }
 

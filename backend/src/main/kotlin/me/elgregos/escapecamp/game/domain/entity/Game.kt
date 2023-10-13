@@ -12,62 +12,62 @@ data class Game(
     override val updatedAt: LocalDateTime = createdAt,
     override val updatedBy: UUID = createdBy,
     val riddles: List<Pair<String, String>>,
-    val teams: List<Team> = listOf(),
+    val contestants: List<Contestant> = listOf(),
     val startedAt: LocalDateTime? = null,
     val winner: UUID? = null
 ) : DomainEntity<UUID, UUID> {
-    fun addTeam(team: Team, addedAt: LocalDateTime) =
+    fun addContestant(contestant: Contestant, addedAt: LocalDateTime) =
         copy(
             version = version + 1,
             updatedAt = addedAt,
-            updatedBy = team.id,
-            teams = teams.toMutableList().also { it.add(team) }
+            updatedBy = contestant.id,
+            contestants = contestants.toMutableList().also { it.add(contestant) }
         )
 
-    fun assignRiddleToTeam(teamId: UUID, assignedAt: LocalDateTime) =
+    fun assignRiddleToContestant(contestantId: UUID, assignedAt: LocalDateTime) =
         copy(
             version = version + 1,
             updatedAt = assignedAt,
-            updatedBy = teamId,
-            teams = teams.map { team ->
-                if (team.id == teamId) team.assignRiddle(
+            updatedBy = contestantId,
+            contestants = contestants.map { contestant ->
+                if (contestant.id == contestantId) contestant.assignRiddle(
                     Riddle(
-                        riddles[nextTeamRiddleIndex(
-                            teamId
+                        riddles[nextContestantRiddleIndex(
+                            contestantId
                         )].first, assignedAt
                     )
-                ) else team
+                ) else contestant
             })
 
 
-    fun solveLastAssignedRiddleOfTeam(teamId: UUID, solvedAt: LocalDateTime) =
+    fun solveLastAssignedRiddleOfContestant(contestantId: UUID, solvedAt: LocalDateTime) =
         copy(
             version = version + 1,
             updatedAt = solvedAt,
-            updatedBy = teamId,
-            teams = teams.map { team -> if (team.id == teamId) team.solveLastUnsolvedRiddle(solvedAt) else team })
+            updatedBy = contestantId,
+            contestants = contestants.map { contestant -> if (contestant.id == contestantId) contestant.solveLastUnsolvedRiddle(solvedAt) else contestant })
 
-    fun isTeamNameAvailable(teamName: String) = teams.none { it.name == teamName }
+    fun isContestantNameAvailable(contestantName: String) = contestants.none { it.name == contestantName }
 
-    fun canAssignRiddleToTeam(teamId: UUID) =
-        teams.find { it.id == teamId }?.hasPreviousRiddleSolved() ?: false
+    fun canAssignRiddleToContestant(contestantId: UUID) =
+        contestants.find { it.id == contestantId }?.hasPreviousRiddleSolved() ?: false
 
-    fun teamRegistrationOrder(teamId: UUID) =
-        teams.indexOfFirst { it.id == teamId }
+    fun contestantRegistrationOrder(contestantId: UUID) =
+        contestants.indexOfFirst { it.id == contestantId }
 
-    fun checkIfTeamExists(teamId: UUID) = teams.map { team -> team.id }.contains(teamId)
+    fun checkIfContestantExists(contestantId: UUID) = contestants.map { contestant -> contestant.id }.contains(contestantId)
 
-    fun teamLastUnsolvedRiddle(teamId: UUID) =
-        teams.find { it.id == teamId }?.lastUnsolvedRiddle()
+    fun contestantLastUnsolvedRiddle(contestantId: UUID) =
+        contestants.find { it.id == contestantId }?.lastUnsolvedRiddle()
 
-    fun checkIfIsFirstTeamToSolveAllRiddle() =
-        winner == null && teams.any { it.hasSolvedAllRiddles(riddles) }
+    fun checkIfIsFirstContestantToSolveAllRiddle() =
+        winner == null && contestants.any { it.hasSolvedAllRiddles(riddles) }
 
-    private fun nextTeamRiddleIndex(teamId: UUID) =
-        (teamRegistrationOrder(teamId) + numberOfSolvedRiddleByTeam(teamId)).mod(riddles.size)
+    private fun nextContestantRiddleIndex(contestantId: UUID) =
+        (contestantRegistrationOrder(contestantId) + numberOfSolvedRiddleByContestant(contestantId)).mod(riddles.size)
 
-    private fun numberOfSolvedRiddleByTeam(teamId: UUID) =
-        teams.find { it.id == teamId }?.numberOfSolvedRiddles() ?: 0
+    private fun numberOfSolvedRiddleByContestant(contestantId: UUID) =
+        contestants.find { it.id == contestantId }?.numberOfSolvedRiddles() ?: 0
 
 }
 

@@ -6,7 +6,7 @@ import me.elgregos.escapecamp.config.security.Role
 import me.elgregos.escapecamp.config.security.jwt.TokenProvider
 import me.elgregos.escapecamp.config.sse.ServerSentEventService
 import me.elgregos.escapecamp.game.api.dto.RiddleSolutionDTO
-import me.elgregos.escapecamp.game.api.dto.TeamCreationDTO
+import me.elgregos.escapecamp.game.api.dto.ContestantCreationDTO
 import me.elgregos.escapecamp.game.application.GameCommand
 import me.elgregos.escapecamp.game.application.GameCommandHandler
 import me.elgregos.escapecamp.game.application.GameService
@@ -50,33 +50,33 @@ class GameController(
             .toMono()
             .map { mapOf(Pair("gameId", it.aggregateId)) }
 
-    @PostMapping("{gameId}/teams")
+    @PostMapping("{gameId}/contestants")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createTeam(
+    fun addContestant(
         @PathVariable @Valid gameId: UUID,
-        @RequestBody @Valid teamCreationDTO: TeamCreationDTO
+        @RequestBody @Valid contestantCreationDTO: ContestantCreationDTO
     ): Mono<Map<String, String>> =
-        gameCommandHandler.handle(GameCommand.AddTeam(gameId = gameId, name = teamCreationDTO.name))
+        gameCommandHandler.handle(GameCommand.AddContestant(gameId = gameId, name = contestantCreationDTO.name))
             .last()
             .map {
                 mapOf(
-                    Pair("teamId", "${it.createdBy}"),
-                    Pair("accessToken", tokenProvider.generateAccessToken(it.createdBy, teamCreationDTO.name, Role.PLAYER)),
+                    Pair("contestantId", "${it.createdBy}"),
+                    Pair("accessToken", tokenProvider.generateAccessToken(it.createdBy, contestantCreationDTO.name, Role.PLAYER)),
                     Pair("eventType", it.eventType)
                 )
             }
 
-    @GetMapping("{gameId}/teams/{teamId}/riddle")
+    @GetMapping("{gameId}/contestants/{contestantId}/riddle")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('PLAYER')")
     fun assignRiddle(
         @PathVariable @Valid gameId: UUID,
-        @PathVariable @Valid teamId: UUID
+        @PathVariable @Valid contestantId: UUID
     ): Mono<Map<String, Map<String, String>>> =
-        gameCommandHandler.handle(GameCommand.AssignTeamNextRiddle(gameId, assignedBy = teamId))
+        gameCommandHandler.handle(GameCommand.AssignContestantNextRiddle(gameId, assignedBy = contestantId))
             .last()
-            .cast(NextTeamRiddleAssigned::class.java)
-            .map(NextTeamRiddleAssigned::assignedRiddle)
+            .cast(NextContestantRiddleAssigned::class.java)
+            .map(NextContestantRiddleAssigned::assignedRiddle)
             .map { riddle ->
                 mapOf(Pair("riddle", mapOf(
                             Pair("name", riddle.name),
@@ -86,18 +86,18 @@ class GameController(
                 )
             }
 
-    @PostMapping("{gameId}/teams/{teamId}/riddle/{riddleName}")
+    @PostMapping("{gameId}/contestants/{contestantId}/riddle/{riddleName}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('PLAYER')")
     fun submitRiddleSolution(
         @PathVariable @Valid gameId: UUID,
-        @PathVariable @Valid teamId: UUID,
+        @PathVariable @Valid contestantId: UUID,
         @PathVariable @Valid riddleName: String,
         @RequestBody @Valid riddleSolutionDTO: RiddleSolutionDTO
     ): Mono<Void> =
         gameCommandHandler.handle(GameCommand.SubmitRiddleSolution(
             gameId,
-            submittedBy = teamId,
+            submittedBy = contestantId,
             riddleName = riddleName,
             solution = riddleSolutionDTO.solution
         ))

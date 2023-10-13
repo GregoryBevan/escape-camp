@@ -1,7 +1,7 @@
 package me.elgregos.escapecamp.game.api
 
 import com.fasterxml.jackson.databind.JsonNode
-import me.elgregos.escapecamp.features.RegisteredTeam
+import me.elgregos.escapecamp.features.RegisteredContestant
 import me.elgregos.escapecamp.features.gameId
 import me.elgregos.escapecamp.features.organizerJwt
 import me.elgregos.reakteves.libs.genericObjectMapper
@@ -51,25 +51,25 @@ class GameClient(private val webTestClient: WebTestClient) {
             .accept(APPLICATION_JSON)
             .exchange()
 
-    fun addTeam(teamName: String) =
+    fun addContestant(contestantName: String) =
         webTestClient.post()
-            .uri { it.path(rootPath).pathSegment("$gameId", "teams").build() }
+            .uri { it.path(rootPath).pathSegment("$gameId", "contestants").build() }
             .header(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
             .accept(APPLICATION_JSON)
-            .body(BodyInserters.fromValue(genericObjectMapper.createObjectNode().put("name", teamName)))
+            .body(BodyInserters.fromValue(genericObjectMapper.createObjectNode().put("name", contestantName)))
             .exchange()
 
-    fun requestNextRiddle(team: RegisteredTeam) =
+    fun requestNextRiddle(contestant: RegisteredContestant) =
         webTestClient.get()
-            .uri { it.path(rootPath).pathSegment("$gameId", "teams", "${team.id}", "riddle").build() }
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ${team.accessToken}")
+            .uri { it.path(rootPath).pathSegment("$gameId", "contestants", "${contestant.id}", "riddle").build() }
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ${contestant.accessToken}")
             .accept(APPLICATION_JSON)
             .exchange()
 
-    fun checkRiddleSolution(team: RegisteredTeam, riddleName: String, solution: String) =
+    fun checkRiddleSolution(contestant: RegisteredContestant, riddleName: String, solution: String) =
         webTestClient.post()
-            .uri { it.path(rootPath).pathSegment("$gameId", "teams", "${team.id}", "riddle", riddleName).build() }
-            .header(HttpHeaders.AUTHORIZATION, "Bearer ${team.accessToken}")
+            .uri { it.path(rootPath).pathSegment("$gameId", "contestants", "${contestant.id}", "riddle", riddleName).build() }
+            .header(HttpHeaders.AUTHORIZATION, "Bearer ${contestant.accessToken}")
             .accept(APPLICATION_JSON)
             .body(BodyInserters.fromValue(genericObjectMapper.createObjectNode().put("solution", solution)))
             .exchange()

@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import reactor.test.StepVerifier
 import java.util.*
 
-class AddTeamApiStepDefinition : En {
+class AddContestantApiStepDefinition : En {
 
     @Autowired
     private lateinit var gameClient: GameClient
@@ -20,47 +20,47 @@ class AddTeamApiStepDefinition : En {
 
     init {
 
-        Given("a team player with game identifier") {
+        Given("a contestant player with game identifier") {
             createGame(gameClient)
         }
 
-        Given("a team player with an unknown game identifier") {
+        Given("a contestant player with an unknown game identifier") {
             gameId = UUID.randomUUID()
             assertThat(gameId).isNotNull()
             scenario?.log("Unknown ame identifier $gameId")
         }
 
-        And("a team with name {string} has been added to the game") { teamName: String ->
-            gameClient.addTeam(teamName)
+        And("a contestant with name {string} has been added to the game") { contestantName: String ->
+            gameClient.addContestant(contestantName)
                 .expectBody(JsonNode::class.java).consumeWith {
                     responseBody = it.responseBody!!
-                    assertThat(responseBody.get("teamId")).isNotNull()
+                    assertThat(responseBody.get("contestantId")).isNotNull()
                 }
         }
 
-        When("he adds his team to the game with name {string}") { teamName: String ->
-            response = gameClient.addTeam(teamName)
+        When("he adds his contestant to the game with name {string}") { contestantName: String ->
+            response = gameClient.addContestant(contestantName)
         }
 
-        When("{int} teams have been added to the game") { _: Int, teamNamesTable: DataTable ->
-            teamNamesTable.asList()
-                .forEach { gameClient.addTeam(it).expectStatus().isCreated }
+        When("{int} contestants have been added to the game") { _: Int, contestantNamesTable: DataTable ->
+            contestantNamesTable.asList()
+                .forEach { gameClient.addContestant(it).expectStatus().isCreated }
         }
 
-        Then("the team is added") {
+        Then("the contestant is added") {
             response!!.expectStatus().isCreated
                 .expectBody(JsonNode::class.java).consumeWith {
                     responseBody = it.responseBody!!
-                    val teamId = responseBody.get("teamId")
-                    assertThat(teamId).isNotNull()
-                    scenario?.log("Team identifier $teamId")
+                    val contestantId = responseBody.get("contestantId")
+                    assertThat(contestantId).isNotNull()
+                    scenario?.log("Contestant identifier $contestantId")
                 }
         }
 
         And("a token is returned to continue the game") {
             val accessToken = responseBody.get("accessToken").asText()
             assertThat(accessToken).isNotNull()
-            scenario?.log("Team access token $accessToken")
+            scenario?.log("Contestant access token $accessToken")
         }
 
         And("the game starts automatically") {
@@ -76,21 +76,21 @@ class AddTeamApiStepDefinition : En {
                 .verify()
         }
 
-        Then("the response contains a team name not available error") {
+        Then("the response contains a contestant name not available error") {
             response!!.expectStatus().isBadRequest
                 .expectBody(JsonNode::class.java).consumeWith {
                     assertThat(
                         it.responseBody!!.get("message").asText()
-                    ).isEqualTo("Team with name Locked and loaded already exists")
+                    ).isEqualTo("Contestant with name Locked and loaded already exists")
                 }
         }
 
-        Then("the response contains a team number limit exceeded error") {
+        Then("the response contains a contestant number limit exceeded error") {
             response!!.expectStatus().isBadRequest
                 .expectBody(JsonNode::class.java).consumeWith {
                     assertThat(
                         it.responseBody!!.get("message").asText()
-                    ).isEqualTo("Number of team limit reached")
+                    ).isEqualTo("Number of contestant limit reached")
                 }
         }
     }

@@ -7,7 +7,7 @@ import kotlin.test.Test
 class GameEventTest {
 
     @Test
-    fun `should obtain last team riddle`() {
+    fun `should obtain last contestant riddle`() {
         assertThat(lockedAndLoadedFirstRiddleAssigned.assignedRiddle())
             .isNotNull()
 
