@@ -15,9 +15,9 @@ import kotlin.test.Test
 class GameTest {
 
     @Test
-    fun `should add contestant to game`() {
-        assertThat(escapeCamp.addContestant(lockedAndLoadedContestant, lockedAndLoadedContestantAddedAt))
-            .isEqualTo(escapeCampAfterLockedAndLoadedContestantAdded)
+    fun `should enroll contestant to game`() {
+        assertThat(escapeCamp.enrollContestant(lockedAndLoadedContestant, lockedAndLoadedContestantEnrolledAt))
+            .isEqualTo(escapeCampAfterLockedAndLoadedContestantEnrolled)
     }
 
     @ParameterizedTest
@@ -26,7 +26,7 @@ class GameTest {
         "Jeepers Keypers, true"
     )
     fun `should check if contestant name is available`(contestantName: String, expectedResult: Boolean) {
-        assertThat(escapeCampAfterLockedAndLoadedContestantAdded.isContestantNameAvailable(contestantName)).isEqualTo(expectedResult)
+        assertThat(escapeCampAfterLockedAndLoadedContestantEnrolled.isContestantNameAvailable(contestantName)).isEqualTo(expectedResult)
     }
 
     @ParameterizedTest

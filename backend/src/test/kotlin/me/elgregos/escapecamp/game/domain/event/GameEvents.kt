@@ -3,7 +3,7 @@ package me.elgregos.escapecamp.game.domain.event
 import me.elgregos.escapecamp.config.security.organizerId
 import me.elgregos.escapecamp.game.domain.entity.*
 import me.elgregos.escapecamp.game.domain.event.GameEvent.GameCreated
-import me.elgregos.escapecamp.game.domain.event.GameEvent.ContestantAdded
+import me.elgregos.escapecamp.game.domain.event.GameEvent.ContestantEnrolled
 import me.elgregos.reakteves.libs.genericObjectMapper
 
 
@@ -18,11 +18,11 @@ val escapeCampCreated = GameCreated(
         .set("riddles", genericObjectMapper.valueToTree(riddles))
 )
 
-val lockedAndLoadedContestantAdded = ContestantAdded(
+val lockedAndLoadedContestantEnrolled = ContestantEnrolled(
     gameId = escapeCampId,
     version = 2,
-    addedAt = lockedAndLoadedContestantAddedAt,
-    addedBy = lockedAndLoadedContestantId,
+    enrolledAt = lockedAndLoadedContestantEnrolledAt,
+    enrolledBy = lockedAndLoadedContestantId,
     event = genericObjectMapper.createObjectNode()
         .put("id", "981e1b04-ecc6-48b3-b750-58f20faa5e05")
         .put("updatedBy", "0bfce65c-dff9-4f2e-8e8f-11ed6151b205")
@@ -34,13 +34,13 @@ val lockedAndLoadedContestantAdded = ContestantAdded(
         )
 )
 
-val eventsAfterLockedAndLoadedAdded = listOf(escapeCampCreated, lockedAndLoadedContestantAdded)
+val eventsAfterLockedAndLoadedAdded = listOf(escapeCampCreated, lockedAndLoadedContestantEnrolled)
 
-val jeepersKeypersContestantAdded = ContestantAdded(
+val jeepersKeypersContestantEnrolled = ContestantEnrolled(
     gameId = escapeCampId,
     version = 3,
-    addedAt = jeepersKeypersContestantAddedAt,
-    addedBy = jeepersKeypersContestantId,
+    enrolledAt = jeepersKeypersContestantEnrolledAt,
+    enrolledBy = jeepersKeypersContestantId,
     event = genericObjectMapper.createObjectNode()
         .put("id", "981e1b04-ecc6-48b3-b750-58f20faa5e05")
         .put("updatedBy", "3a66dce7-ca96-4cd0-af56-6bd7e082edd5")
@@ -57,12 +57,12 @@ val escapeCampStarted =
     GameEvent.GameStarted(
         gameId = escapeCampId,
         version = 4,
-        startedAt = jeepersKeypersContestantAddedAt,
+        startedAt = jeepersKeypersContestantEnrolledAt,
         startedBy = jeepersKeypersContestantId
     )
 
 val eventsAfterEscapeCampStarted =
-    listOf(escapeCampCreated, lockedAndLoadedContestantAdded, jeepersKeypersContestantAdded, escapeCampStarted)
+    listOf(escapeCampCreated, lockedAndLoadedContestantEnrolled, jeepersKeypersContestantEnrolled, escapeCampStarted)
 
 val lockedAndLoadedFirstRiddleAssigned =
     GameEvent.NextContestantRiddleAssigned(
@@ -84,8 +84,8 @@ val lockedAndLoadedFirstRiddleAssigned =
 
 val eventsAfterLockedAndLoadedFirstRiddleAssigned = listOf(
     escapeCampCreated,
-    lockedAndLoadedContestantAdded,
-    jeepersKeypersContestantAdded,
+    lockedAndLoadedContestantEnrolled,
+    jeepersKeypersContestantEnrolled,
     escapeCampStarted,
     lockedAndLoadedFirstRiddleAssigned
 )
@@ -110,8 +110,8 @@ val jeepersKeypersFirstRiddleAssigned =
 
 val eventsAfterAllFirstRiddleAssigned = listOf(
     escapeCampCreated,
-    lockedAndLoadedContestantAdded,
-    jeepersKeypersContestantAdded,
+    lockedAndLoadedContestantEnrolled,
+    jeepersKeypersContestantEnrolled,
     escapeCampStarted,
     lockedAndLoadedFirstRiddleAssigned,
     jeepersKeypersFirstRiddleAssigned
@@ -137,8 +137,8 @@ val jeepersKeypersFirstRiddleSolved =
 
 val eventsAfterJeepersKeypersFirstRiddleSolved = listOf(
     escapeCampCreated,
-    lockedAndLoadedContestantAdded,
-    jeepersKeypersContestantAdded,
+    lockedAndLoadedContestantEnrolled,
+    jeepersKeypersContestantEnrolled,
     escapeCampStarted,
     lockedAndLoadedFirstRiddleAssigned,
     jeepersKeypersFirstRiddleAssigned,
@@ -183,8 +183,8 @@ val lockedAndLoadedSecondRiddleAssigned =
 
 val eventsAfterLockedAndLoadedSecondRiddleAssigned = listOf(
     escapeCampCreated,
-    lockedAndLoadedContestantAdded,
-    jeepersKeypersContestantAdded,
+    lockedAndLoadedContestantEnrolled,
+    jeepersKeypersContestantEnrolled,
     escapeCampStarted,
     lockedAndLoadedFirstRiddleAssigned,
     jeepersKeypersFirstRiddleAssigned,
@@ -225,8 +225,8 @@ val escapeCampWinnerAnnounced =
 
 val eventsAfterWinnerAnnounced = listOf(
     escapeCampCreated,
-    lockedAndLoadedContestantAdded,
-    jeepersKeypersContestantAdded,
+    lockedAndLoadedContestantEnrolled,
+    jeepersKeypersContestantEnrolled,
     escapeCampStarted,
     lockedAndLoadedFirstRiddleAssigned,
     jeepersKeypersFirstRiddleAssigned,

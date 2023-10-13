@@ -16,10 +16,11 @@ data class Game(
     val startedAt: LocalDateTime? = null,
     val winner: UUID? = null
 ) : DomainEntity<UUID, UUID> {
-    fun addContestant(contestant: Contestant, addedAt: LocalDateTime) =
+
+    fun enrollContestant(contestant: Contestant, enrolledAt: LocalDateTime) =
         copy(
             version = version + 1,
-            updatedAt = addedAt,
+            updatedAt = enrolledAt,
             updatedBy = contestant.id,
             contestants = contestants.toMutableList().also { it.add(contestant) }
         )

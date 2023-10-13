@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import reactor.test.StepVerifier
 import java.util.*
 
-class AddContestantApiStepDefinition : En {
+class EnrollContestantApiStepDefinition : En {
 
     @Autowired
     private lateinit var gameClient: GameClient
@@ -30,24 +30,24 @@ class AddContestantApiStepDefinition : En {
             scenario?.log("Unknown ame identifier $gameId")
         }
 
-        And("a contestant with name {string} has been added to the game") { contestantName: String ->
-            gameClient.addContestant(contestantName)
+        And("a contestant with name {string} has been enrolled to the game") { contestantName: String ->
+            gameClient.enrollContestant(contestantName)
                 .expectBody(JsonNode::class.java).consumeWith {
                     responseBody = it.responseBody!!
                     assertThat(responseBody.get("contestantId")).isNotNull()
                 }
         }
 
-        When("he adds his contestant to the game with name {string}") { contestantName: String ->
-            response = gameClient.addContestant(contestantName)
+        When("he enrolls in the game with name {string}") { contestantName: String ->
+            response = gameClient.enrollContestant(contestantName)
         }
 
-        When("{int} contestants have been added to the game") { _: Int, contestantNamesTable: DataTable ->
+        When("{int} contestants have been enrolled in the game") { _: Int, contestantNamesTable: DataTable ->
             contestantNamesTable.asList()
-                .forEach { gameClient.addContestant(it).expectStatus().isCreated }
+                .forEach { gameClient.enrollContestant(it).expectStatus().isCreated }
         }
 
-        Then("the contestant is added") {
+        Then("the contestant is enrolled") {
             response!!.expectStatus().isCreated
                 .expectBody(JsonNode::class.java).consumeWith {
                     responseBody = it.responseBody!!

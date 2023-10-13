@@ -22,7 +22,7 @@ sealed class GameException(
         GameException("Contestant with id $contestantId has not been found", status = HttpStatus.NOT_FOUND)
 
     class GameNotStartedException :
-        GameException("Game has not yet started. Wait for other contestants to be added", status = HttpStatus.BAD_REQUEST)
+        GameException("Game has not yet started. Wait for other contestants to enroll", status = HttpStatus.BAD_REQUEST)
 
     class PreviousRiddleNotSolvedException :
         GameException("Previous riddle not solved yet", status = HttpStatus.BAD_REQUEST)

@@ -35,7 +35,7 @@ class GameProjectionSubscriber(
             .flatMap {
                 when (it) {
                     is GameCreated -> createGame(it)
-                    is ContestantAdded,
+                    is ContestantEnrolled,
                     is GameStarted,
                     is NextContestantRiddleAssigned,
                     is RiddleSolved,

@@ -15,7 +15,7 @@ import java.util.*
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
-class GameAggregateAddContestantTest {
+class GameAggregateEnrollContestantTest {
 
     private lateinit var gameEventStore: EventStore<GameEvent, UUID, UUID>
 
@@ -25,55 +25,55 @@ class GameAggregateAddContestantTest {
     }
 
     @Test
-    fun `should add first contestant to game`() {
+    fun `should enroll first contestant to game`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.just(escapeCampCreated)
 
         GameAggregate(escapeCampId, lockedAndLoadedContestantId, MockedRiddleSolutionChecker(riddles), gameEventStore)
-            .addContestant(lockedAndLoadedContestant, lockedAndLoadedContestantAddedAt)
+            .enrollContestant(lockedAndLoadedContestant, lockedAndLoadedContestantEnrolledAt)
             .`as`(StepVerifier::create)
-            .assertNext { assertThat(it).isEqualTo(lockedAndLoadedContestantAdded.copy(id = it.id)) }
+            .assertNext { assertThat(it).isEqualTo(lockedAndLoadedContestantEnrolled.copy(id = it.id)) }
             .verifyComplete()
     }
 
     @Test
-    fun `should add two contestant to game and start game`() {
+    fun `should enroll last contestant to game and start game`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.just(
             escapeCampCreated,
-            lockedAndLoadedContestantAdded
+            lockedAndLoadedContestantEnrolled
         )
 
         GameAggregate(escapeCampId, jeepersKeypersContestantId, MockedRiddleSolutionChecker(riddles), gameEventStore)
-            .addContestant(jeepersKeypersContestant, jeepersKeypersContestantAddedAt)
+            .enrollContestant(jeepersKeypersContestant, jeepersKeypersContestantEnrolledAt)
             .`as`(StepVerifier::create)
-            .assertNext { assertThat(it).isEqualTo(jeepersKeypersContestantAdded.copy(id = it.id)) }
+            .assertNext { assertThat(it).isEqualTo(jeepersKeypersContestantEnrolled.copy(id = it.id)) }
             .assertNext { assertThat(it).isEqualTo(escapeCampStarted.copy(id = it.id)) }
             .verifyComplete()
     }
 
     @Test
-    fun `should fail to add contestant to game when 2 contestants exist`() {
+    fun `should fail to enroll contestant to game when 2 contestants exist`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.just(
             escapeCampCreated,
-            lockedAndLoadedContestantAdded,
-            jeepersKeypersContestantAdded
+            lockedAndLoadedContestantEnrolled,
+            jeepersKeypersContestantEnrolled
         )
         val unexpectedContestantId = UUID.randomUUID()
 
         GameAggregate(escapeCampId, unexpectedContestantId, MockedRiddleSolutionChecker(riddles), gameEventStore)
-            .addContestant(Contestant(unexpectedContestantId, "unexpectedContestant"), LocalDateTime.now())
+            .enrollContestant(Contestant(unexpectedContestantId, "unexpectedContestant"), LocalDateTime.now())
             .`as`(StepVerifier::create)
             .verifyErrorMatches { throwable -> throwable is GameException.ContestantNumberLimitExceededException }
     }
 
     @Test
-    fun `should fail to add contestant to game with same name`() {
+    fun `should fail to enroll contestant to game with same name`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.just(
             escapeCampCreated,
-            lockedAndLoadedContestantAdded
+            lockedAndLoadedContestantEnrolled
         )
 
         GameAggregate(escapeCampId, lockedAndLoadedContestantId, MockedRiddleSolutionChecker(riddles), gameEventStore)
-            .addContestant(lockedAndLoadedContestant, LocalDateTime.now())
+            .enrollContestant(lockedAndLoadedContestant, LocalDateTime.now())
             .`as`(StepVerifier::create)
             .verifyErrorMatches { throwable ->
                 throwable is GameException.ContestantNameNotAvailableException || throwable.message.equals(
@@ -83,11 +83,11 @@ class GameAggregateAddContestantTest {
     }
 
     @Test
-    fun `should fail to add contestant to non-existent game`() {
+    fun `should fail to enroll contestant to non-existent game`() {
         every { gameEventStore.loadAllEvents(unknownGameId) } returns Flux.empty()
 
         GameAggregate(unknownGameId, lockedAndLoadedContestantId, MockedRiddleSolutionChecker(riddles), gameEventStore)
-            .addContestant(lockedAndLoadedContestant, lockedAndLoadedContestantAddedAt)
+            .enrollContestant(lockedAndLoadedContestant, lockedAndLoadedContestantEnrolledAt)
             .`as`(StepVerifier::create)
             .verifyErrorMatches { throwable ->
                 throwable is GameException.GameNotFoundException || throwable.message.equals(

@@ -43,7 +43,7 @@ class SharedGivenStepDefinition : En {
         Given("the {string} contestant registered for a game") { contestantName: String ->
             createGame(gameClient)
             contestants = mutableListOf()
-            addAllContestants(gameClient)
+            enrollAllContestants(gameClient)
             currentContestant = contestants!!.first { it.name == contestantName }
         }
 
@@ -85,14 +85,14 @@ fun createGame(gameClient: GameClient) {
         }
 }
 
-fun addAllContestants(gameClient: GameClient) {
+fun enrollAllContestants(gameClient: GameClient) {
     contestantNames.forEach { contestantName ->
-        addContestant(gameClient, contestantName)
+        enrollContestant(gameClient, contestantName)
     }
 }
 
-fun addContestant(gameClient: GameClient, contestantName: String) {
-    gameClient.addContestant(contestantName)
+fun enrollContestant(gameClient: GameClient, contestantName: String) {
+    gameClient.enrollContestant(contestantName)
         .expectStatus().isCreated
         .expectBody(JsonNode::class.java).consumeWith {
             val contestantId = it.responseBody!!.get("contestantId").asText()
@@ -100,7 +100,7 @@ fun addContestant(gameClient: GameClient, contestantName: String) {
             assertThat(contestantId).isNotNull()
             assertThat(accessToken).isNotNull()
             contestants!!.add(RegisteredContestant(UUID.fromString(contestantId), contestantName, accessToken, contestants!!.size + 1))
-            scenario?.log("Contestant $contestantName with identifier $contestantId is added")
+            scenario?.log("Contestant $contestantName with identifier $contestantId is enrolled")
         }
 }
 

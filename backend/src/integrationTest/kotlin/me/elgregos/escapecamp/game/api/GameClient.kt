@@ -51,7 +51,7 @@ class GameClient(private val webTestClient: WebTestClient) {
             .accept(APPLICATION_JSON)
             .exchange()
 
-    fun addContestant(contestantName: String) =
+    fun enrollContestant(contestantName: String) =
         webTestClient.post()
             .uri { it.path(rootPath).pathSegment("$gameId", "contestants").build() }
             .header(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)

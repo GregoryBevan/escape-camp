@@ -14,12 +14,12 @@ sealed class GameCommand(open val gameId: UUID) : Command {
         val createdAt: LocalDateTime = nowUTC()
     ) : GameCommand(gameId)
 
-    data class AddContestant(
+    data class EnrollContestant(
         override val gameId: UUID,
-        val addedAt: LocalDateTime = nowUTC(),
-        val addedBy: UUID = UUID.randomUUID(),
+        val enrolledAt: LocalDateTime = nowUTC(),
+        val enrolledBy: UUID = UUID.randomUUID(),
         val name: String,
-        val contestant: Contestant = Contestant(addedBy, name)
+        val contestant: Contestant = Contestant(enrolledBy, name)
     ) : GameCommand(gameId)
 
     data class AssignContestantNextRiddle(

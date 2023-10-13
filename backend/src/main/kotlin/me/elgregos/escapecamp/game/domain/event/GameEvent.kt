@@ -53,33 +53,33 @@ sealed class GameEvent(
                 .set("riddles", genericObjectMapper.valueToTree(riddles)))
     }
 
-    data class ContestantAdded(
+    data class ContestantEnrolled(
         override val id: UUID = UUID.randomUUID(),
         override val sequenceNum: Long? = null,
         override val version: Int = 1,
-        val addedAt: LocalDateTime = nowUTC(),
-        val addedBy: UUID,
+        val enrolledAt: LocalDateTime = nowUTC(),
+        val enrolledBy: UUID,
         val gameId: UUID,
         override val event: JsonNode,
     ) : GameEvent(
         id,
         sequenceNum,
         version,
-        addedAt,
-        addedBy,
+        enrolledAt,
+        enrolledBy,
         gameId,
-        ContestantAdded::class.simpleName!!,
+        ContestantEnrolled::class.simpleName!!,
         event
     ) {
-        constructor(gameId: UUID, version: Int, addedBy: UUID, addedAt: LocalDateTime, contestants: List<Contestant>) : this(
+        constructor(gameId: UUID, version: Int, enrolledBy: UUID, enrolledAt: LocalDateTime, contestants: List<Contestant>) : this(
             gameId = gameId,
             version = version,
-            addedBy = addedBy,
-            addedAt = addedAt,
+            enrolledBy = enrolledBy,
+            enrolledAt = enrolledAt,
             event = genericObjectMapper.createObjectNode()
                 .put("id", "$gameId")
-                .put("updatedBy", "$addedBy")
-                .put("updatedAt", "$addedAt")
+                .put("updatedBy", "$enrolledBy")
+                .put("updatedAt", "$enrolledAt")
                 .set("contestants", genericObjectMapper.valueToTree(contestants))
         )
     }

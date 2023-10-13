@@ -24,7 +24,7 @@ class GameAggregate(
     fun createGame(riddles: List<Pair<String, String>>, startedAt: LocalDateTime): Flux<GameEvent> =
         Flux.just(GameCreated(gameId, userId, startedAt, riddles))
 
-    fun addContestant(contestant: Contestant, addedAt: LocalDateTime): Flux<GameEvent> =
+    fun enrollContestant(contestant: Contestant, enrolledAt: LocalDateTime): Flux<GameEvent> =
         previousState()
             .filter { !it.isEmpty }
             .switchIfEmpty(Mono.error { GameNotFoundException(gameId) })
@@ -33,15 +33,15 @@ class GameAggregate(
             .switchIfEmpty(Mono.error { ContestantNameNotAvailableException(contestant.name) })
             .filter { game -> game.contestants.size < game.riddles.size }
             .switchIfEmpty(Mono.error { ContestantNumberLimitExceededException() })
-            .map { game -> game.addContestant(contestant, addedAt) }
+            .map { game -> game.enrollContestant(contestant, enrolledAt) }
             .flatMapMany { game ->
                 nextVersion()
-                    .map { version -> ContestantAdded(gameId, version, userId, addedAt, game.contestants) }
+                    .map { version -> ContestantEnrolled(gameId, version, userId, enrolledAt, game.contestants) }
                     .flatMap { this.applyNewEvent(it) }
                     .cast(GameEvent::class.java)
                     .concatWith(nextVersion()
                         .filter { game.contestants.size == game.riddles.size }
-                        .map { version -> GameStarted(gameId, version, userId, addedAt) })
+                        .map { version -> GameStarted(gameId, version, userId, enrolledAt) })
             }
 
     fun assignContestantNextRiddle(assignedAt: LocalDateTime): Flux<GameEvent> =

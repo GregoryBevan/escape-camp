@@ -63,7 +63,7 @@ class GameAggregateAssignContestantNextRiddleTest {
         GameAggregate(escapeCampId, lockedAndLoadedContestantId, MockedRiddleSolutionChecker(riddles), gameEventStore)
             .assignContestantNextRiddle(lockedAndLoadedFirstRiddleAssignedAt)
             .`as`(StepVerifier::create)
-            .verifyErrorMatches { throwable ->  throwable is GameException.GameNotStartedException && throwable.message == "Game has not yet started. Wait for other contestants to be added" }
+            .verifyErrorMatches { throwable ->  throwable is GameException.GameNotStartedException && throwable.message == "Game has not yet started. Wait for other contestants to enroll" }
     }
 
     @Test

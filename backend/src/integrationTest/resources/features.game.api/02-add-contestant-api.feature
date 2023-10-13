@@ -1,43 +1,43 @@
 # language: en
 
-@addContestantApiFeature
-Feature: Add contestant to game
+@enrollContestantApiFeature
+Feature: Enroll contestant to game
 
-  Scenario: Add first contestant to game
+  Scenario: Enroll first contestant to game
     Given a contestant with game identifier
-    When he adds his contestant to the game with name "Locked and loaded"
-    Then the contestant is added
+    When he enrolls in the game with name "Locked and loaded"
+    Then the contestant is enrolled
     And a token is returned to continue the game
 
-  Scenario: Add contestant with same name to game
+  Scenario: Enroll contestant with same name to game
     Given a contestant with game identifier
-    And a contestant with name "Locked and loaded" has been added to the game
-    When he adds his contestant to the game with name "Locked and loaded"
+    And a contestant with name "Locked and loaded" has been enrolled to the game
+    When he enrolls in the game with name "Locked and loaded"
     Then the response contains a contestant name not available error
 
-  Scenario: Add contestant to game that has already 4 contestants
+  Scenario: Enroll contestant to game that has already 4 contestants
     Given a contestant with game identifier
-    And 4 contestants have been added to the game
+    And 4 contestants have been enrolled in the game
       | Locked and Loaded |
       | Jeepers Keypers   |
       | The Escape Peas   |
       | Sher-unlock       |
-    When he adds his contestant to the game with name "The unexpected contestant"
+    When he enrolls in the game with name "The unexpected contestant"
     Then the response contains a contestant number limit exceeded error
 
-  Scenario: Add last contestant to game
+  Scenario: Enroll last contestant to game
     Given a contestant with game identifier
-    And 3 contestants have been added to the game
+    And 3 contestants have been enrolled in the game
       | Locked and Loaded |
       | Jeepers Keypers   |
       | The Escape Peas   |
-    When he adds his contestant to the game with name "Sher-unlock"
-    Then the contestant is added
+    When he enrolls in the game with name "Sher-unlock"
+    Then the contestant is enrolled
     And a token is returned to continue the game
     And the game starts automatically
     And a game started notification is sent
 
-  Scenario: Add contestant to an unknown game
+  Scenario: Enroll contestant to an unknown game
     Given a contestant with an unknown game identifier
-    When he adds his contestant to the game with name "Locked and loaded"
+    When he enrolls in the game with name "Locked and loaded"
     Then the response contains a game not found error

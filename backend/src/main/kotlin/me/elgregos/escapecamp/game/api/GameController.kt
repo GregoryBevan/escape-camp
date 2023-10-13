@@ -52,11 +52,11 @@ class GameController(
 
     @PostMapping("{gameId}/contestants")
     @ResponseStatus(HttpStatus.CREATED)
-    fun addContestant(
+    fun enrollContestant(
         @PathVariable @Valid gameId: UUID,
         @RequestBody @Valid contestantCreationDTO: ContestantCreationDTO
     ): Mono<Map<String, String>> =
-        gameCommandHandler.handle(GameCommand.AddContestant(gameId = gameId, name = contestantCreationDTO.name))
+        gameCommandHandler.handle(GameCommand.EnrollContestant(gameId = gameId, name = contestantCreationDTO.name))
             .last()
             .map {
                 mapOf(
