@@ -31,7 +31,7 @@ class GameCommandHandler(
 
     private fun enrollContestant(gameCommand: EnrollContestant) =
         GameAggregate(gameCommand.gameId, gameCommand.enrolledBy, gameService, gameEventStore)
-            .enrollContestant(gameCommand.contestant, gameCommand.enrolledAt, gameCommand.limitContestants)
+            .enrollContestant(gameCommand.contestant, gameCommand.enrolledAt)
 
     private fun assignContestantNextRiddle(gameCommand: AssignContestantNextRiddle) =
         GameAggregate(gameCommand.gameId, gameCommand.assignedBy, gameService, gameEventStore)

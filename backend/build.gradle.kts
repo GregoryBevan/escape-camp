@@ -16,9 +16,6 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-    }
 }
 
 sourceSets {
@@ -41,7 +38,7 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation("me.elgregos:reakt-eves:1.2.0")
+    implementation("me.elgregos:reakt-eves:1.2.1")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     implementation("org.springframework.boot:spring-boot-starter-validation")

@@ -1,8 +1,8 @@
 package me.elgregos.escapecamp.game.domain.event
 
 import me.elgregos.escapecamp.config.exception.GameException.*
-import me.elgregos.escapecamp.game.domain.entity.Game
 import me.elgregos.escapecamp.game.domain.entity.Contestant
+import me.elgregos.escapecamp.game.domain.entity.Game
 import me.elgregos.escapecamp.game.domain.event.GameEvent.*
 import me.elgregos.escapecamp.game.domain.service.RiddleSolutionChecker
 import me.elgregos.reakteves.domain.JsonConvertible
@@ -10,7 +10,6 @@ import me.elgregos.reakteves.domain.event.EventStore
 import me.elgregos.reakteves.domain.event.JsonAggregate
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import reactor.core.scheduler.Schedulers
 import java.time.LocalDateTime
 import java.util.*
 
@@ -25,14 +24,14 @@ class GameAggregate(
     fun createGame(riddles: List<Pair<String, String>>, startedAt: LocalDateTime): Flux<GameEvent> =
         Flux.just(GameCreated(gameId, userId, startedAt, riddles))
 
-    fun enrollContestant(contestant: Contestant, enrolledAt: LocalDateTime, limitContestants: Boolean = true): Flux<GameEvent> =
+    fun enrollContestant(contestant: Contestant, enrolledAt: LocalDateTime): Flux<GameEvent> =
         previousState()
             .filter { !it.isEmpty }
             .switchIfEmpty(Mono.error { GameNotFoundException(gameId) })
             .map { JsonConvertible.fromJson(it, Game::class.java) }
             .filter { game -> game.isContestantNameAvailable(contestant.name) }
             .switchIfEmpty(Mono.error { ContestantNameNotAvailableException(contestant.name) })
-            .filter { game -> !limitContestants || game.contestants.size < game.riddles.size }
+            .filter(Game::isContestantLimitNotReached)
             .switchIfEmpty(Mono.error { ContestantNumberLimitExceededException() })
             .map { game -> game.enrollContestant(contestant, enrolledAt) }
             .flatMapMany { game ->
@@ -41,7 +40,7 @@ class GameAggregate(
                     .flatMap { this.applyNewEvent(it) }
                     .concatWith(
                         nextVersion()
-                            .filter { limitContestants && game.contestants.size == game.riddles.size }
+                            .filter { game.isGameAbleToStartAutomatically() }
                             .map { version -> GameStarted(gameId, version, userId, enrolledAt) }
                     )
             }

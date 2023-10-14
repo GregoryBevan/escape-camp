@@ -18,6 +18,5 @@ class GameConfig {
 
 @ConfigurationProperties(prefix = "game")
 data class GameProperties @ConstructorBinding constructor(
-    val limitContestants: Boolean,
     val riddles: List<Map<String, String>>
 )

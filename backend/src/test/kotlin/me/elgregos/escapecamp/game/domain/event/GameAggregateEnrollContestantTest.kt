@@ -53,12 +53,12 @@ class GameAggregateEnrollContestantTest {
     @Test
     fun `should enroll contestant corresponding to the riddle number and not start game if no contestants limit`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.just(
-            escapeCampCreated,
+            escapeCampWithUnlimitedContestantCreated,
             lockedAndLoadedContestantEnrolled
         )
 
         GameAggregate(escapeCampId, jeepersKeypersContestantId, MockedRiddleSolutionChecker(riddles), gameEventStore)
-            .enrollContestant(jeepersKeypersContestant, jeepersKeypersContestantEnrolledAt, limitContestants = false)
+            .enrollContestant(jeepersKeypersContestant, jeepersKeypersContestantEnrolledAt)
             .`as`(StepVerifier::create)
             .assertNext { assertThat(it).isEqualTo(jeepersKeypersContestantEnrolled.copy(id = it.id)) }
             .verifyComplete()
@@ -67,13 +67,13 @@ class GameAggregateEnrollContestantTest {
     @Test
     fun `should enroll more contestant than riddle number if no contestants limit`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.just(
-            escapeCampCreated,
+            escapeCampWithUnlimitedContestantCreated,
             lockedAndLoadedContestantEnrolled,
             jeepersKeypersContestantEnrolled
         )
 
         GameAggregate(escapeCampId, sherUnlockContestantId, MockedRiddleSolutionChecker(riddles), gameEventStore)
-            .enrollContestant(sherUnlockContestant, sherUnlockContestantEnrolledAt, limitContestants = false)
+            .enrollContestant(sherUnlockContestant, sherUnlockContestantEnrolledAt)
             .`as`(StepVerifier::create)
             .assertNext { assertThat(it).isEqualTo(sherUnlockContestantEnrolled.copy(id = it.id)) }
             .verifyComplete()

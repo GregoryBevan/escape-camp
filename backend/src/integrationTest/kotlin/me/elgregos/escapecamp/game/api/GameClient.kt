@@ -43,12 +43,13 @@ class GameClient(private val webTestClient: WebTestClient) {
             .accept(APPLICATION_JSON)
             .exchange()
 
-    fun createGame() =
+    fun createGame(enrollmentType: String? = null) =
         webTestClient.post()
             .uri(rootPath)
             .header(HttpHeaders.AUTHORIZATION, "Bearer $organizerJwt")
             .header(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
             .accept(APPLICATION_JSON)
+            .body(BodyInserters.fromValue(if(enrollmentType == null) "{}" else """{"enrollmentType":"$enrollmentType"}"""))
             .exchange()
 
     fun enrollContestant(contestantName: String) =

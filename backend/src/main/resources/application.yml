@@ -1,10 +1,11 @@
 spring:
   r2dbc:
-    url: r2dbc:pool:postgresql://${POSTGRESQL_ADDON_HOST:localhost}:${POSTGRESQL_ADDON_PORT:5432}/${POSTGRESQL_ADDON_DB:escape-camp}
+    url: r2dbc:postgresql:postgresql://${POSTGRESQL_ADDON_HOST:localhost}:${POSTGRESQL_ADDON_PORT:5432}/${POSTGRESQL_ADDON_DB:escape-camp}
     username: ${POSTGRESQL_ADDON_USER:admin}
     password: ${POSTGRESQL_ADDON_PASSWORD:guess-what}
-    initialSize: 2
-    maxSize: 10
+    pool:
+      initialSize: 2
+      maxSize: 10
     properties:
       sslMode: ${POSTGRESQL_R2DBC_SSL_MODE:DISABLE}
   liquibase:
@@ -22,7 +23,6 @@ jwt:
   secretKey: ${JWT_SECRET_KEY:youllneverguesswhatismysecretbutyoucantry}
 
 game:
-  limitContestants: true
   riddles:
     - riddle-1:
         solution: ${RIDDLE_1_SOLUTION:event sourcing}
@@ -45,4 +45,3 @@ logging:
         postgresql:
           QUERY: INFO
           PARAM: INFO
-  liquibase: WARN

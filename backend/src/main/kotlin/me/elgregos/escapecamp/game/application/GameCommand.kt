@@ -1,6 +1,7 @@
 package me.elgregos.escapecamp.game.application
 
 import me.elgregos.escapecamp.game.domain.entity.Contestant
+import me.elgregos.escapecamp.game.domain.entity.EnrollmentType
 import me.elgregos.reakteves.application.Command
 import me.elgregos.reakteves.libs.nowUTC
 import java.time.LocalDateTime
@@ -10,9 +11,10 @@ sealed class GameCommand(open val gameId: UUID) : Command {
 
     data class CreateGame(
         override val gameId: UUID = UUID.randomUUID(),
-        val riddles: List<Pair<String, String>>,
         val createdBy: UUID,
-        val createdAt: LocalDateTime = nowUTC()
+        val createdAt: LocalDateTime = nowUTC(),
+        val riddles: List<Pair<String, String>>,
+        val enrollmentType: EnrollmentType
     ) : GameCommand(gameId)
 
     data class EnrollContestant(
@@ -20,8 +22,7 @@ sealed class GameCommand(open val gameId: UUID) : Command {
         val enrolledAt: LocalDateTime = nowUTC(),
         val enrolledBy: UUID = UUID.randomUUID(),
         val name: String,
-        val contestant: Contestant = Contestant(enrolledBy, name),
-        val limitContestants: Boolean = true
+        val contestant: Contestant = Contestant(enrolledBy, name)
     ) : GameCommand(gameId)
 
     data class AssignContestantNextRiddle(

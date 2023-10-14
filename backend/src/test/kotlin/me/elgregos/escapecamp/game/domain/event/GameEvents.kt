@@ -18,6 +18,18 @@ val escapeCampCreated = GameCreated(
         .set("riddles", genericObjectMapper.valueToTree(riddles))
 )
 
+val escapeCampWithUnlimitedContestantCreated = GameCreated(
+    gameId = escapeCampId,
+    createdAt = escapeCampCreatedAt,
+    createdBy = organizerId,
+    event = genericObjectMapper.createObjectNode()
+        .put("id", "$escapeCampId")
+        .put("createdAt", "$escapeCampCreatedAt")
+        .put("createdBy", "$organizerId")
+        .put("enrollmentType", EnrollmentType.UNLIMITED.name)
+        .set("riddles", genericObjectMapper.valueToTree(riddles))
+)
+
 val lockedAndLoadedContestantEnrolled = ContestantEnrolled(
     gameId = escapeCampId,
     version = 2,
