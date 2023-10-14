@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.readValue
 import me.elgregos.escapecamp.game.domain.entity.Riddle
 import me.elgregos.escapecamp.game.domain.entity.Contestant
+import me.elgregos.escapecamp.game.domain.entity.EnrollmentType
 import me.elgregos.reakteves.domain.event.Event
 import me.elgregos.reakteves.libs.genericObjectMapper
 import me.elgregos.reakteves.libs.nowUTC
@@ -42,7 +43,7 @@ sealed class GameEvent(
         event
     ) {
 
-        constructor(gameId: UUID, createdBy: UUID, createdAt: LocalDateTime, riddles: List<Pair<String, String>>) : this(
+        constructor(gameId: UUID, createdBy: UUID, createdAt: LocalDateTime, enrollmentType: EnrollmentType, riddles: List<Pair<String, String>>) : this(
             gameId = gameId,
             createdAt = createdAt,
             createdBy = createdBy,
@@ -50,6 +51,7 @@ sealed class GameEvent(
                 .put("id", "$gameId")
                 .put("createdAt", "$createdAt")
                 .put("createdBy", "$createdBy")
+                .put("enrollmentType", enrollmentType.name)
                 .set("riddles", genericObjectMapper.valueToTree(riddles)))
     }
 

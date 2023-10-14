@@ -2,6 +2,7 @@ package me.elgregos.escapecamp.game.domain.event
 
 import me.elgregos.escapecamp.config.exception.GameException.*
 import me.elgregos.escapecamp.game.domain.entity.Contestant
+import me.elgregos.escapecamp.game.domain.entity.EnrollmentType
 import me.elgregos.escapecamp.game.domain.entity.Game
 import me.elgregos.escapecamp.game.domain.event.GameEvent.*
 import me.elgregos.escapecamp.game.domain.service.RiddleSolutionChecker
@@ -21,8 +22,8 @@ class GameAggregate(
 ) :
     JsonAggregate<GameEvent, UUID, UUID>(gameId, eventStore) {
 
-    fun createGame(riddles: List<Pair<String, String>>, startedAt: LocalDateTime): Flux<GameEvent> =
-        Flux.just(GameCreated(gameId, userId, startedAt, riddles))
+    fun createGame(enrollmentType: EnrollmentType, riddles: List<Pair<String, String>>, startedAt: LocalDateTime): Flux<GameEvent> =
+        Flux.just(GameCreated(gameId, userId, startedAt, enrollmentType, riddles))
 
     fun enrollContestant(contestant: Contestant, enrolledAt: LocalDateTime): Flux<GameEvent> =
         previousState()
@@ -44,8 +45,6 @@ class GameAggregate(
                             .map { version -> GameStarted(gameId, version, userId, enrolledAt) }
                     )
             }
-
-//            .doOnNext { println(it) }
 
     fun assignContestantNextRiddle(assignedAt: LocalDateTime): Flux<GameEvent> =
         previousState()

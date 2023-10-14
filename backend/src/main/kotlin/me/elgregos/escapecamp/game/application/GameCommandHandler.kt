@@ -27,7 +27,7 @@ class GameCommandHandler(
 
     private fun createGame(gameCommand: CreateGame) =
         GameAggregate(gameCommand.gameId, gameCommand.createdBy, gameService, gameEventStore)
-            .createGame(gameCommand.riddles, gameCommand.createdAt)
+            .createGame(gameCommand.enrollmentType, gameCommand.riddles, gameCommand.createdAt)
 
     private fun enrollContestant(gameCommand: EnrollContestant) =
         GameAggregate(gameCommand.gameId, gameCommand.enrolledBy, gameService, gameEventStore)

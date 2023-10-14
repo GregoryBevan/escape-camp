@@ -15,6 +15,7 @@ val escapeCampCreated = GameCreated(
         .put("id", "$escapeCampId")
         .put("createdAt", "$escapeCampCreatedAt")
         .put("createdBy", "$organizerId")
+        .put("enrollmentType", EnrollmentType.LIMITED_TO_RIDDLE_NUMBER.name)
         .set("riddles", genericObjectMapper.valueToTree(riddles))
 )
 

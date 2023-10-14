@@ -30,7 +30,7 @@ class PostgreSQLContainerHandler {
     }
 
     private fun registerSpringProperties() {
-        System.setProperty("spring.r2dbc.url", postgreSQLContainer.jdbcUrl.replace("jdbc", "r2dbc:pool"))
+        System.setProperty("spring.r2dbc.url", postgreSQLContainer.jdbcUrl.replace("jdbc", "r2dbc"))
         System.setProperty("spring.r2dbc.username", postgreSQLContainer.username)
         System.setProperty("spring.r2dbc.password", postgreSQLContainer.password)
         System.setProperty("spring.liquibase.change-log", "classpath:db/changelog/db-changelog.sql")

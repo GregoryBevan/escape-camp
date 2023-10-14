@@ -72,9 +72,9 @@ class SharedGivenStepDefinition : En {
 
 }
 
-fun createGame(gameClient: GameClient) {
+fun createGame(gameClient: GameClient, enrollmentType: String? = null) {
     gameClient.authenticateOrganizer()
-    gameClient.createGame()
+    gameClient.createGame(enrollmentType)
         .expectStatus().isCreated
         .expectBody(JsonNode::class.java).consumeWith {
             gameId = UUID.fromString(
