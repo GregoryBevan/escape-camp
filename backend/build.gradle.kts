@@ -4,8 +4,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "3.0.5"
     id("io.spring.dependency-management") version "1.1.0"
-    kotlin("jvm") version "1.9.10"
-    kotlin("plugin.spring") version "1.9.10"
+    kotlin("jvm") version "1.8.22"
+    kotlin("plugin.spring") version "1.8.22"
     id("pl.allegro.tech.build.axion-release") version "1.15.0"
     id("com.gorylenko.gradle-git-properties") version "2.4.1"
     id("com.github.node-gradle.node") version "5.0.0"
