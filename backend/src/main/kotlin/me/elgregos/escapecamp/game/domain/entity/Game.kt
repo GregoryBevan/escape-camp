@@ -12,6 +12,7 @@ data class Game(
     override val updatedAt: LocalDateTime = createdAt,
     override val updatedBy: UUID = createdBy,
     val riddles: List<Pair<String, String>>,
+    val enrollmentType: EnrollmentType = EnrollmentType.LIMITED_TO_RIDDLE_NUMBER,
     val contestants: List<Contestant> = listOf(),
     val startedAt: LocalDateTime? = null,
     val winner: UUID? = null
@@ -24,6 +25,12 @@ data class Game(
             updatedBy = contestant.id,
             contestants = contestants.toMutableList().also { it.add(contestant) }
         )
+
+    fun contestantNameAvailable(contestantName: String) = contestants.none { it.name == contestantName }
+
+    fun contestantLimitNotReached() = enrollmentType == EnrollmentType.UNLIMITED || contestants.size < riddles.size
+
+    fun ableToStartAutomatically() = enrollmentType == EnrollmentType.LIMITED_TO_RIDDLE_NUMBER && contestants.size == riddles.size
 
     fun assignRiddleToContestant(contestantId: UUID, assignedAt: LocalDateTime) =
         copy(
@@ -46,9 +53,11 @@ data class Game(
             version = version + 1,
             updatedAt = solvedAt,
             updatedBy = contestantId,
-            contestants = contestants.map { contestant -> if (contestant.id == contestantId) contestant.solveLastUnsolvedRiddle(solvedAt) else contestant })
-
-    fun isContestantNameAvailable(contestantName: String) = contestants.none { it.name == contestantName }
+            contestants = contestants.map { contestant ->
+                if (contestant.id == contestantId) contestant.solveLastUnsolvedRiddle(
+                    solvedAt
+                ) else contestant
+            })
 
     fun canAssignRiddleToContestant(contestantId: UUID) =
         contestants.find { it.id == contestantId }?.hasPreviousRiddleSolved() ?: false
@@ -56,7 +65,8 @@ data class Game(
     fun contestantRegistrationOrder(contestantId: UUID) =
         contestants.indexOfFirst { it.id == contestantId }
 
-    fun checkIfContestantExists(contestantId: UUID) = contestants.map { contestant -> contestant.id }.contains(contestantId)
+    fun checkIfContestantExists(contestantId: UUID) =
+        contestants.map { contestant -> contestant.id }.contains(contestantId)
 
     fun contestantLastUnsolvedRiddle(contestantId: UUID) =
         contestants.find { it.id == contestantId }?.lastUnsolvedRiddle()

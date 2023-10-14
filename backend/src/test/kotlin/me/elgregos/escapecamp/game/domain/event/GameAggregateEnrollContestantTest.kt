@@ -36,7 +36,7 @@ class GameAggregateEnrollContestantTest {
     }
 
     @Test
-    fun `should enroll last contestant to game and start game`() {
+    fun `should enroll last contestant to game and start game when contestant limit reached`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.just(
             escapeCampCreated,
             lockedAndLoadedContestantEnrolled
@@ -51,7 +51,36 @@ class GameAggregateEnrollContestantTest {
     }
 
     @Test
-    fun `should fail to enroll contestant to game when 2 contestants exist`() {
+    fun `should enroll contestant corresponding to the riddle number and not start game if no contestants limit`() {
+        every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.just(
+            escapeCampWithUnlimitedContestantCreated,
+            lockedAndLoadedContestantEnrolled
+        )
+
+        GameAggregate(escapeCampId, jeepersKeypersContestantId, MockedRiddleSolutionChecker(riddles), gameEventStore)
+            .enrollContestant(jeepersKeypersContestant, jeepersKeypersContestantEnrolledAt)
+            .`as`(StepVerifier::create)
+            .assertNext { assertThat(it).isEqualTo(jeepersKeypersContestantEnrolled.copy(id = it.id)) }
+            .verifyComplete()
+    }
+
+    @Test
+    fun `should enroll more contestant than riddle number if no contestants limit`() {
+        every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.just(
+            escapeCampWithUnlimitedContestantCreated,
+            lockedAndLoadedContestantEnrolled,
+            jeepersKeypersContestantEnrolled
+        )
+
+        GameAggregate(escapeCampId, sherUnlockContestantId, MockedRiddleSolutionChecker(riddles), gameEventStore)
+            .enrollContestant(sherUnlockContestant, sherUnlockContestantEnrolledAt)
+            .`as`(StepVerifier::create)
+            .assertNext { assertThat(it).isEqualTo(sherUnlockContestantEnrolled.copy(id = it.id)) }
+            .verifyComplete()
+    }
+
+    @Test
+    fun `should fail to enroll contestant to game when contestants limit reached`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.just(
             escapeCampCreated,
             lockedAndLoadedContestantEnrolled,

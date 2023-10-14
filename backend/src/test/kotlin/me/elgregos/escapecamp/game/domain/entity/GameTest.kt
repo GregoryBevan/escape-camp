@@ -2,7 +2,7 @@ package me.elgregos.escapecamp.game.domain.entity
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import org.junit.jupiter.api.Named.*
+import org.junit.jupiter.api.Named.named
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.CsvSource
@@ -26,7 +26,21 @@ class GameTest {
         "Jeepers Keypers, true"
     )
     fun `should check if contestant name is available`(contestantName: String, expectedResult: Boolean) {
-        assertThat(escapeCampAfterLockedAndLoadedContestantEnrolled.isContestantNameAvailable(contestantName)).isEqualTo(expectedResult)
+        assertThat(escapeCampAfterLockedAndLoadedContestantEnrolled.contestantNameAvailable(contestantName)).isEqualTo(
+            expectedResult
+        )
+    }
+
+    @ParameterizedTest
+    @MethodSource("checkContestantLimitTestCases")
+    fun `should check if contestant can be enrolled according to limitation`(game: Game, expectedResult: Boolean) {
+        assertThat(game.contestantLimitNotReached()).isEqualTo(expectedResult)
+    }
+
+    @ParameterizedTest
+    @MethodSource("checkIfGameAbleToStartTestCases")
+    fun `should check if game is able to start automatically`(game: Game, expectedResult: Boolean) {
+        assertThat(game.ableToStartAutomatically()).isEqualTo(expectedResult)
     }
 
     @ParameterizedTest
@@ -38,6 +52,7 @@ class GameTest {
         assertThat(escapeCampAfterGameStarted.contestantRegistrationOrder(contestantId))
             .isEqualTo(expectedOrder)
     }
+
     @ParameterizedTest
     @MethodSource("checkIfContestantExistsTestCases")
     fun `should check if contestant exist`(contestantId: UUID, expectedResult: Boolean) {
@@ -53,7 +68,12 @@ class GameTest {
 
     @ParameterizedTest
     @MethodSource("assignRiddleContestantTestCases")
-    fun `should assign riddle to contestant`(game: Game, contestantId: UUID, assignedAt: LocalDateTime, expectedGame: Game) {
+    fun `should assign riddle to contestant`(
+        game: Game,
+        contestantId: UUID,
+        assignedAt: LocalDateTime,
+        expectedGame: Game
+    ) {
         assertThat(game.assignRiddleToContestant(contestantId, assignedAt)).isEqualTo(expectedGame)
     }
 
@@ -65,7 +85,12 @@ class GameTest {
 
     @Test
     fun `should solve last assigned riddle of contestant`() {
-        assertThat(escapeCampAfterAllFirstRiddleAssigned.solveLastAssignedRiddleOfContestant(jeepersKeypersContestantId, jeepersKeypersFirstRiddleSolvedAt))
+        assertThat(
+            escapeCampAfterAllFirstRiddleAssigned.solveLastAssignedRiddleOfContestant(
+                jeepersKeypersContestantId,
+                jeepersKeypersFirstRiddleSolvedAt
+            )
+        )
             .isEqualTo(escapeCampAfterJeepersKeypersFirstRiddleSolved)
     }
 
@@ -76,6 +101,26 @@ class GameTest {
     }
 
     companion object {
+
+        @JvmStatic
+        fun checkContestantLimitTestCases(): Stream<Arguments> =
+            Stream.of(
+                Arguments.of(named("Game created", escapeCamp), true),
+                Arguments.of(named("Game created without contestant limit", escapeCampWithoutContestantLimit), true),
+                Arguments.of(named("Game with one contestant", escapeCampAfterLockedAndLoadedContestantEnrolled), true),
+                Arguments.of(named("Game with two contestants", escapeCampAfterJeepersKeypersContestantEnrolled), false),
+                Arguments.of(named("Game with two contestant without contestant limit", escapeCampWithoutContestantLimitAfterJeepersKeypersContestantEnrolled), true)
+            )
+
+        @JvmStatic
+        fun checkIfGameAbleToStartTestCases(): Stream<Arguments> =
+            Stream.of(
+                Arguments.of(named("Game created", escapeCamp), false),
+                Arguments.of(named("Game created without contestant limit", escapeCampWithoutContestantLimit), false),
+                Arguments.of(named("Game with one contestant", escapeCampAfterLockedAndLoadedContestantEnrolled), false),
+                Arguments.of(named("Game with two contestants", escapeCampAfterJeepersKeypersContestantEnrolled), true),
+                Arguments.of(named("Game with two contestant without contestant limit", escapeCampWithoutContestantLimitAfterJeepersKeypersContestantEnrolled), false)
+            )
 
         @JvmStatic
         fun checkIfContestantExistsTestCases(): Stream<Arguments> =

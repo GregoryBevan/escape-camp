@@ -1,8 +1,9 @@
 package me.elgregos.escapecamp.game.domain.event
 
 import me.elgregos.escapecamp.config.exception.GameException.*
-import me.elgregos.escapecamp.game.domain.entity.Game
 import me.elgregos.escapecamp.game.domain.entity.Contestant
+import me.elgregos.escapecamp.game.domain.entity.EnrollmentType
+import me.elgregos.escapecamp.game.domain.entity.Game
 import me.elgregos.escapecamp.game.domain.event.GameEvent.*
 import me.elgregos.escapecamp.game.domain.service.RiddleSolutionChecker
 import me.elgregos.reakteves.domain.JsonConvertible
@@ -21,27 +22,28 @@ class GameAggregate(
 ) :
     JsonAggregate<GameEvent, UUID, UUID>(gameId, eventStore) {
 
-    fun createGame(riddles: List<Pair<String, String>>, startedAt: LocalDateTime): Flux<GameEvent> =
-        Flux.just(GameCreated(gameId, userId, startedAt, riddles))
+    fun createGame(enrollmentType: EnrollmentType, riddles: List<Pair<String, String>>, startedAt: LocalDateTime): Flux<GameEvent> =
+        Flux.just(GameCreated(gameId, userId, startedAt, enrollmentType, riddles))
 
     fun enrollContestant(contestant: Contestant, enrolledAt: LocalDateTime): Flux<GameEvent> =
         previousState()
             .filter { !it.isEmpty }
             .switchIfEmpty(Mono.error { GameNotFoundException(gameId) })
             .map { JsonConvertible.fromJson(it, Game::class.java) }
-            .filter { game -> game.isContestantNameAvailable(contestant.name) }
+            .filter { game -> game.contestantNameAvailable(contestant.name) }
             .switchIfEmpty(Mono.error { ContestantNameNotAvailableException(contestant.name) })
-            .filter { game -> game.contestants.size < game.riddles.size }
+            .filter(Game::contestantLimitNotReached)
             .switchIfEmpty(Mono.error { ContestantNumberLimitExceededException() })
             .map { game -> game.enrollContestant(contestant, enrolledAt) }
             .flatMapMany { game ->
                 nextVersion()
                     .map { version -> ContestantEnrolled(gameId, version, userId, enrolledAt, game.contestants) }
                     .flatMap { this.applyNewEvent(it) }
-                    .cast(GameEvent::class.java)
-                    .concatWith(nextVersion()
-                        .filter { game.contestants.size == game.riddles.size }
-                        .map { version -> GameStarted(gameId, version, userId, enrolledAt) })
+                    .concatWith(
+                        nextVersion()
+                            .filter { game.ableToStartAutomatically() }
+                            .map { version -> GameStarted(gameId, version, userId, enrolledAt) }
+                    )
             }
 
     fun assignContestantNextRiddle(assignedAt: LocalDateTime): Flux<GameEvent> =

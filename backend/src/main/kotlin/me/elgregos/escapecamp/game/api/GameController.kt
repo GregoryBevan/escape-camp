@@ -5,12 +5,13 @@ import me.elgregos.escapecamp.config.security.AuthenticatedUser
 import me.elgregos.escapecamp.config.security.Role
 import me.elgregos.escapecamp.config.security.jwt.TokenProvider
 import me.elgregos.escapecamp.config.sse.ServerSentEventService
-import me.elgregos.escapecamp.game.api.dto.RiddleSolutionDTO
 import me.elgregos.escapecamp.game.api.dto.ContestantCreationDTO
+import me.elgregos.escapecamp.game.api.dto.GameDTO
+import me.elgregos.escapecamp.game.api.dto.RiddleSolutionDTO
 import me.elgregos.escapecamp.game.application.GameCommand
 import me.elgregos.escapecamp.game.application.GameCommandHandler
 import me.elgregos.escapecamp.game.application.GameService
-import me.elgregos.escapecamp.game.domain.event.GameEvent.*
+import me.elgregos.escapecamp.game.domain.event.GameEvent.NextContestantRiddleAssigned
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -29,7 +30,8 @@ class GameController(
     private val gameCommandHandler: GameCommandHandler,
     private val tokenProvider: TokenProvider,
     private val gameService: GameService,
-    private val serverSentEventService: ServerSentEventService
+    private val serverSentEventService: ServerSentEventService,
+    private val riddles: List<Pair<String, String>>
 ) {
 
     @GetMapping
@@ -45,8 +47,8 @@ class GameController(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ORGANIZER')")
-    fun createGame(@AuthenticationPrincipal authenticatedUser: AuthenticatedUser) =
-        gameCommandHandler.handle(GameCommand.CreateGame(createdBy = authenticatedUser.id))
+    fun createGame(@AuthenticationPrincipal authenticatedUser: AuthenticatedUser, @RequestBody gameDTO: GameDTO) =
+        gameCommandHandler.handle(GameCommand.CreateGame(createdBy = authenticatedUser.id, riddles = riddles, enrollmentType = gameDTO.enrollmentType))
             .toMono()
             .map { mapOf(Pair("gameId", it.aggregateId)) }
 
@@ -56,7 +58,12 @@ class GameController(
         @PathVariable @Valid gameId: UUID,
         @RequestBody @Valid contestantCreationDTO: ContestantCreationDTO
     ): Mono<Map<String, String>> =
-        gameCommandHandler.handle(GameCommand.EnrollContestant(gameId = gameId, name = contestantCreationDTO.name))
+        gameCommandHandler.handle(
+            GameCommand.EnrollContestant(
+                gameId = gameId,
+                name = contestantCreationDTO.name
+            )
+        )
             .last()
             .map {
                 mapOf(

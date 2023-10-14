@@ -2,13 +2,13 @@ import com.github.gradle.node.npm.task.NpmTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "3.1.4"
-    id("io.spring.dependency-management") version "1.1.3"
-    kotlin("jvm") version "1.9.10"
-    kotlin("plugin.spring") version "1.9.10"
-    id("pl.allegro.tech.build.axion-release") version "1.15.5"
+    id("org.springframework.boot") version "3.0.5"
+    id("io.spring.dependency-management") version "1.1.0"
+    kotlin("jvm") version "1.8.22"
+    kotlin("plugin.spring") version "1.8.22"
+    id("pl.allegro.tech.build.axion-release") version "1.15.0"
     id("com.gorylenko.gradle-git-properties") version "2.4.1"
-    id("com.github.node-gradle.node") version "7.0.1"
+    id("com.github.node-gradle.node") version "5.0.0"
 }
 
 group = "me.elgregos"
@@ -16,9 +16,6 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-    }
 }
 
 sourceSets {
@@ -31,8 +28,8 @@ sourceSets {
 configurations["integrationTestRuntimeOnly"].extendsFrom(configurations.testRuntimeOnly.get())
 configurations["integrationTestImplementation"].extendsFrom(configurations.testImplementation.get())
 
-extra["testcontainersVersion"] = "1.19.1"
-ext["junit-jupiter.version"] = "5.10.0"
+extra["testcontainersVersion"] = "1.17.6"
+ext["junit-jupiter.version"] = "5.9.2"
 
 dependencyManagement {
     imports {
@@ -41,7 +38,7 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation("me.elgregos:reakt-eves:1.2.0")
+    implementation("me.elgregos:reakt-eves:1.2.1")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -115,7 +112,7 @@ gitProperties {
 scmVersion {
     repository {
         type.set("git") // type of repository
-        directory.set(project.rootProject.file("../").path)
+        directory.set(project.rootProject.file("../"))
     }
 }
 

@@ -15,6 +15,19 @@ val escapeCampCreated = GameCreated(
         .put("id", "$escapeCampId")
         .put("createdAt", "$escapeCampCreatedAt")
         .put("createdBy", "$organizerId")
+        .put("enrollmentType", EnrollmentType.LIMITED_TO_RIDDLE_NUMBER.name)
+        .set("riddles", genericObjectMapper.valueToTree(riddles))
+)
+
+val escapeCampWithUnlimitedContestantCreated = GameCreated(
+    gameId = escapeCampId,
+    createdAt = escapeCampCreatedAt,
+    createdBy = organizerId,
+    event = genericObjectMapper.createObjectNode()
+        .put("id", "$escapeCampId")
+        .put("createdAt", "$escapeCampCreatedAt")
+        .put("createdBy", "$organizerId")
+        .put("enrollmentType", EnrollmentType.UNLIMITED.name)
         .set("riddles", genericObjectMapper.valueToTree(riddles))
 )
 
@@ -50,6 +63,24 @@ val jeepersKeypersContestantEnrolled = ContestantEnrolled(
             genericObjectMapper.createArrayNode()
                 .add(lockedAndLoadedContestant.toJson())
                 .add(jeepersKeypersContestant.toJson())
+        ),
+)
+
+val sherUnlockContestantEnrolled = ContestantEnrolled(
+    gameId = escapeCampId,
+    version = 4,
+    enrolledAt = sherUnlockContestantEnrolledAt,
+    enrolledBy = sherUnlockContestantId,
+    event = genericObjectMapper.createObjectNode()
+        .put("id", "981e1b04-ecc6-48b3-b750-58f20faa5e05")
+        .put("updatedBy", "cbedf28e-eca2-49bc-b201-cc94f76ef587")
+        .put("updatedAt", "2023-06-15T13:36")
+        .set(
+            "contestants",
+            genericObjectMapper.createArrayNode()
+                .add(lockedAndLoadedContestant.toJson())
+                .add(jeepersKeypersContestant.toJson())
+                .add(sherUnlockContestant.toJson())
         ),
 )
 

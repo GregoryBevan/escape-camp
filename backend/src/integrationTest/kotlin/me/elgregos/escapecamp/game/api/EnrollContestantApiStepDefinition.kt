@@ -20,8 +20,8 @@ class EnrollContestantApiStepDefinition : En {
 
     init {
 
-        Given("a contestant with game identifier") {
-            createGame(gameClient)
+        Given("a contestant with identifier of game with enrollment type {string}") { enrollmentType: String ->
+            createGame(gameClient, enrollmentType)
         }
 
         Given("a contestant with an unknown game identifier") {
