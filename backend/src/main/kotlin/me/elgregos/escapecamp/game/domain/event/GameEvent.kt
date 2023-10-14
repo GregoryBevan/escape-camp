@@ -115,6 +115,38 @@ sealed class GameEvent(
         )
     }
 
+    data class NextRiddleUnlocked(
+        override val id: UUID = UUID.randomUUID(),
+        override val sequenceNum: Long? = null,
+        override val version: Int,
+        val unlockedAt: LocalDateTime = nowUTC(),
+        val unlockedBy: UUID,
+        val gameId: UUID,
+        override val event: JsonNode
+    ): GameEvent(
+        id,
+        sequenceNum,
+        version,
+        unlockedAt,
+        unlockedBy,
+        gameId,
+        NextContestantRiddleAssigned::class.simpleName!!,
+        event
+    ) {
+
+        constructor(gameId: UUID, version: Int, unlockedAt: LocalDateTime, unlockedBy: UUID, unlockedRiddle: Int) : this(
+            gameId = gameId,
+            version = version,
+            unlockedAt = unlockedAt,
+            unlockedBy = unlockedBy,
+            event = genericObjectMapper.createObjectNode()
+                .put("id", "$gameId")
+                .put("updatedAt", "$unlockedAt")
+                .put("updatedBy", "$unlockedBy")
+                .put("currentRiddle", unlockedRiddle )
+        )
+    }
+
     data class NextContestantRiddleAssigned(
         override val id: UUID = UUID.randomUUID(),
         override val sequenceNum: Long? = null,

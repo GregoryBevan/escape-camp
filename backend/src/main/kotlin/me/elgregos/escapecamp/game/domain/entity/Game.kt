@@ -15,6 +15,7 @@ data class Game(
     val enrollmentType: EnrollmentType = EnrollmentType.LIMITED_TO_RIDDLE_NUMBER,
     val contestants: List<Contestant> = listOf(),
     val startedAt: LocalDateTime? = null,
+    val currentRiddle: Int? = null,
     val winner: UUID? = null
 ) : DomainEntity<UUID, UUID> {
 
@@ -30,7 +31,12 @@ data class Game(
 
     fun contestantLimitNotReached() = enrollmentType == EnrollmentType.UNLIMITED || contestants.size < riddles.size
 
-    fun ableToStartAutomatically() = enrollmentType == EnrollmentType.LIMITED_TO_RIDDLE_NUMBER && contestants.size == riddles.size
+    fun ableToStartAutomatically() =
+        enrollmentType == EnrollmentType.LIMITED_TO_RIDDLE_NUMBER && contestants.size == riddles.size
+
+    fun ableToUnlockNextRiddle() = currentRiddle == null || currentRiddle < riddles.size - 1
+
+    fun nextRiddleToUnlock() = if (currentRiddle == null) 0 else currentRiddle + 1
 
     fun assignRiddleToContestant(contestantId: UUID, assignedAt: LocalDateTime) =
         copy(

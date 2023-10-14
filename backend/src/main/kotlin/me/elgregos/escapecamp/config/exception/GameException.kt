@@ -24,6 +24,12 @@ sealed class GameException(
     class GameNotStartedException :
         GameException("Game has not yet started. Wait for other contestants to enroll", status = HttpStatus.BAD_REQUEST)
 
+    class RiddleUnlockedNotAllowedException :
+        GameException("Could not get next riddle with this type of contestant enrollment", status = HttpStatus.BAD_REQUEST)
+
+    class AllRiddlesAlreadyUnlockedException :
+        GameException("All riddles are already unlocked", status = HttpStatus.BAD_REQUEST)
+
     class PreviousRiddleNotSolvedException :
         GameException("Previous riddle not solved yet", status = HttpStatus.BAD_REQUEST)
 

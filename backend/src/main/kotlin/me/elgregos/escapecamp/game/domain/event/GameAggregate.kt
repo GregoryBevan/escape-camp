@@ -46,6 +46,22 @@ class GameAggregate(
                     )
             }
 
+    fun unlockNextRiddle(unlockedAt: LocalDateTime): Flux<GameEvent> =
+        previousState()
+            .filter { !it.isEmpty }
+            .switchIfEmpty(Mono.error { GameNotFoundException(gameId) })
+            .map { JsonConvertible.fromJson(it, Game::class.java) }
+            .filter { game -> game.enrollmentType == EnrollmentType.UNLIMITED }
+            .switchIfEmpty(Mono.error(RiddleUnlockedNotAllowedException()))
+            .filter(Game::ableToUnlockNextRiddle)
+            .switchIfEmpty(Mono.error(AllRiddlesAlreadyUnlockedException()))
+            .flatMapMany { game ->
+                nextVersion()
+                    .map { nextVersion ->
+                        NextRiddleUnlocked(gameId, nextVersion, unlockedAt, userId, game.nextRiddleToUnlock())
+                    }
+            }
+
     fun assignContestantNextRiddle(assignedAt: LocalDateTime): Flux<GameEvent> =
         previousState()
             .filter { !it.isEmpty }

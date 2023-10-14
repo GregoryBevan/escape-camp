@@ -41,6 +41,15 @@ val escapeCampAfterGameStarted =
         startedAt = jeepersKeypersContestantEnrolledAt
     )
 
+val escapeCampWithFirstRiddleUnlocked =
+    escapeCampAfterJeepersKeypersContestantEnrolled.copy(
+        version = 4,
+        currentRiddle = 0,
+        updatedAt = firstRiddleUnlockedAt,
+        updatedBy = organizerId,
+        startedAt = firstRiddleUnlockedAt
+    )
+
 val escapeCampAfterLockedAndLoadedFirstRiddleAssigned =
     escapeCampAfterGameStarted.copy(
         version = 5,
@@ -81,6 +90,13 @@ val escapeCampAfterLockedAndLoadedFirstRiddleSolved =
         contestants = listOf(lockedAndLoadedContestantAfterFirstRiddleSolved, jeepersKeypersContestantAfterSecondRiddleAssigned)
     )
 
+val escapeCampWithSecondRiddleUnlocked =
+    escapeCampAfterLockedAndLoadedFirstRiddleSolved.copy(
+        version = 10,
+        currentRiddle = 1,
+        updatedAt = secondRiddleUnlockedAt,
+        updatedBy = organizerId,
+    )
 
 val escapeCampAfterLockedAndLoadedSecondRiddleAssigned =
     escapeCampAfterGameStarted.copy(
