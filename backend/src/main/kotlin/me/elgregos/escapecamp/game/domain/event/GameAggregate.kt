@@ -30,9 +30,9 @@ class GameAggregate(
             .filter { !it.isEmpty }
             .switchIfEmpty(Mono.error { GameNotFoundException(gameId) })
             .map { JsonConvertible.fromJson(it, Game::class.java) }
-            .filter { game -> game.isContestantNameAvailable(contestant.name) }
+            .filter { game -> game.contestantNameAvailable(contestant.name) }
             .switchIfEmpty(Mono.error { ContestantNameNotAvailableException(contestant.name) })
-            .filter(Game::isContestantLimitNotReached)
+            .filter(Game::contestantLimitNotReached)
             .switchIfEmpty(Mono.error { ContestantNumberLimitExceededException() })
             .map { game -> game.enrollContestant(contestant, enrolledAt) }
             .flatMapMany { game ->
@@ -41,7 +41,7 @@ class GameAggregate(
                     .flatMap { this.applyNewEvent(it) }
                     .concatWith(
                         nextVersion()
-                            .filter { game.isGameAbleToStartAutomatically() }
+                            .filter { game.ableToStartAutomatically() }
                             .map { version -> GameStarted(gameId, version, userId, enrolledAt) }
                     )
             }

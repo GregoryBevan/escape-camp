@@ -26,7 +26,7 @@ class GameTest {
         "Jeepers Keypers, true"
     )
     fun `should check if contestant name is available`(contestantName: String, expectedResult: Boolean) {
-        assertThat(escapeCampAfterLockedAndLoadedContestantEnrolled.isContestantNameAvailable(contestantName)).isEqualTo(
+        assertThat(escapeCampAfterLockedAndLoadedContestantEnrolled.contestantNameAvailable(contestantName)).isEqualTo(
             expectedResult
         )
     }
@@ -34,13 +34,13 @@ class GameTest {
     @ParameterizedTest
     @MethodSource("checkContestantLimitTestCases")
     fun `should check if contestant can be enrolled according to limitation`(game: Game, expectedResult: Boolean) {
-        assertThat(game.isContestantLimitNotReached()).isEqualTo(expectedResult)
+        assertThat(game.contestantLimitNotReached()).isEqualTo(expectedResult)
     }
 
     @ParameterizedTest
     @MethodSource("checkIfGameAbleToStartTestCases")
     fun `should check if game is able to start automatically`(game: Game, expectedResult: Boolean) {
-        assertThat(game.isGameAbleToStartAutomatically()).isEqualTo(expectedResult)
+        assertThat(game.ableToStartAutomatically()).isEqualTo(expectedResult)
     }
 
     @ParameterizedTest

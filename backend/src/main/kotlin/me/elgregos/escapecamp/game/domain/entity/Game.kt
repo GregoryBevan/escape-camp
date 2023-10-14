@@ -26,11 +26,11 @@ data class Game(
             contestants = contestants.toMutableList().also { it.add(contestant) }
         )
 
-    fun isContestantNameAvailable(contestantName: String) = contestants.none { it.name == contestantName }
+    fun contestantNameAvailable(contestantName: String) = contestants.none { it.name == contestantName }
 
-    fun isContestantLimitNotReached() = enrollmentType == EnrollmentType.UNLIMITED || contestants.size < riddles.size
+    fun contestantLimitNotReached() = enrollmentType == EnrollmentType.UNLIMITED || contestants.size < riddles.size
 
-    fun isGameAbleToStartAutomatically() = enrollmentType == EnrollmentType.LIMITED_TO_RIDDLE_NUMBER && contestants.size == riddles.size
+    fun ableToStartAutomatically() = enrollmentType == EnrollmentType.LIMITED_TO_RIDDLE_NUMBER && contestants.size == riddles.size
 
     fun assignRiddleToContestant(contestantId: UUID, assignedAt: LocalDateTime) =
         copy(
