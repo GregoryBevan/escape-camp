@@ -1,5 +1,7 @@
 package me.elgregos.escapecamp.game.domain.entity
 
+import me.elgregos.escapecamp.game.domain.entity.EnrollmentType.LIMITED_TO_RIDDLE_NUMBER
+import me.elgregos.escapecamp.game.domain.entity.EnrollmentType.UNLIMITED
 import me.elgregos.reakteves.domain.entity.DomainEntity
 import java.time.LocalDateTime
 import java.util.*
@@ -12,7 +14,7 @@ data class Game(
     override val updatedAt: LocalDateTime = createdAt,
     override val updatedBy: UUID = createdBy,
     val riddles: List<Pair<String, String>>,
-    val enrollmentType: EnrollmentType = EnrollmentType.LIMITED_TO_RIDDLE_NUMBER,
+    val enrollmentType: EnrollmentType = LIMITED_TO_RIDDLE_NUMBER,
     val contestants: List<Contestant> = listOf(),
     val startedAt: LocalDateTime? = null,
     val currentRiddle: Int? = null,
@@ -29,14 +31,25 @@ data class Game(
 
     fun contestantNameAvailable(contestantName: String) = contestants.none { it.name == contestantName }
 
-    fun contestantLimitNotReached() = enrollmentType == EnrollmentType.UNLIMITED || contestants.size < riddles.size
+    fun contestantLimitNotReached() = enrollmentType == UNLIMITED || contestants.size < riddles.size
 
     fun ableToStartAutomatically() =
-        enrollmentType == EnrollmentType.LIMITED_TO_RIDDLE_NUMBER && contestants.size == riddles.size
+        enrollmentType == LIMITED_TO_RIDDLE_NUMBER && contestants.size == riddles.size
 
-    fun ableToUnlockNextRiddle() = currentRiddle == null || currentRiddle < riddles.size - 1
+    fun ableToUnlockNextRiddle() =
+        enrollmentType == UNLIMITED && (currentRiddle == null || currentRiddle < riddles.size - 1)
 
     fun nextRiddleToUnlock() = if (currentRiddle == null) 0 else currentRiddle + 1
+
+    fun started() = startedAt != null
+
+    fun canAssignRiddleToContestant(contestantId: UUID) =
+        contestants.find { it.id == contestantId }?.let { contestant ->
+            when (enrollmentType) {
+                LIMITED_TO_RIDDLE_NUMBER -> contestant.hasPreviousRiddleSolved()
+                UNLIMITED -> if(currentRiddle != null)  contestant.numberOfSolvedRiddles() == currentRiddle  else false
+            }
+        } ?: false
 
     fun assignRiddleToContestant(contestantId: UUID, assignedAt: LocalDateTime) =
         copy(
@@ -45,10 +58,7 @@ data class Game(
             updatedBy = contestantId,
             contestants = contestants.map { contestant ->
                 if (contestant.id == contestantId) contestant.assignRiddle(
-                    Riddle(
-                        riddles[nextContestantRiddleIndex(
-                            contestantId
-                        )].first, assignedAt
+                    Riddle(riddles[nextContestantRiddleIndex(contestantId)].first, assignedAt
                     )
                 ) else contestant
             })
@@ -65,10 +75,7 @@ data class Game(
                 ) else contestant
             })
 
-    fun canAssignRiddleToContestant(contestantId: UUID) =
-        contestants.find { it.id == contestantId }?.hasPreviousRiddleSolved() ?: false
-
-    fun contestantRegistrationOrder(contestantId: UUID) =
+    fun contestantEnrollmentOrder(contestantId: UUID) =
         contestants.indexOfFirst { it.id == contestantId }
 
     fun checkIfContestantExists(contestantId: UUID) =
@@ -81,7 +88,10 @@ data class Game(
         winner == null && contestants.any { it.hasSolvedAllRiddles(riddles) }
 
     private fun nextContestantRiddleIndex(contestantId: UUID) =
-        (contestantRegistrationOrder(contestantId) + numberOfSolvedRiddleByContestant(contestantId)).mod(riddles.size)
+        when(enrollmentType) {
+            LIMITED_TO_RIDDLE_NUMBER -> (contestantEnrollmentOrder(contestantId) + numberOfSolvedRiddleByContestant(contestantId)).mod(riddles.size)
+            UNLIMITED -> currentRiddle!!
+        }
 
     private fun numberOfSolvedRiddleByContestant(contestantId: UUID) =
         contestants.find { it.id == contestantId }?.numberOfSolvedRiddles() ?: 0

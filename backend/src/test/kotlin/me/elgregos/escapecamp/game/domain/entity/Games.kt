@@ -12,7 +12,7 @@ val jeepersKeypersContestantEnrolledAt: LocalDateTime = LocalDateTime.of(2023, 6
 val sherUnlockContestantEnrolledAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 36)
 
 val escapeCamp = Game(escapeCampId, createdAt = escapeCampCreatedAt, createdBy = organizerId, riddles = riddles)
-val escapeCampWithoutContestantLimit = Game(escapeCampId, createdAt = escapeCampCreatedAt, createdBy = organizerId, riddles = riddles, enrollmentType = EnrollmentType.UNLIMITED)
+val unlimitedEnrollmentEscapeCamp = Game(escapeCampId, createdAt = escapeCampCreatedAt, createdBy = organizerId, riddles = riddles, enrollmentType = EnrollmentType.UNLIMITED)
 
 val escapeCampAfterLockedAndLoadedContestantEnrolled =
     escapeCamp.copy(
@@ -30,7 +30,7 @@ val escapeCampAfterJeepersKeypersContestantEnrolled =
         contestants = listOf(lockedAndLoadedContestant, jeepersKeypersContestant)
     )
 
-val escapeCampWithoutContestantLimitAfterJeepersKeypersContestantEnrolled =
+val unlimitedEnrollmentEscapeCampAfterJeepersKeypersContestantEnrolled =
     escapeCampAfterJeepersKeypersContestantEnrolled.copy(
         enrollmentType = EnrollmentType.UNLIMITED
     )
@@ -42,7 +42,7 @@ val escapeCampAfterGameStarted =
     )
 
 val escapeCampWithFirstRiddleUnlocked =
-    escapeCampAfterJeepersKeypersContestantEnrolled.copy(
+    unlimitedEnrollmentEscapeCampAfterJeepersKeypersContestantEnrolled.copy(
         version = 4,
         currentRiddle = 0,
         updatedAt = firstRiddleUnlockedAt,
@@ -50,8 +50,14 @@ val escapeCampWithFirstRiddleUnlocked =
         startedAt = firstRiddleUnlockedAt
     )
 
+val unlimitedEnrollmentEscapeCampAfterGameStarted =
+    escapeCampAfterJeepersKeypersContestantEnrolled.copy(
+        version = 4,
+        startedAt = jeepersKeypersContestantEnrolledAt
+    )
+
 val escapeCampAfterLockedAndLoadedFirstRiddleAssigned =
-    escapeCampAfterGameStarted.copy(
+    unlimitedEnrollmentEscapeCampAfterGameStarted.copy(
         version = 5,
         updatedAt = lockedAndLoadedFirstRiddleAssignedAt,
         updatedBy = lockedAndLoadedContestantId,
@@ -59,7 +65,7 @@ val escapeCampAfterLockedAndLoadedFirstRiddleAssigned =
     )
 
 val escapeCampAfterAllFirstRiddleAssigned =
-    escapeCampAfterGameStarted.copy(
+    unlimitedEnrollmentEscapeCampAfterGameStarted.copy(
         version = 6,
         updatedAt = jeepersKeypersFirstRiddleAssignedAt,
         updatedBy = jeepersKeypersContestantId,
@@ -67,7 +73,7 @@ val escapeCampAfterAllFirstRiddleAssigned =
     )
 
 val escapeCampAfterJeepersKeypersFirstRiddleSolved =
-    escapeCampAfterGameStarted.copy(
+    unlimitedEnrollmentEscapeCampAfterGameStarted.copy(
         version = 7,
         updatedAt = jeepersKeypersFirstRiddleSolvedAt,
         updatedBy = jeepersKeypersContestantId,
@@ -75,7 +81,7 @@ val escapeCampAfterJeepersKeypersFirstRiddleSolved =
     )
 
 val escapeCampAfterJeepersKeypersSecondRiddleAssigned =
-    escapeCampAfterGameStarted.copy(
+    unlimitedEnrollmentEscapeCampAfterGameStarted.copy(
         version = 8,
         updatedAt = jeepersKeypersSecondRiddleAssignedAt,
         updatedBy = jeepersKeypersContestantId,
@@ -83,7 +89,7 @@ val escapeCampAfterJeepersKeypersSecondRiddleAssigned =
     )
 
 val escapeCampAfterLockedAndLoadedFirstRiddleSolved =
-    escapeCampAfterGameStarted.copy(
+    unlimitedEnrollmentEscapeCampAfterGameStarted.copy(
         version = 9,
         updatedAt = lockedAndLoadedFirstRiddleSolvedAt,
         updatedBy = lockedAndLoadedContestantId,
@@ -99,7 +105,7 @@ val escapeCampWithSecondRiddleUnlocked =
     )
 
 val escapeCampAfterLockedAndLoadedSecondRiddleAssigned =
-    escapeCampAfterGameStarted.copy(
+    unlimitedEnrollmentEscapeCampAfterGameStarted.copy(
         version = 10,
         updatedAt = lockedAndLoadedSecondRiddleAssignedAt,
         updatedBy = lockedAndLoadedContestantId,
@@ -107,7 +113,7 @@ val escapeCampAfterLockedAndLoadedSecondRiddleAssigned =
     )
 
 val escapeCampAfterJeepersKeypersSecondRiddleSolved =
-    escapeCampAfterGameStarted.copy(
+    unlimitedEnrollmentEscapeCampAfterGameStarted.copy(
         version = 11,
         updatedAt = jeepersKeypersSecondRiddleSolvedAt,
         updatedBy = jeepersKeypersContestantId,
@@ -115,7 +121,7 @@ val escapeCampAfterJeepersKeypersSecondRiddleSolved =
     )
 
 val escapeCampWithWinner =
-    escapeCampAfterGameStarted.copy(
+    unlimitedEnrollmentEscapeCampAfterGameStarted.copy(
         version = 12,
         updatedAt = jeepersKeypersSecondRiddleSolvedAt,
         updatedBy = jeepersKeypersContestantId,
@@ -124,7 +130,7 @@ val escapeCampWithWinner =
     )
 
 val escapeCampAfterLockAndLoadedSecondRiddleSolved =
-    escapeCampAfterGameStarted.copy(
+    unlimitedEnrollmentEscapeCampAfterGameStarted.copy(
         version = 13,
         updatedAt = lockedAndLoadedSecondRiddleSolvedAt,
         updatedBy = lockedAndLoadedContestantId,

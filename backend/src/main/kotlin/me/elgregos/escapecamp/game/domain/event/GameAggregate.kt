@@ -3,6 +3,7 @@ package me.elgregos.escapecamp.game.domain.event
 import me.elgregos.escapecamp.config.exception.GameException.*
 import me.elgregos.escapecamp.game.domain.entity.Contestant
 import me.elgregos.escapecamp.game.domain.entity.EnrollmentType
+import me.elgregos.escapecamp.game.domain.entity.EnrollmentType.*
 import me.elgregos.escapecamp.game.domain.entity.Game
 import me.elgregos.escapecamp.game.domain.event.GameEvent.*
 import me.elgregos.escapecamp.game.domain.service.RiddleSolutionChecker
@@ -51,15 +52,19 @@ class GameAggregate(
             .filter { !it.isEmpty }
             .switchIfEmpty(Mono.error { GameNotFoundException(gameId) })
             .map { JsonConvertible.fromJson(it, Game::class.java) }
-            .filter { game -> game.enrollmentType == EnrollmentType.UNLIMITED }
+            .filter { game -> game.enrollmentType == UNLIMITED }
             .switchIfEmpty(Mono.error(RiddleUnlockedNotAllowedException()))
             .filter(Game::ableToUnlockNextRiddle)
             .switchIfEmpty(Mono.error(AllRiddlesAlreadyUnlockedException()))
             .flatMapMany { game ->
                 nextVersion()
-                    .map { nextVersion ->
-                        NextRiddleUnlocked(gameId, nextVersion, unlockedAt, userId, game.nextRiddleToUnlock())
-                    }
+                    .map { nextVersion -> NextRiddleUnlocked(gameId, nextVersion, unlockedAt, userId, game.nextRiddleToUnlock()) }
+                    .flatMap { this.applyNewEvent(it) }
+                    .concatWith(
+                        nextVersion()
+                            .filter { !game.started() }
+                            .map { version -> GameStarted(gameId, version, userId, unlockedAt) }
+                    )
             }
 
     fun assignContestantNextRiddle(assignedAt: LocalDateTime): Flux<GameEvent> =
@@ -69,10 +74,16 @@ class GameAggregate(
             .map { JsonConvertible.fromJson(it, Game::class.java) }
             .filter { game -> game.checkIfContestantExists(userId) }
             .switchIfEmpty(Mono.error { ContestantNotFoundException(userId) })
-            .filter { game -> game.contestants.size == game.riddles.size }
+            .filter(Game::started)
             .switchIfEmpty(Mono.error { GameNotStartedException() })
-            .filter { game -> game.canAssignRiddleToContestant(userId) }
-            .switchIfEmpty(Mono.error { PreviousRiddleNotSolvedException() })
+            .handle { game, sink ->
+                when (game.enrollmentType) {
+                    LIMITED_TO_RIDDLE_NUMBER ->
+                        if (game.canAssignRiddleToContestant(userId)) sink.next(game)
+                        else sink.error(PreviousRiddleNotSolvedException())
+                    UNLIMITED -> sink.next(game)
+                }
+            }
             .map { game -> game.assignRiddleToContestant(userId, assignedAt) }
             .flatMapMany { game ->
                 nextVersion()

@@ -46,7 +46,7 @@ class GameAggregateCreateGameTest {
         @JvmStatic
         fun createGameTestCases() = Stream.of(
             Arguments.of(named("with LIMITED_TO_RIDDLE_NUMBER enrollment type", EnrollmentType.LIMITED_TO_RIDDLE_NUMBER), escapeCampCreated),
-            Arguments.of(named("with UNLIMITED enrollment type", EnrollmentType.UNLIMITED), escapeCampWithUnlimitedContestantCreated)
+            Arguments.of(named("with UNLIMITED enrollment type", EnrollmentType.UNLIMITED), unlimitedEnrollmentEscapeCampCreated)
         )
     }
 }

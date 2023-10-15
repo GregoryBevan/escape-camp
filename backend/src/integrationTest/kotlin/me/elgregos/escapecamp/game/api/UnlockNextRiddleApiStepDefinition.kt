@@ -13,7 +13,7 @@ class UnlockNextRiddleApiStepDefinition: En {
 
     init {
         And("all riddles have been unlocked") {
-            (1..4).forEach {
+            repeat(4) {
                 gameClient.unlockNextRiddle()
                     .expectStatus().isOk
             }

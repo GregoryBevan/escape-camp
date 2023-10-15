@@ -25,13 +25,14 @@ class GameAggregateUnlockNextRiddleTest {
     }
 
     @Test
-    fun `should unlock first riddle if none already unlocked`() {
+    fun `should unlock first riddle and start game if none already unlocked`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterAllContestantEnrolledInUnlimitedEnrollmentGame)
 
         GameAggregate(escapeCampId, organizerId, MockedRiddleSolutionChecker(riddles), gameEventStore)
             .unlockNextRiddle(firstRiddleUnlockedAt)
             .`as`(StepVerifier::create)
             .assertNext { assertThat(it).isEqualTo(firstRiddleUnlocked.copy(id = it.id)) }
+            .assertNext { assertThat(it).isEqualTo(unlimitedEnrollmentEscapeCampStarted.copy(id = it.id)) }
             .verifyComplete()
     }
 
