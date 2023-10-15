@@ -69,11 +69,11 @@ class SharedGivenStepDefinition : En {
 
         And("the contestant has his last riddle assigned") {
             assignContestantNextRiddle(gameClient)
-            solveContestantRiddle(gameClient, "riddle-4", "DDD")
+            solveContestantRiddle(gameClient, "riddle-4", "solution-4")
             assignContestantNextRiddle(gameClient)
-            solveContestantRiddle(gameClient, "riddle-1", "event sourcing")
+            solveContestantRiddle(gameClient, "riddle-1", "solution-1")
             assignContestantNextRiddle(gameClient)
-            solveContestantRiddle(gameClient, "riddle-2", "reactive")
+            solveContestantRiddle(gameClient, "riddle-2", "solution-2")
             assignContestantNextRiddle(gameClient)
         }
     }

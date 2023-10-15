@@ -18,7 +18,17 @@ class UnlockNextRiddleApiStepDefinition: En {
 
         Then("the riddle is unlocked for all contestants") {
             response!!.expectStatus().isOk
-                .expectBody().isEmpty
+                .expectBody(JsonNode::class.java).consumeWith {
+                    assertThat(it.responseBody!!["currentRiddle"]["position"].asText()).isEqualTo("0")
+                    assertThat(it.responseBody!!["currentRiddle"]["name"].asText()).isEqualTo("riddle-1")
+                    assertThat(it.responseBody!!["currentRiddle"]["content"].asText()).isEqualTo("""
+                    # A la piscine
+
+                    Si vous vous placez au bon endroit,
+                    la réponse se révèlera.
+
+                    """.trimIndent())
+                }
         }
 
         Then("the response contains a next riddle unlock not allowed error") {

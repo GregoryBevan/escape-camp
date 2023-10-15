@@ -12,6 +12,7 @@ import me.elgregos.escapecamp.game.application.GameCommand.*
 import me.elgregos.escapecamp.game.application.GameCommandHandler
 import me.elgregos.escapecamp.game.application.GameService
 import me.elgregos.escapecamp.game.domain.event.GameEvent.NextContestantRiddleAssigned
+import me.elgregos.escapecamp.game.domain.event.GameEvent.NextRiddleUnlocked
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -56,7 +57,7 @@ class GameController(
             )
         )
             .toMono()
-            .map { mapOf(Pair("gameId", it.aggregateId)) }
+            .map { mapOf("gameId" to it.aggregateId) }
 
     @PostMapping("{gameId}/contestants")
     @ResponseStatus(HttpStatus.CREATED)
@@ -73,9 +74,9 @@ class GameController(
             .last()
             .map {
                 mapOf(
-                    Pair("contestantId", "${it.createdBy}"),
-                    Pair("accessToken", tokenProvider.generateAccessToken(it.createdBy, contestantCreationDTO.name, Role.CONTESTANT)),
-                    Pair("eventType", it.eventType)
+                    "contestantId" to "${it.createdBy}",
+                    "accessToken" to tokenProvider.generateAccessToken(it.createdBy, contestantCreationDTO.name, Role.CONTESTANT),
+                    "eventType" to it.eventType
                 )
             }
 
@@ -85,9 +86,17 @@ class GameController(
     fun unlockNextRiddle(
         @AuthenticationPrincipal authenticatedUser: AuthenticatedUser,
         @PathVariable @Valid gameId: UUID
-    ): Mono<Void> =
+    ): Mono<Map<String, Map<String, String>>> =
         gameCommandHandler.handle(UnlockNextRiddle(gameId, unlockedBy = authenticatedUser.id))
-            .then()
+            .last()
+            .cast(NextRiddleUnlocked::class.java)
+            .map(NextRiddleUnlocked::currentRiddle)
+            .map { currentRiddlePosition ->
+                mapOf("currentRiddle" to mapOf(
+                    "position" to "$currentRiddlePosition",
+                    "name" to riddles[currentRiddlePosition].first,
+                    "content" to gameService.retrieveRiddleContent(riddles[currentRiddlePosition].first)))
+            }
 
     @GetMapping("{gameId}/contestants/{contestantId}/riddle")
     @ResponseStatus(HttpStatus.OK)
@@ -101,10 +110,10 @@ class GameController(
             .cast(NextContestantRiddleAssigned::class.java)
             .map(NextContestantRiddleAssigned::assignedRiddle)
             .map { riddle ->
-                mapOf(Pair("riddle", mapOf(
-                            Pair("name", riddle.name),
-                            Pair("content", gameService.retrieveRiddleContent(riddle.name))
-                        )
+                mapOf(
+                    "riddle" to mapOf(
+                        "name" to riddle.name,
+                        "content" to gameService.retrieveRiddleContent(riddle.name)
                     )
                 )
             }
@@ -118,12 +127,14 @@ class GameController(
         @PathVariable @Valid riddleName: String,
         @RequestBody @Valid riddleSolutionDTO: RiddleSolutionDTO
     ): Mono<Void> =
-        gameCommandHandler.handle(SubmitRiddleSolution(
+        gameCommandHandler.handle(
+            SubmitRiddleSolution(
                 gameId,
                 submittedBy = contestantId,
                 riddleName = riddleName,
                 solution = riddleSolutionDTO.solution
-            ))
+            )
+        )
             .then()
 
     @GetMapping(path = ["{id}/events-stream"], produces = [MediaType.TEXT_EVENT_STREAM_VALUE])

@@ -13,7 +13,7 @@ class CheckRiddleSolutionApiStepDefinition : En {
 
     init {
         When("the contestant submit correct solution to the riddle") {
-            response = gameClient.checkRiddleSolution(currentContestant!!, "riddle-3", "craft")
+            response = gameClient.checkRiddleSolution(currentContestant!!, "riddle-3", "solution-3")
         }
 
         Then("the riddle is solved") {

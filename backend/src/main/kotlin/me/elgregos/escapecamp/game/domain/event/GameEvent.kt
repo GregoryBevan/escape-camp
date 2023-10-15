@@ -145,6 +145,8 @@ sealed class GameEvent(
                 .put("updatedBy", "$unlockedBy")
                 .put("currentRiddle", unlockedRiddle )
         )
+
+        fun currentRiddle(): Int = event["currentRiddle"].asInt()
     }
 
     data class NextContestantRiddleAssigned(
