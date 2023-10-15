@@ -12,6 +12,13 @@ class UnlockNextRiddleApiStepDefinition: En {
     private lateinit var gameClient: GameClient
 
     init {
+        And("all riddles have been unlocked") {
+            (1..4).forEach {
+                gameClient.unlockNextRiddle()
+                    .expectStatus().isOk
+            }
+        }
+
         When("he unlocks the next riddle") {
             response = gameClient.unlockNextRiddle()
         }
@@ -35,6 +42,13 @@ class UnlockNextRiddleApiStepDefinition: En {
             response!!.expectStatus().isBadRequest
                 .expectBody(JsonNode::class.java).consumeWith {
                     assertThat(it.responseBody!!.get("message").asText()).isEqualTo("Could not get next riddle with this type of contestant enrollment")
+                }
+        }
+
+        Then("the response contains a riddles all unlocked error") {
+            response!!.expectStatus().isBadRequest
+                .expectBody(JsonNode::class.java).consumeWith {
+                    assertThat(it.responseBody!!.get("message").asText()).isEqualTo("All riddles are already unlocked")
                 }
         }
     }

@@ -24,6 +24,18 @@ Feature: Unlock the game's next riddle
     When he unlocks the next riddle
     Then the response contains a next riddle unlock not allowed error
 
+  Scenario: Unlock riddle after all riddles already unlocked
+    Given an authenticated organizer
+    And a game with enrollment type "UNLIMITED" created with identifier
+    And 4 contestants have been enrolled in the game
+      | Locked and Loaded |
+      | Jeepers Keypers   |
+      | The Escape Peas   |
+      | Sher-unlock       |
+    And all riddles have been unlocked
+    When he unlocks the next riddle
+    Then the response contains a riddles all unlocked error
+
   Scenario: Unlock the first riddle of an unknown game
     Given an authenticated organizer
     And an unknown game identifier
