@@ -5,10 +5,6 @@ import assertk.assertions.isEqualTo
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.cucumber.java8.En
-import me.elgregos.escapecamp.features.AssignedRiddle
-import me.elgregos.escapecamp.features.currentContestant
-import me.elgregos.escapecamp.features.response
-import me.elgregos.escapecamp.features.scenario
 import me.elgregos.reakteves.libs.genericObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 

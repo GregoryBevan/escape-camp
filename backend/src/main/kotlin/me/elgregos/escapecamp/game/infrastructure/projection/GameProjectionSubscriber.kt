@@ -37,6 +37,7 @@ class GameProjectionSubscriber(
                     is GameCreated -> createGame(it)
                     is ContestantEnrolled,
                     is GameStarted,
+                    is NextRiddleUnlocked,
                     is NextContestantRiddleAssigned,
                     is RiddleSolved,
                     is WinnerAnnounced -> updateGame(it)

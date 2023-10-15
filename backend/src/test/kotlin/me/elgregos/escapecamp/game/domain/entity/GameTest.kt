@@ -12,7 +12,7 @@ import java.util.*
 import java.util.stream.Stream
 import kotlin.test.Test
 
-class GameTest {
+internal class GameTest {
 
     @Test
     fun `should enroll contestant to game`() {
@@ -38,9 +38,21 @@ class GameTest {
     }
 
     @ParameterizedTest
-    @MethodSource("checkIfGameAbleToStartTestCases")
+    @MethodSource("checkIfAbleToStartAutomaticallyTestCases")
     fun `should check if game is able to start automatically`(game: Game, expectedResult: Boolean) {
         assertThat(game.ableToStartAutomatically()).isEqualTo(expectedResult)
+    }
+
+    @ParameterizedTest
+    @MethodSource("unlockRiddleAllowedTestCases")
+    fun `should if a riddle can be unlocked`(game: Game, expectedResult: Boolean) {
+        assertThat(game.ableToUnlockNextRiddle()).isEqualTo(expectedResult)
+    }
+
+    @ParameterizedTest
+    @MethodSource("nextRiddleTestCases")
+    fun `should get next riddle`(game: Game, expectedRiddle: Int) {
+        assertThat(game.nextRiddleToUnlock()).isEqualTo(expectedRiddle)
     }
 
     @ParameterizedTest
@@ -90,8 +102,7 @@ class GameTest {
                 jeepersKeypersContestantId,
                 jeepersKeypersFirstRiddleSolvedAt
             )
-        )
-            .isEqualTo(escapeCampAfterJeepersKeypersFirstRiddleSolved)
+        ).isEqualTo(escapeCampAfterJeepersKeypersFirstRiddleSolved)
     }
 
     @ParameterizedTest
@@ -113,7 +124,7 @@ class GameTest {
             )
 
         @JvmStatic
-        fun checkIfGameAbleToStartTestCases(): Stream<Arguments> =
+        fun checkIfAbleToStartAutomaticallyTestCases(): Stream<Arguments> =
             Stream.of(
                 Arguments.of(named("Game created", escapeCamp), false),
                 Arguments.of(named("Game created without contestant limit", escapeCampWithoutContestantLimit), false),
@@ -127,6 +138,21 @@ class GameTest {
             Stream.of(
                 Arguments.of(lockedAndLoadedContestantId, true),
                 Arguments.of(unknownContestantId, false),
+            )
+
+        @JvmStatic
+        fun nextRiddleTestCases(): Stream<Arguments> =
+            Stream.of(
+                Arguments.of(named("After game created", escapeCamp), 0),
+                Arguments.of(named("After first riddle unlocked", escapeCampWithFirstRiddleUnlocked), 1)
+            )
+
+        @JvmStatic
+        fun unlockRiddleAllowedTestCases(): Stream<Arguments> =
+            Stream.of(
+                Arguments.of(named("After game created", escapeCamp), true),
+                Arguments.of(named("After first riddle unlocked", escapeCampWithFirstRiddleUnlocked), true),
+                Arguments.of(named("After second riddle unlocked", escapeCampWithSecondRiddleUnlocked), false)
             )
 
         @JvmStatic
