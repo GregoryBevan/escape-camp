@@ -88,6 +88,7 @@ class GameController(
         @PathVariable @Valid gameId: UUID
     ): Mono<Map<String, Map<String, String>>> =
         gameCommandHandler.handle(UnlockNextRiddle(gameId, unlockedBy = authenticatedUser.id))
+            .filter { it is NextRiddleUnlocked }
             .last()
             .cast(NextRiddleUnlocked::class.java)
             .map(NextRiddleUnlocked::currentRiddle)

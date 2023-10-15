@@ -24,7 +24,7 @@ class GameAggregateAssignContestantNextRiddleTest {
     }
 
     @Test
-    fun `should assign riddle-1 to first registered contestant after game has started`() {
+    fun `should assign riddle-1 to first enrolled contestant after game has started`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterEscapeCampStarted)
 
         GameAggregate(escapeCampId, lockedAndLoadedContestantId, MockedRiddleSolutionChecker(riddles), gameEventStore)
@@ -35,7 +35,7 @@ class GameAggregateAssignContestantNextRiddleTest {
     }
 
     @Test
-    fun `should assign riddle-2 to second registered contestant after game has started`() {
+    fun `should assign riddle-2 to second enrolled contestant after game has started`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterLockedAndLoadedFirstRiddleAssigned)
 
         GameAggregate(escapeCampId, jeepersKeypersContestantId, MockedRiddleSolutionChecker(riddles), gameEventStore)
@@ -46,7 +46,29 @@ class GameAggregateAssignContestantNextRiddleTest {
     }
 
     @Test
-    fun `should assign riddle-2 to first registered contestant after first riddle solved`() {
+    fun `should assign riddle-1 to first enrolled contestant if enrollment is unlimited`() {
+        every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterFirstRiddleUnlocked)
+
+        GameAggregate(escapeCampId, lockedAndLoadedContestantId, MockedRiddleSolutionChecker(riddles), gameEventStore)
+            .assignContestantNextRiddle(lockedAndLoadedFirstRiddleAssignedAt)
+            .`as`(StepVerifier::create)
+            .assertNext { assertThat(it).isEqualTo(lockedAndLoadedFirstRiddleAssignedInUnlimitedEnrollmentGame.copy(id = it.id)) }
+            .verifyComplete()
+    }
+
+    @Test
+    fun `should assign riddle-1 to second enrolled contestant if enrollment is unlimited`() {
+        every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterLockedAndLoadedFirstRiddleAssignedInUnlimitedEnrollmentGame)
+
+        GameAggregate(escapeCampId, jeepersKeypersContestantId, MockedRiddleSolutionChecker(riddles), gameEventStore)
+            .assignContestantNextRiddle(jeepersKeypersFirstRiddleAssignedAt)
+            .`as`(StepVerifier::create)
+            .assertNext { assertThat(it).isEqualTo(jeepersKeypersFirstRiddleAssignedInUnlimitedEnrollmentGame.copy(id = it.id)) }
+            .verifyComplete()
+    }
+
+    @Test
+    fun `should assign riddle-2 to first enrolled contestant after first riddle solved`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterJeepersKeypersFirstRiddleSolved)
 
         GameAggregate(escapeCampId, jeepersKeypersContestantId, MockedRiddleSolutionChecker(riddles), gameEventStore)
@@ -57,7 +79,7 @@ class GameAggregateAssignContestantNextRiddleTest {
     }
 
     @Test
-    fun `should fail to assign riddle to first registered contestant if game not yet started`() {
+    fun `should fail to assign riddle to first enrolled contestant if game not yet started`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterLockedAndLoadedAdded)
 
         GameAggregate(escapeCampId, lockedAndLoadedContestantId, MockedRiddleSolutionChecker(riddles), gameEventStore)
@@ -67,7 +89,7 @@ class GameAggregateAssignContestantNextRiddleTest {
     }
 
     @Test
-    fun `should fail to assign riddle to first registered contestant if previous riddle not solved`() {
+    fun `should fail to assign riddle to first enrolled contestant if previous riddle not solved`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterLockedAndLoadedFirstRiddleAssigned)
 
         GameAggregate(escapeCampId, lockedAndLoadedContestantId, MockedRiddleSolutionChecker(riddles), gameEventStore)

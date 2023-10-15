@@ -19,6 +19,7 @@ val unknownContestantId: UUID = UUID.fromString("4f5ddf39-4a5c-4317-b4a6-db2d6c5
 val lockedAndLoadedContestantAfterFirstRiddleAssigned = lockedAndLoadedContestant.copy(riddles = listOf(lockedAndLoadedFirstRiddle))
 
 val jeepersKeypersContestantAfterFirstRiddleAssigned = jeepersKeypersContestant.copy(riddles = listOf(jeepersKeypersFirstRiddle))
+val jeepersKeypersContestantAfterFirstRiddleAssignedInUnlimitedEnrollmentGame = jeepersKeypersContestant.copy(riddles = listOf(jeepersKeypersFirstRiddleInUnlimitedEnrollmentGame))
 
 val jeepersKeypersContestantAfterFirstRiddleSolved =  jeepersKeypersContestant.copy(riddles = listOf(jeepersKeypersFirstSolvedRiddle))
 val jeepersKeypersContestantAfterSecondRiddleAssigned =  jeepersKeypersContestant.copy(riddles = listOf(jeepersKeypersFirstSolvedRiddle, jeepersKeypersSecondRiddle))

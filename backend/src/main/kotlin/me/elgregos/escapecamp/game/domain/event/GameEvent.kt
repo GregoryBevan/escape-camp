@@ -143,7 +143,7 @@ sealed class GameEvent(
                 .put("id", "$gameId")
                 .put("updatedAt", "$unlockedAt")
                 .put("updatedBy", "$unlockedBy")
-                .put("currentRiddle", unlockedRiddle )
+                .put("currentRiddle", unlockedRiddle)
         )
 
         fun currentRiddle(): Int = event["currentRiddle"].asInt()

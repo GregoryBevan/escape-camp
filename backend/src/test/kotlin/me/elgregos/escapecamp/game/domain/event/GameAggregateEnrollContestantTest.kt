@@ -53,7 +53,7 @@ class GameAggregateEnrollContestantTest {
     @Test
     fun `should enroll contestant corresponding to the riddle number and not start game if no contestants limit`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.just(
-            escapeCampWithUnlimitedContestantCreated,
+            unlimitedEnrollmentEscapeCampCreated,
             lockedAndLoadedContestantEnrolled
         )
 
@@ -67,7 +67,7 @@ class GameAggregateEnrollContestantTest {
     @Test
     fun `should enroll more contestant than riddle number if no contestants limit`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.just(
-            escapeCampWithUnlimitedContestantCreated,
+            unlimitedEnrollmentEscapeCampCreated,
             lockedAndLoadedContestantEnrolled,
             jeepersKeypersContestantEnrolled
         )
