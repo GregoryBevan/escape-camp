@@ -8,7 +8,7 @@ import me.elgregos.escapecamp.config.sse.ServerSentEventService
 import me.elgregos.escapecamp.game.api.dto.ContestantCreationDTO
 import me.elgregos.escapecamp.game.api.dto.GameDTO
 import me.elgregos.escapecamp.game.api.dto.RiddleSolutionDTO
-import me.elgregos.escapecamp.game.application.GameCommand
+import me.elgregos.escapecamp.game.application.GameCommand.*
 import me.elgregos.escapecamp.game.application.GameCommandHandler
 import me.elgregos.escapecamp.game.application.GameService
 import me.elgregos.escapecamp.game.domain.event.GameEvent.NextContestantRiddleAssigned
@@ -48,7 +48,13 @@ class GameController(
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ORGANIZER')")
     fun createGame(@AuthenticationPrincipal authenticatedUser: AuthenticatedUser, @RequestBody gameDTO: GameDTO) =
-        gameCommandHandler.handle(GameCommand.CreateGame(createdBy = authenticatedUser.id, riddles = riddles, enrollmentType = gameDTO.enrollmentType))
+        gameCommandHandler.handle(
+            CreateGame(
+                createdBy = authenticatedUser.id,
+                riddles = riddles,
+                enrollmentType = gameDTO.enrollmentType
+            )
+        )
             .toMono()
             .map { mapOf(Pair("gameId", it.aggregateId)) }
 
@@ -59,7 +65,7 @@ class GameController(
         @RequestBody @Valid contestantCreationDTO: ContestantCreationDTO
     ): Mono<Map<String, String>> =
         gameCommandHandler.handle(
-            GameCommand.EnrollContestant(
+            EnrollContestant(
                 gameId = gameId,
                 name = contestantCreationDTO.name
             )
@@ -73,6 +79,16 @@ class GameController(
                 )
             }
 
+    @PostMapping("{gameId}/riddles/next")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ORGANIZER')")
+    fun unlockNextRiddle(
+        @AuthenticationPrincipal authenticatedUser: AuthenticatedUser,
+        @PathVariable @Valid gameId: UUID
+    ): Mono<Void> =
+        gameCommandHandler.handle(UnlockNextRiddle(gameId, unlockedBy = authenticatedUser.id))
+            .then()
+
     @GetMapping("{gameId}/contestants/{contestantId}/riddle")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('CONTESTANT')")
@@ -80,7 +96,7 @@ class GameController(
         @PathVariable @Valid gameId: UUID,
         @PathVariable @Valid contestantId: UUID
     ): Mono<Map<String, Map<String, String>>> =
-        gameCommandHandler.handle(GameCommand.AssignContestantNextRiddle(gameId, assignedBy = contestantId))
+        gameCommandHandler.handle(AssignContestantNextRiddle(gameId, assignedBy = contestantId))
             .last()
             .cast(NextContestantRiddleAssigned::class.java)
             .map(NextContestantRiddleAssigned::assignedRiddle)
@@ -102,12 +118,12 @@ class GameController(
         @PathVariable @Valid riddleName: String,
         @RequestBody @Valid riddleSolutionDTO: RiddleSolutionDTO
     ): Mono<Void> =
-        gameCommandHandler.handle(GameCommand.SubmitRiddleSolution(
-            gameId,
-            submittedBy = contestantId,
-            riddleName = riddleName,
-            solution = riddleSolutionDTO.solution
-        ))
+        gameCommandHandler.handle(SubmitRiddleSolution(
+                gameId,
+                submittedBy = contestantId,
+                riddleName = riddleName,
+                solution = riddleSolutionDTO.solution
+            ))
             .then()
 
     @GetMapping(path = ["{id}/events-stream"], produces = [MediaType.TEXT_EVENT_STREAM_VALUE])

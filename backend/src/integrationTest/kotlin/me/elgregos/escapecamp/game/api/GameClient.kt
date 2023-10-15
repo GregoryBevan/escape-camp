@@ -1,9 +1,6 @@
 package me.elgregos.escapecamp.game.api
 
 import com.fasterxml.jackson.databind.JsonNode
-import me.elgregos.escapecamp.features.RegisteredContestant
-import me.elgregos.escapecamp.features.gameId
-import me.elgregos.escapecamp.features.organizerJwt
 import me.elgregos.reakteves.libs.genericObjectMapper
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType.*
@@ -58,6 +55,13 @@ class GameClient(private val webTestClient: WebTestClient) {
             .header(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
             .accept(APPLICATION_JSON)
             .body(BodyInserters.fromValue(genericObjectMapper.createObjectNode().put("name", contestantName)))
+            .exchange()
+
+    fun unlockNextRiddle() =
+        webTestClient.post()
+            .uri { it.path(rootPath).pathSegment("$gameId", "riddles", "next").build() }
+            .header(HttpHeaders.AUTHORIZATION, "Bearer $organizerJwt")
+            .accept(APPLICATION_JSON)
             .exchange()
 
     fun requestNextRiddle(contestant: RegisteredContestant) =

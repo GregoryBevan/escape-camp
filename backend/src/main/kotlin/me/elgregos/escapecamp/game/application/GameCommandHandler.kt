@@ -19,6 +19,7 @@ class GameCommandHandler(
         when (gameCommand) {
             is CreateGame -> createGame(gameCommand)
             is EnrollContestant -> enrollContestant(gameCommand)
+            is UnlockNextRiddle -> unlockNextRiddle(gameCommand)
             is AssignContestantNextRiddle -> assignContestantNextRiddle(gameCommand)
             is SubmitRiddleSolution -> checkRiddleSolution(gameCommand)
         }
@@ -32,6 +33,10 @@ class GameCommandHandler(
     private fun enrollContestant(gameCommand: EnrollContestant) =
         GameAggregate(gameCommand.gameId, gameCommand.enrolledBy, gameService, gameEventStore)
             .enrollContestant(gameCommand.contestant, gameCommand.enrolledAt)
+
+    private fun unlockNextRiddle(gameCommand: UnlockNextRiddle) =
+        GameAggregate(gameCommand.gameId, gameCommand.unlockedBy, gameService, gameEventStore)
+            .unlockNextRiddle(gameCommand.unlockedAt)
 
     private fun assignContestantNextRiddle(gameCommand: AssignContestantNextRiddle) =
         GameAggregate(gameCommand.gameId, gameCommand.assignedBy, gameService, gameEventStore)

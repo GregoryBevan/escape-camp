@@ -2,8 +2,6 @@ package me.elgregos.escapecamp.game.api
 
 import com.fasterxml.jackson.databind.node.ArrayNode
 import io.cucumber.java8.En
-import me.elgregos.escapecamp.features.response
-import me.elgregos.escapecamp.features.scenario
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.beans.factory.annotation.Autowired
 

@@ -3,9 +3,6 @@ package me.elgregos.escapecamp.game.api
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.cucumber.java8.En
-import me.elgregos.escapecamp.features.currentContestant
-import me.elgregos.escapecamp.features.response
-import me.elgregos.escapecamp.features.sseResponseBody
 import org.springframework.beans.factory.annotation.Autowired
 import reactor.test.StepVerifier
 

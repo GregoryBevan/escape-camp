@@ -130,7 +130,7 @@ sealed class GameEvent(
         unlockedAt,
         unlockedBy,
         gameId,
-        NextContestantRiddleAssigned::class.simpleName!!,
+        NextRiddleUnlocked::class.simpleName!!,
         event
     ) {
 

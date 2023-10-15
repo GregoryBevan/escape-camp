@@ -4,9 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.fasterxml.jackson.databind.JsonNode
-import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
-import me.elgregos.escapecamp.features.*
 import org.springframework.beans.factory.annotation.Autowired
 import reactor.test.StepVerifier
 import java.util.*
@@ -40,11 +38,6 @@ class EnrollContestantApiStepDefinition : En {
 
         When("he enrolls in the game with name {string}") { contestantName: String ->
             response = gameClient.enrollContestant(contestantName)
-        }
-
-        When("{int} contestants have been enrolled in the game") { _: Int, contestantNamesTable: DataTable ->
-            contestantNamesTable.asList()
-                .forEach { gameClient.enrollContestant(it).expectStatus().isCreated }
         }
 
         Then("the contestant is enrolled") {

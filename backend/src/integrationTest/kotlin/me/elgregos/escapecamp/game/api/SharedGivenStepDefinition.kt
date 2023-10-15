@@ -1,4 +1,4 @@
-package me.elgregos.escapecamp.features
+package me.elgregos.escapecamp.game.api
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.cucumber.java8.En
 import io.cucumber.java8.Scenario
-import me.elgregos.escapecamp.game.api.GameClient
 import me.elgregos.reakteves.libs.genericObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.reactive.server.WebTestClient
@@ -40,11 +39,20 @@ class SharedGivenStepDefinition : En {
             organizerJwt = null
         }
 
+        Given("a game with enrollment type {string} created with identifier") { enrollmentType: String ->
+            createGame(gameClient, enrollmentType) }
+
         Given("the {string} contestant registered for a game") { contestantName: String ->
             createGame(gameClient)
             contestants = mutableListOf()
             enrollAllContestants(gameClient)
             currentContestant = contestants!!.first { it.name == contestantName }
+        }
+
+        And("an unknown game identifier") {
+            gameId = UUID.randomUUID()
+            assertThat(gameId).isNotNull()
+            scenario?.log("Unknown ame identifier $gameId")
         }
 
         And("the game has started") {

@@ -25,6 +25,12 @@ sealed class GameCommand(open val gameId: UUID) : Command {
         val contestant: Contestant = Contestant(enrolledBy, name)
     ) : GameCommand(gameId)
 
+    data class UnlockNextRiddle(
+        override val gameId: UUID,
+        val unlockedAt: LocalDateTime = nowUTC(),
+        val unlockedBy: UUID
+    ) : GameCommand(gameId)
+
     data class AssignContestantNextRiddle(
         override val gameId: UUID,
         val assignedAt: LocalDateTime = nowUTC(),

@@ -4,8 +4,6 @@ import assertk.assertThat
 import assertk.assertions.isNotNull
 import com.fasterxml.jackson.databind.JsonNode
 import io.cucumber.java8.En
-import me.elgregos.escapecamp.features.response
-import me.elgregos.escapecamp.features.scenario
 import org.springframework.beans.factory.annotation.Autowired
 
 class CreateGameApiStepDefinition : En {
