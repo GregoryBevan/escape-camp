@@ -5,6 +5,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.readValue
+import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 import io.cucumber.java8.Scenario
 import me.elgregos.reakteves.libs.genericObjectMapper
@@ -53,6 +54,11 @@ class SharedGivenStepDefinition : En {
             gameId = UUID.randomUUID()
             assertThat(gameId).isNotNull()
             scenario?.log("Unknown ame identifier $gameId")
+        }
+
+        And("{int} contestants have been enrolled in the game") { _: Int, contestantNamesTable: DataTable ->
+            contestantNamesTable.asList()
+                .forEach { gameClient.enrollContestant(it).expectStatus().isCreated }
         }
 
         And("the game has started") {

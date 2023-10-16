@@ -31,15 +31,6 @@ class GameClient(private val webTestClient: WebTestClient) {
             organizerJwt = it.responseBody?.get("accessToken")?.asText()
         }
 
-
-
-    fun listGame() =
-        webTestClient.get()
-            .uri(rootPath)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer $organizerJwt")
-            .accept(APPLICATION_JSON)
-            .exchange()
-
     fun createGame(enrollmentType: String? = null) =
         webTestClient.post()
             .uri(rootPath)
@@ -87,4 +78,18 @@ class GameClient(private val webTestClient: WebTestClient) {
             .exchange()
             .expectStatus().isOk()
             .returnResult<ServerSentEvent<JsonNode>>()
+
+    fun gameLeaderboard() =
+        webTestClient.get()
+            .uri { it.path(rootPath).pathSegment("$gameId", "leaderboard").build() }
+            .header(HttpHeaders.AUTHORIZATION, "Bearer $organizerJwt")
+            .accept(APPLICATION_JSON)
+            .exchange()
+
+    fun listGames() =
+        webTestClient.get()
+            .uri(rootPath)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer $organizerJwt")
+            .accept(APPLICATION_JSON)
+            .exchange()
 }

@@ -13,13 +13,13 @@ class ListGameApiStepDefinition : En {
     init {
 
         When("he requests the game list") {
-            response = gameClient.listGame()
+            response = gameClient.listGames()
         }
 
         Then("the response contains all games") {
             response!!.expectStatus().isOk
                 .expectBody(ArrayNode::class.java).consumeWith {
-                    assertThat(it.responseBody!!.size()).isEqualTo(17)
+                    assertThat(it.responseBody!!.size()).isEqualTo(18)
                     scenario!!.log(it.responseBody!!.toPrettyString())
                 }
         }
