@@ -11,6 +11,7 @@ import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.codec.ServerCodecConfigurer
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.support.WebExchangeBindException
 import org.springframework.web.reactive.function.BodyInserters
@@ -87,11 +88,19 @@ class GlobalErrorAttributes : DefaultErrorAttributes() {
         is ServerWebInputException -> {
             val errorAttributes: MutableMap<String, Any> = mutableMapOf()
             errorAttributes["path"] = request.path()
-            errorAttributes["status"] = HttpStatus.INTERNAL_SERVER_ERROR
+            errorAttributes["status"] = HttpStatus.INTERNAL_SERVER_ERROR.value()
             errorAttributes["error"] = HttpStatus.INTERNAL_SERVER_ERROR.reasonPhrase
             errorAttributes["message"] = "Invalid json for request payload"
             errorAttributes["errors"] = error.message
             errorAttributes
+        }
+
+        is BadCredentialsException ->
+             mutableMapOf<String, Any>().also {
+                 it["status"] = HttpStatus.FORBIDDEN.value()
+                 it["error"] = HttpStatus.FORBIDDEN.reasonPhrase
+                 it["message"] = error.message ?: "Wrong username or password"
+
         }
 
         else -> super.getErrorAttributes(request, options)

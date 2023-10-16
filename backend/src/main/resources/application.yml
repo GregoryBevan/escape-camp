@@ -15,7 +15,7 @@ spring:
     password: ${POSTGRESQL_ADDON_PASSWORD:guess-what}
 
 organizer:
-  password: ${ORGANIZER_PASSWORD:"7P2byKz39G!FGY"}
+  password: ${ORGANIZER_PASSWORD:7P2byKz39G!FGY}
 
 jwt:
   accessTokenExpiration: ${ACCESS_TOKEN_EXPIRATION:PT3H}
