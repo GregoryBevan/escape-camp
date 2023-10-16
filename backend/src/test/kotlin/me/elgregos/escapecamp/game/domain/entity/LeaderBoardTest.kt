@@ -35,29 +35,29 @@ internal class LeaderBoardTest {
             Arguments.of(
                 Named.named("After Jeepers Keypers's first riddle solved", escapeCampAfterJeepersKeypersFirstRiddleSolved),
                 listOf(
-                    Line(lockedAndLoadedContestantName, 0, Duration.ZERO),
-                    Line(jeepersKeypersContestantName, 1, Duration.ofSeconds(281))
+                    Line(jeepersKeypersContestantName, 1, Duration.ofSeconds(281)),
+                    Line(lockedAndLoadedContestantName, 0, Duration.ZERO)
                 )
             ),
             Arguments.of(
                 Named.named("After Locked and Loaded's first riddle solved", escapeCampAfterLockedAndLoadedFirstRiddleSolved),
                 listOf(
-                    Line(lockedAndLoadedContestantName, 1, Duration.ofSeconds(464)),
-                    Line(jeepersKeypersContestantName, 1, Duration.ofSeconds(281))
+                    Line(jeepersKeypersContestantName, 1, Duration.ofSeconds(281)),
+                    Line(lockedAndLoadedContestantName, 1, Duration.ofSeconds(464))
                 )
             ),
             Arguments.of(
                 Named.named("After Jeepers Keypers's second riddle solved", escapeCampAfterJeepersKeypersSecondRiddleSolved),
                 listOf(
-                    Line(lockedAndLoadedContestantName, 1, Duration.ofSeconds(464)),
-                    Line(jeepersKeypersContestantName, 2, Duration.ofSeconds(589))
+                    Line(jeepersKeypersContestantName, 2, Duration.ofSeconds(589)),
+                    Line(lockedAndLoadedContestantName, 1, Duration.ofSeconds(464))
                 )
             ),
             Arguments.of(
                 Named.named("After Locked and Loaded's second riddle solved", escapeCampAfterLockAndLoadedSecondRiddleSolved),
                 listOf(
-                    Line(lockedAndLoadedContestantName, 2, Duration.ofSeconds(827)),
-                    Line(jeepersKeypersContestantName, 2, Duration.ofSeconds(589))
+                    Line(jeepersKeypersContestantName, 2, Duration.ofSeconds(589)),
+                    Line(lockedAndLoadedContestantName, 2, Duration.ofSeconds(827))
                 )
             )
         )

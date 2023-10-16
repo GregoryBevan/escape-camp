@@ -12,6 +12,7 @@ data class LeaderBoard(val gameId: UUID, val lines: List<Line>) {
                     acc.add(Line(contestant.name, contestant.numberOfSolvedRiddles(), contestant.timeToSolveRiddles()))
                     acc
                 }
+                .sortedWith(compareByDescending<Line> { it.solvedRiddlesNumber }.thenBy { it.timeToSolve })
                 .let { LeaderBoard(game.id, it) }
     }
 
