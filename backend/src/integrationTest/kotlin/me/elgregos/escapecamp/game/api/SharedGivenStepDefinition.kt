@@ -5,6 +5,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.readValue
+import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 import io.cucumber.java8.Scenario
 import me.elgregos.reakteves.libs.genericObjectMapper
@@ -29,6 +30,7 @@ class SharedGivenStepDefinition : En {
     init {
         Before { s: Scenario ->
             scenario = s
+            contestants = mutableListOf()
         }
 
         Given("an authenticated organizer") {
@@ -44,7 +46,6 @@ class SharedGivenStepDefinition : En {
 
         Given("the {string} contestant registered for a game") { contestantName: String ->
             createGame(gameClient)
-            contestants = mutableListOf()
             enrollAllContestants(gameClient)
             currentContestant = contestants!!.first { it.name == contestantName }
         }
@@ -53,6 +54,15 @@ class SharedGivenStepDefinition : En {
             gameId = UUID.randomUUID()
             assertThat(gameId).isNotNull()
             scenario?.log("Unknown ame identifier $gameId")
+        }
+
+        And("{int} contestants have been enrolled in the game") { _: Int, contestantNamesTable: DataTable ->
+            contestantNamesTable.asList()
+                .forEach { enrollContestant(gameClient, it) }
+        }
+
+        And("the first riddle has been unlocked") {
+            gameClient.unlockNextRiddle().expectStatus().isOk
         }
 
         And("the game has started") {
@@ -65,6 +75,13 @@ class SharedGivenStepDefinition : En {
 
         And("the contestant has an assigned riddle") {
             assignContestantNextRiddle(gameClient)
+        }
+
+        And("the {string} submit correct solution to the riddle {int}") { contestantName: String, riddleNumber: Int ->
+            val contestant = contestants!!.first { contestant -> contestant.name == contestantName }
+            assignContestantNextRiddle(gameClient, contestant)
+            Thread.sleep(1000)
+            solveContestantRiddle(gameClient, "riddle-$riddleNumber", "solution-$riddleNumber", contestant)
         }
 
         And("the contestant has his last riddle assigned") {
@@ -112,22 +129,22 @@ fun enrollContestant(gameClient: GameClient, contestantName: String) {
         }
 }
 
-fun assignContestantNextRiddle(gameClient: GameClient) {
-    gameClient.requestNextRiddle(currentContestant!!)
+fun assignContestantNextRiddle(gameClient: GameClient, contestant: RegisteredContestant? = currentContestant) {
+    gameClient.requestNextRiddle(contestant!!)
         .expectStatus().isOk
         .expectBody(JsonNode::class.java).consumeWith {
             val riddle = genericObjectMapper.readValue<AssignedRiddle>(it.responseBody!!.get("riddle").toString())
             scenario?.log(
                 """
-                    Next riddle for ${currentContestant!!.name}:
+                    Next riddle for ${contestant.name}:
                     $riddle
                     """
             )
         }
 }
 
-fun solveContestantRiddle(gameClient: GameClient, riddleName: String, solution: String) {
-    gameClient.checkRiddleSolution(currentContestant!!, riddleName, solution)
+fun solveContestantRiddle(gameClient: GameClient, riddleName: String, solution: String, contestant: RegisteredContestant? = currentContestant) {
+    gameClient.checkRiddleSolution(contestant!!, riddleName, solution)
         .expectStatus().isOk
 }
 

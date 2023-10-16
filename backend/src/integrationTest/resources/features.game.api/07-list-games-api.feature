@@ -3,7 +3,7 @@
 @listGamesApiFeature
 Feature: List games api
 
-  Scenario: List games api by organizer
+  Scenario: List games by an organizer
     Given an authenticated organizer
     When he requests the game list
     Then the response contains all games

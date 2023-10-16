@@ -1,6 +1,7 @@
 package me.elgregos.escapecamp.game.domain.entity
 
 import me.elgregos.reakteves.domain.JsonConvertible
+import java.time.Duration
 import java.time.LocalDateTime
 import java.util.*
 
@@ -32,6 +33,10 @@ data class Contestant(
         riddles.filter { riddle -> riddle.solvedAt != null }.size
 
     fun hasSolvedAllRiddles(riddles: List<Pair<String, String>>) = numberOfSolvedRiddles() == riddles.size
+
+    fun timeToSolveRiddles() =
+        riddles
+            .fold(Duration.ZERO) { acc, riddle -> acc + riddle.assignedAt.let { Duration.between(it, riddle.solvedAt ?: it) }  }
 
 
 }

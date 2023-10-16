@@ -45,6 +45,11 @@ class GameController(
     @PreAuthorize("hasAuthority('ORGANIZER')")
     fun game(@PathVariable @Valid gameId: UUID) = gameService.game(gameId)
 
+    @GetMapping("{gameId}/leaderboard")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ORGANIZER')")
+    fun gameLeaderboard(@PathVariable @Valid gameId: UUID) = gameService.gameLeaderBoard(gameId)
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ORGANIZER')")

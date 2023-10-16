@@ -3,14 +3,14 @@
 @submitRiddleSolutionApiFeature
 Feature: Submit riddle solution
 
-  Scenario: Submit riddle solution submitted by contestant
+  Scenario: First riddle solution submitted by a contestant
     Given the "The Escape Peas" contestant registered for a game
     And the game has started
     And the contestant has an assigned riddle
     When the contestant submit correct solution to the riddle
     Then the riddle is solved
 
-  Scenario: Submit riddle solution submitted by contestant
+  Scenario: Last riddle solution submitted by a contestant
     Given the "Sher-unlock" contestant registered for a game
     And the game has started
     And the contestant has his last riddle assigned
