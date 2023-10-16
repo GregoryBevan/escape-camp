@@ -19,7 +19,7 @@ class ListGameApiStepDefinition : En {
         Then("the response contains all games") {
             response!!.expectStatus().isOk
                 .expectBody(ArrayNode::class.java).consumeWith {
-                    assertThat(it.responseBody!!.size()).isEqualTo(19)
+                    assertThat(it.responseBody!!.size()).isEqualTo(20)
                     scenario!!.log(it.responseBody!!.toPrettyString())
                 }
         }

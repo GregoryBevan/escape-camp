@@ -36,8 +36,8 @@ class GameServiceTest {
                     LeaderBoard(
                         escapeCampId,
                         listOf(
-                            Line(lockedAndLoadedContestantName, 1, Duration.ofSeconds(464)),
-                            Line(jeepersKeypersContestantName, 2, Duration.ofSeconds(589))
+                            Line(jeepersKeypersContestantName, 2, Duration.ofSeconds(589)),
+                            Line(lockedAndLoadedContestantName, 1, Duration.ofSeconds(464))
                         )
                     )
                 )

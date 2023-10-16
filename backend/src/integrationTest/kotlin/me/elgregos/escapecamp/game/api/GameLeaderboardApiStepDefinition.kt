@@ -14,6 +14,7 @@ class GameLeaderboardApiStepDefinition : En {
     init {
 
         When("he requests the game leaderboard") {
+            Thread.sleep(1000)
             response = gameClient.gameLeaderboard()
         }
 

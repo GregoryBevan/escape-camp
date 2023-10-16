@@ -18,7 +18,7 @@ val contestantNames: List<String> = listOf("Locked and Loaded", "Jeepers Keypers
 var scenario: Scenario? = null
 var organizerJwt: String? = null
 var gameId: UUID? = null
-var contestants: MutableList<RegisteredContestant> = mutableListOf()
+var contestants: MutableList<RegisteredContestant>? = null
 var currentContestant: RegisteredContestant? = null
 var response: WebTestClient.ResponseSpec? = null
 
@@ -30,6 +30,7 @@ class SharedGivenStepDefinition : En {
     init {
         Before { s: Scenario ->
             scenario = s
+            contestants = mutableListOf()
         }
 
         Given("an authenticated organizer") {
@@ -46,7 +47,7 @@ class SharedGivenStepDefinition : En {
         Given("the {string} contestant registered for a game") { contestantName: String ->
             createGame(gameClient)
             enrollAllContestants(gameClient)
-            currentContestant = contestants.first { it.name == contestantName }
+            currentContestant = contestants!!.first { it.name == contestantName }
         }
 
         And("an unknown game identifier") {
@@ -77,11 +78,10 @@ class SharedGivenStepDefinition : En {
         }
 
         And("the {string} submit correct solution to the riddle {int}") { contestantName: String, riddleNumber: Int ->
-            val contestant = contestants.first { contestant -> contestant.name == contestantName }
+            val contestant = contestants!!.first { contestant -> contestant.name == contestantName }
             assignContestantNextRiddle(gameClient, contestant)
             Thread.sleep(1000)
             solveContestantRiddle(gameClient, "riddle-$riddleNumber", "solution-$riddleNumber", contestant)
-            Thread.sleep(1000)
         }
 
         And("the contestant has his last riddle assigned") {
@@ -124,7 +124,7 @@ fun enrollContestant(gameClient: GameClient, contestantName: String) {
             val accessToken = it.responseBody!!.get("accessToken").asText()
             assertThat(contestantId).isNotNull()
             assertThat(accessToken).isNotNull()
-            contestants.add(RegisteredContestant(UUID.fromString(contestantId), contestantName, accessToken, contestants.size + 1))
+            contestants!!.add(RegisteredContestant(UUID.fromString(contestantId), contestantName, accessToken, contestants!!.size + 1))
             scenario?.log("Contestant $contestantName with identifier $contestantId is enrolled")
         }
 }
