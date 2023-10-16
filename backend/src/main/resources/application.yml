@@ -18,7 +18,7 @@ organizer:
   password: "7P2byKz39G!FGY"
 
 jwt:
-  accessTokenExpiration: ${ACCESS_TOKEN_EXPIRATION:PT60M}
+  accessTokenExpiration: ${ACCESS_TOKEN_EXPIRATION:PT3H}
   issuer: ${JWT_ISSUER:https://escamp-camp.elgregos.me}
   secretKey: ${JWT_SECRET_KEY:youllneverguesswhatismysecretbutyoucantry}
 
