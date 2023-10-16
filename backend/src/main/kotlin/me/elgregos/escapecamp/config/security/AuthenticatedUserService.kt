@@ -20,7 +20,6 @@ class AuthenticatedUserService(
     )
 ) : ReactiveUserDetailsService {
 
-
     override fun findByUsername(username: String) =
         Mono.just(this.users[username] ?: throw UsernameNotFoundException("$username not found"))
 }
