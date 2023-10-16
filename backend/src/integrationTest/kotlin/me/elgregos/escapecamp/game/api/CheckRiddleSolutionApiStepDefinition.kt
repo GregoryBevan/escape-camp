@@ -3,9 +3,6 @@ package me.elgregos.escapecamp.game.api
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.cucumber.java8.En
-import me.elgregos.escapecamp.features.currentTeam
-import me.elgregos.escapecamp.features.response
-import me.elgregos.escapecamp.features.sseResponseBody
 import org.springframework.beans.factory.annotation.Autowired
 import reactor.test.StepVerifier
 
@@ -15,8 +12,8 @@ class CheckRiddleSolutionApiStepDefinition : En {
     private lateinit var gameClient: GameClient
 
     init {
-        When("the team submit correct solution to the riddle") {
-            response = gameClient.checkRiddleSolution(currentTeam!!, "riddle-3", "craft")
+        When("the contestant submit correct solution to the riddle") {
+            response = gameClient.checkRiddleSolution(currentContestant!!, "riddle-3", "solution-3")
         }
 
         Then("the riddle is solved") {

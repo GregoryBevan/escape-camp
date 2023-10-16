@@ -4,8 +4,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "3.0.5"
     id("io.spring.dependency-management") version "1.1.0"
-    kotlin("jvm") version "1.7.22"
-    kotlin("plugin.spring") version "1.7.22"
+    kotlin("jvm") version "1.8.22"
+    kotlin("plugin.spring") version "1.8.22"
     id("pl.allegro.tech.build.axion-release") version "1.15.0"
     id("com.gorylenko.gradle-git-properties") version "2.4.1"
     id("com.github.node-gradle.node") version "5.0.0"
@@ -16,9 +16,6 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-    }
 }
 
 sourceSets {
@@ -41,7 +38,7 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation("me.elgregos:reakt-eves:1.1.0")
+    implementation("me.elgregos:reakt-eves:1.2.1")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -53,19 +50,18 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.liquibase:liquibase-core")
     implementation("org.springframework:spring-jdbc")
-    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
-    implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-api:0.12.2")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.12.2")
     implementation("org.postgresql:r2dbc-postgresql")
-    implementation("io.github.oshai:kotlin-logging-jvm:4.0.0-beta-27")
     implementation("com.github.java-json-tools:json-patch:1.13")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testImplementation("io.mockk:mockk:1.13.5")
     testImplementation("io.projectreactor:reactor-test")
-    testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.25")
+    testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.27.0")
     "integrationTestImplementation"(project)
     "integrationTestImplementation"("org.springframework.boot:spring-boot-starter-test")
     "integrationTestImplementation"("org.junit.platform:junit-platform-suite")
@@ -74,9 +70,9 @@ dependencies {
     "integrationTestImplementation"("org.testcontainers:junit-jupiter")
     "integrationTestImplementation"("org.testcontainers:postgresql")
     "integrationTestImplementation"("org.testcontainers:r2dbc")
-    "integrationTestImplementation"("io.cucumber:cucumber-java8:7.12.0")
-    "integrationTestImplementation"("io.cucumber:cucumber-junit-platform-engine:7.12.0")
-    "integrationTestImplementation"("io.cucumber:cucumber-spring:7.12.0")
+    "integrationTestImplementation"("io.cucumber:cucumber-java8:7.14.0")
+    "integrationTestImplementation"("io.cucumber:cucumber-junit-platform-engine:7.14.0")
+    "integrationTestImplementation"("io.cucumber:cucumber-spring:7.14.0")
 }
 
 tasks.withType<KotlinCompile> {
@@ -114,7 +110,6 @@ gitProperties {
 }
 
 scmVersion {
-
     repository {
         type.set("git") // type of repository
         directory.set(project.rootProject.file("../"))
@@ -147,4 +142,4 @@ val copyServiceWorkerAssetTask = tasks.register<Copy>("copyServiceWorkerAssetTas
     into("$projectDir/src/main/resources/static")
 }
 
-tasks.build { dependsOn(copyServiceWorkerAssetTask) }
+tasks.processResources { dependsOn(copyServiceWorkerAssetTask) }

@@ -1,0 +1,10 @@
+game:
+  riddles:
+    - riddle-1:
+        solution: ${RIDDLE_1_SOLUTION:solution-1}
+    - riddle-2:
+        solution: ${RIDDLE_2_SOLUTION:solution-2}
+    - riddle-3:
+        solution: ${RIDDLE_3_SOLUTION:solution-3}
+    - riddle-4:
+        solution: ${RIDDLE_4_SOLUTION:solution-4}

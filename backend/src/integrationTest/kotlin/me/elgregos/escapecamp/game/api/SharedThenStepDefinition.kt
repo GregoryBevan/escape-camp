@@ -1,4 +1,4 @@
-package me.elgregos.escapecamp.features
+package me.elgregos.escapecamp.game.api
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo

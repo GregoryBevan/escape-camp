@@ -5,21 +5,17 @@ import assertk.assertions.isEqualTo
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.cucumber.java8.En
-import me.elgregos.escapecamp.features.AssignedRiddle
-import me.elgregos.escapecamp.features.currentTeam
-import me.elgregos.escapecamp.features.response
-import me.elgregos.escapecamp.features.scenario
 import me.elgregos.reakteves.libs.genericObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 
-class AssignNextTeamRiddleApiStepDefinition: En {
+class AssignNextContestantRiddleApiStepDefinition: En {
 
     @Autowired
     private lateinit var gameClient: GameClient
 
     init {
-        When("the team requests the next riddle") {
-            response = gameClient.requestNextRiddle(currentTeam!!)
+        When("the contestant requests the next riddle") {
+            response = gameClient.requestNextRiddle(currentContestant!!)
         }
 
         Then("the response contains the riddle") {
@@ -35,7 +31,7 @@ class AssignNextTeamRiddleApiStepDefinition: En {
                     """.trimIndent()))
                     scenario?.log(
                         """
-                        Next riddle for ${currentTeam!!.name}:
+                        Next riddle for ${currentContestant!!.name}:
                         $riddle
                         """)
                 }

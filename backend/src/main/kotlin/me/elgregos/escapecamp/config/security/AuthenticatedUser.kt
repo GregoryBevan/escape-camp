@@ -21,5 +21,5 @@ val organizer = AuthenticatedUser(id = organizerId, username = "organizer", role
 
 enum class Role {
     ORGANIZER,
-    PLAYER
+    CONTESTANT
 }

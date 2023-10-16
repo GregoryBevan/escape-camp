@@ -7,14 +7,19 @@ val riddles: List<Pair<String, String>> = listOf(
     Pair("riddle-2", "solution-2")
 )
 
+val firstRiddleUnlockedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 36, 5)
+
 val lockedAndLoadedFirstRiddleAssignedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 36, 12)
 val lockedAndLoadedFirstRiddle = Riddle("riddle-1", lockedAndLoadedFirstRiddleAssignedAt)
 
 val jeepersKeypersFirstRiddleAssignedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 37, 4)
 val jeepersKeypersFirstRiddle = Riddle("riddle-2", jeepersKeypersFirstRiddleAssignedAt)
+val jeepersKeypersFirstRiddleInUnlimitedEnrollmentGame = Riddle("riddle-1", jeepersKeypersFirstRiddleAssignedAt)
 
 val jeepersKeypersFirstRiddleSolvedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 41, 45)
 val jeepersKeypersFirstSolvedRiddle = Riddle("riddle-2", jeepersKeypersFirstRiddleAssignedAt, jeepersKeypersFirstRiddleSolvedAt)
+
+val secondRiddleUnlockedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 42, 12)
 
 val jeepersKeypersSecondRiddleAssignedAt: LocalDateTime = LocalDateTime.of(2023, 6, 15, 13, 42, 28)
 val jeepersKeypersSecondRiddle = Riddle("riddle-1", jeepersKeypersSecondRiddleAssignedAt)
