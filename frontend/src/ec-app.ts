@@ -7,9 +7,10 @@ import {EscapeCampController} from './ec-controller';
 import './ec-home';
 import './ec-admin';
 import './ec-game';
-import './ec-team';
+import './ec-contestant';
 import './ec-riddle';
-import logo from './escape.svg?url'
+import './ec-instruction';
+import logo from './escape.svg?url';
 
 @customElement('ec-app')
 export class EscapeCampApp extends LitElement {
@@ -18,12 +19,12 @@ export class EscapeCampApp extends LitElement {
         css`
         :host { display: block; background-color: var(--bg); }
         h1 {
-            width: 100%; height: 100px; padding-left: 200px;
+            width: 100%; height: 100px; padding-left: 200px; margin: 0px;
             color: darkgray;
             font-family: "VT323"; font-weight: inherit;
             background: url("${unsafeCSS(logo)}") bottom left/200px no-repeat, cyan;
         }
-        main { width: 100%; height: calc(100% - 100px); padding: 0 48px; }
+        main { width: 100%; padding: 0 48px 48px; }
         `,
     ];
 
@@ -49,11 +50,13 @@ export class EscapeCampApp extends LitElement {
         } else if (m = hash.match(/^#game\/([^/]+)$/)) {
             page = "game";
             this.controller.gameId = m[1];
-        } else if (m = hash.match(/^#game\/([^/]+)\/team\/([^/]+)$/)) {
-            page = "team";
+        } else if (m = hash.match(/^#game\/([^/]+)\/contestant\/([^/]+)$/)) {
+            page = "contestant";
         } else if (m = hash.match(/^#riddle$/)) {
             page = "riddle";
             this.controller.getRiddle().then(riddleText => { this.requestUpdate(); });
+        } else if (m = hash.match(/^#instruction$/)) {
+            page = "instruction";
         } else if (m = hash.match(/^#good$/)) {
             page = "good";
         } else if (m = hash.match(/^#try-again$/)) {
@@ -67,9 +70,9 @@ export class EscapeCampApp extends LitElement {
             <main>
             ${choose(page, [
                 ["home", () => html`<ec-home></ec-home>`],
-                ["team", () => html`<ec-team team-name="${this.controller.teamName}"></ec-team>`],
                 ["admin", () => html`<ec-admin></ec-admin>`],
-                ["game", () => html`<ec-game game-id="${this.controller.gameId}" @addTeam="${this._onAddTeam}"></ec-game>`],
+                ["game", () => html`<ec-game game-id="${this.controller.gameId}" @addContestant="${this._onAddContestant}"></ec-game>`],
+                ["instruction", () => html`<ec-instruction .instruction="${this.controller.instructionText}" .nextRiddleAvailable="${this.controller.nextRiddleAvailable}"></ec-instruction>`],
                 ["good", () => html`<p>Bonne réponse !</p><a class="button" href="#riddle">Suivant</a>`],
                 ["try-again", () => html`<p>Essayez encore !</p><a class="button" href="#riddle">OK</a>`],
                 ["riddle", () => html`<ec-riddle .riddle="${this.controller.riddleText}" @guess="${this._onGuess}"></ec-riddle>`],
@@ -83,16 +86,12 @@ export class EscapeCampApp extends LitElement {
         this.requestUpdate();
     }
 
-    private async _onAddTeam(e: CustomEvent) {
-        const eventType = await this.controller.addTeam(e.detail.teamName);
-        if (eventType == "TeamAdded") {
-            window.location.hash = `#game/${this.controller.gameId}/team/${this.controller.teamId}`;
-        } else if (eventType == "GameStarted") {
-            window.location.hash = "#riddle";
-        }
+    private async _onAddContestant(e: CustomEvent) {
+        const eventType = await this.controller.addContestant(e.detail.contestantName);
+        window.location.hash = `#instruction`;
     }
 
-    onGameStarted() {
+    onNextRiddle() {
         window.location.hash = "#riddle";
     }
 

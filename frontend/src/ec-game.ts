@@ -8,7 +8,7 @@ export class EscapeCampGame extends LitElement {
     gameId?: string;
 
     @state()
-    private _teamName: string = "";
+    private _contestantName: string = "";
 
     static styles = [
         styles,
@@ -19,23 +19,23 @@ export class EscapeCampGame extends LitElement {
 
     override render() {
         return html`
-            <p>Comment s'appelle votre équipe ?</p>
-            <input id="teamName" type="text" @input="${this._onInput}" />
+            <p>Quel est ton pseudo ?</p>
+            <input id="contestantName" type="text" @input="${this._onInput}" />
             <button @click="${this._onGoClick}" ?disabled="${!this.isValid()}">GO</button>
         `;
     }
 
     private isValid() {
-        return Boolean(this._teamName);
+        return Boolean(this._contestantName);
     }
 
     private _onInput(e: Event) {
-        this._teamName = (e.target as HTMLInputElement).value.trim();
+        this._contestantName = (e.target as HTMLInputElement).value.trim();
     }
 
     private _onGoClick() {
-        const teamName = this._teamName;
+        const contestantName = this._contestantName;
 
-        this.dispatchEvent(new CustomEvent("addTeam", { detail: { teamName } }));
+        this.dispatchEvent(new CustomEvent("addContestant", { detail: { contestantName } }));
     }
 }
