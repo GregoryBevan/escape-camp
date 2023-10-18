@@ -19,7 +19,7 @@ export class EscapeCampController implements ReactiveController {
     contestantName?: string;
     riddleId?: string;
     riddleText?: string;
-    nextRiddleAvailable: boolean = false;
+    currentRiddleIndex: number = -1;
     instructionText: string = instructionTexts[0];
     solvedRiddleCount: number = 0;
     private accessToken?: string;
@@ -37,11 +37,15 @@ export class EscapeCampController implements ReactiveController {
             this.accessToken = undefined;
             this.riddleId = undefined;
             this.riddleText = undefined;
-            this.nextRiddleAvailable = false;
+            this.currentRiddleIndex = -1;
             this.instructionText = instructionTexts[0];
             this.solvedRiddleCount = 0;
             this.unsubscribeEvents();
         }
+    }
+
+    public get nextRiddleUnlocked() {
+        return this.solvedRiddleCount <= this.currentRiddleIndex;
     }
 
     constructor(host: EscapeCampApp) {
@@ -60,7 +64,7 @@ export class EscapeCampController implements ReactiveController {
             this.contestantName = item.contestantName;
             this.riddleId = item.riddleId;
             this.riddleText = item.riddleText;
-            this.nextRiddleAvailable = item.nextRiddleAvailable;
+            this.currentRiddleIndex = item.currentRiddleIndex;
             this.instructionText = item.instructionText;
             this.solvedRiddleCount = item.solvedRiddleCount;
             this.accessToken = item.accessToken;
@@ -103,8 +107,7 @@ export class EscapeCampController implements ReactiveController {
         const riddle = await response.json();
         this.riddleId = riddle.riddle.name;
         this.riddleText = riddle.riddle.content;
-        this.instructionText = instructionTexts[this.solvedRiddleCount];
-        this.nextRiddleAvailable = false;
+        this.instructionText = instructionTexts[this.solvedRiddleCount+1];
         this.persistData();
         return riddle.riddle.content;
     }
@@ -145,7 +148,7 @@ export class EscapeCampController implements ReactiveController {
             console.log(event.data);
         });
         this.eventSource.addEventListener("NextRiddleUnlocked", event => {
-            this._onNextRiddle(event);
+            this._onNextRiddleUnlocked(JSON.parse(event.data));
         });
         this.eventSource.addEventListener("RiddleSolved", async event => {
             await this.notifyRiddleSolved(event.data);
@@ -166,7 +169,7 @@ export class EscapeCampController implements ReactiveController {
             contestantId: this.contestantId,
             riddleId: this.riddleId,
             riddleText: this.riddleText,
-            nextRiddleAvailable: this.nextRiddleAvailable,
+            currentRiddleIndex: this.currentRiddleIndex,
             instructionText: this.instructionText,
             solvedRiddleCount: this.solvedRiddleCount,
             accessToken: this.accessToken,
@@ -174,8 +177,10 @@ export class EscapeCampController implements ReactiveController {
         window.localStorage.setItem("controller", JSON.stringify(data));
     }
 
-    private _onNextRiddle(event: Event) {
-        this.nextRiddleAvailable = true;
+    private _onNextRiddleUnlocked(data: any) {
+        this.currentRiddleIndex = data.currentRiddle;
+        this.persistData();
+        this.host.requestUpdate();
     }
 
     async notifyRiddleSolved(data: any) {

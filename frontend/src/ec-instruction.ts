@@ -8,19 +8,25 @@ export class EscapeCampInstruction extends LitElement {
     @property({type: String})
     instruction?: string;
     @property({type: Boolean})
-    nextRiddleAvailable: boolean = false;
+    nextRiddleUnlocked: boolean = false;
 
     static styles = [
         styles,
         css`
         :host { display: block; background-color: var(--bg); width: 100%; }
+
+        pre {
+            background-color: black;
+            padding: 16px;
+            border-radius: 16px;
+        }
         `,
     ];
 
     override render() {
         return html`
             <div>${resolveMarkdown(this.instruction || "")}</div>
-            <button @click="${this._onNextClick}" ?disabled="${!this.nextRiddleAvailable}">Suivant</button>
+            <button @click="${this._onNextClick}" ?disabled="${!this.nextRiddleUnlocked}">Suivant</button>
         `;
     }
 
