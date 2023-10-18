@@ -74,10 +74,10 @@ export class EscapeCampApp extends LitElement {
                 ["admin", () => html`<ec-admin></ec-admin>`],
                 ["game", () => html`<ec-game game-id="${this.controller.gameId}" @addContestant="${this._onAddContestant}"></ec-game>`],
                 ["instruction", () => html`<ec-instruction .instruction="${this.controller.instructionText}" .nextRiddleUnlocked="${this.controller.nextRiddleUnlocked}" @nextRiddle="${this.onNextRiddle}"></ec-instruction>`],
-                ["good", () => html`<p>Bonne réponse !</p><br><a class="button" href="#instruction">Next</a>`],
-                ["try-again", () => html`<p>Essayez encore !</p><a class="button" href="#riddle">OK</a>`],
+                ["good", () => html`<p>Good answer !</p><br><a class="button" href="#instruction">Next</a>`],
+                ["try-again", () => html`<p>Try again !</p><br><a class="button" href="#riddle">OK</a>`],
                 ["riddle", () => until(riddle, html`<p>...</p>`)],
-                ["finished", () => html`<p>Bravo ! Vous avez terminé le jeu</p><p>Maintenant que vous avez les quatre mots-clés, vous pouvez deviner le sujet de notre conférence.</p>`],
+                ["finished", () => html`<p>Bravo ! You sucessfully finished the game</p>`],
             ])}
             </main>
         `;
