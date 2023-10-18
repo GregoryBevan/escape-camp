@@ -1,8 +1,7 @@
 import {LitElement, html, css, unsafeCSS} from 'lit';
-import {customElement, state} from 'lit/decorators.js';
+import {customElement} from 'lit/decorators.js';
 import {choose} from 'lit/directives/choose.js';
 import {until} from 'lit/directives/until.js';
-import {Task} from '@lit-labs/task';
 import {styles} from './styles';
 import {EscapeCampController} from './ec-controller';
 import './ec-home';
@@ -20,10 +19,11 @@ export class EscapeCampApp extends LitElement {
         css`
         :host { display: block; background-color: var(--bg); min-height: 100%; }
         h1 {
-            width: 100%; height: 100px; padding-left: 200px; margin: 0px;
-            color: darkgray;
+            width: 100%; height: 1.5em; padding-left: 2em; padding-top:0.2em;margin: 0px;
+            color: #bcdbdf;
             font-family: "VT323"; font-weight: inherit;
-            background: url("${unsafeCSS(logo)}") bottom left/200px no-repeat, cyan;
+            background: url("${unsafeCSS(logo)}") 0.5em -0.3em no-repeat, #235784;
+
         }
         main { width: 100%; padding: 0 48px 48px; }
         `,
@@ -74,7 +74,7 @@ export class EscapeCampApp extends LitElement {
                 ["admin", () => html`<ec-admin></ec-admin>`],
                 ["game", () => html`<ec-game game-id="${this.controller.gameId}" @addContestant="${this._onAddContestant}"></ec-game>`],
                 ["instruction", () => html`<ec-instruction .instruction="${this.controller.instructionText}" .nextRiddleUnlocked="${this.controller.nextRiddleUnlocked}" @nextRiddle="${this.onNextRiddle}"></ec-instruction>`],
-                ["good", () => html`<p>Bonne réponse !</p><a class="button" href="#instruction">Suivant</a>`],
+                ["good", () => html`<p>Bonne réponse !</p><br><a class="button" href="#instruction">Next</a>`],
                 ["try-again", () => html`<p>Essayez encore !</p><a class="button" href="#riddle">OK</a>`],
                 ["riddle", () => until(riddle, html`<p>...</p>`)],
                 ["finished", () => html`<p>Bravo ! Vous avez terminé le jeu</p><p>Maintenant que vous avez les quatre mots-clés, vous pouvez deviner le sujet de notre conférence.</p>`],

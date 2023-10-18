@@ -26,7 +26,7 @@ export class EscapeCampInstruction extends LitElement {
     override render() {
         return html`
             <div>${resolveMarkdown(this.instruction || "")}</div>
-            <button @click="${this._onNextClick}" ?disabled="${!this.nextRiddleUnlocked}">Suivant</button>
+            <button @click="${this._onNextClick}" ?disabled="${!this.nextRiddleUnlocked}">Next</button>
         `;
     }
 

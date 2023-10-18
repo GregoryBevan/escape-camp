@@ -7,8 +7,8 @@
     font-size: 14pt;
     color: var(--fg);
 
-    --fg: lightgray;
-    --bg: #567d46;
+    --fg: #183c5c;
+    --bg: #deeeef;
 }
 
 body {
