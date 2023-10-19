@@ -98,7 +98,7 @@ export class EscapeCampApp extends LitElement {
 
     private async _onGuess(e: CustomEvent) {
         if (await this.controller.guess(e.detail.guess)) {
-            if (this.controller.solvedRiddleCount >= 4) {
+            if (this.controller.solvedRiddleCount >= 5) {
                 window.location.hash = "#finished";
             } else {
                 window.location.hash = "#good";

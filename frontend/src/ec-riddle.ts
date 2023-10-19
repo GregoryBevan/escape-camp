@@ -14,7 +14,7 @@ export class EscapeCampRiddle extends LitElement {
     static styles = [
         styles,
         css`
-        :host { display: block; background-color: #183c5c; }
+        :host { display: block; background-color: #deeeef; }
         `,
     ];
 
