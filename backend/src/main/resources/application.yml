@@ -25,13 +25,13 @@ jwt:
 game:
   riddles:
     - riddle-1:
-        solution: ${RIDDLE_1_SOLUTION}
+        solution: reactive
     - riddle-2:
-        solution: ${RIDDLE_2_SOLUTION}
+        solution: postgres
     - riddle-3:
-        solution: ${RIDDLE_3_SOLUTION}
+        solution: event sourcing
     - riddle-4:
-        solution: ${RIDDLE_4_SOLUTION}
+        solution: ddd
   sseHeartbeatPeriod: ${SSE_HEARTBEAT_PERIOD:PT20S}
   maxDuration: ${GAME_MAX_DURATION:PT90M}
 
