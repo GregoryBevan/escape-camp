@@ -13,7 +13,7 @@ export class EscapeCampHome extends LitElement {
 
     override render() {
         return html`
-            <p>Rejoindre une partie en utilisant le QR code fourni.</p>
+            <p>Join the game using the provided QR code</p>
         `;
     }
 }

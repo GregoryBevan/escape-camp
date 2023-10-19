@@ -19,7 +19,7 @@ export class EscapeCampGame extends LitElement {
 
     override render() {
         return html`
-            <p>Quel est ton pseudo ?</p>
+            <p>Choose your pseudo ?</p>
             <input id="contestantName" type="text" @input="${this._onInput}" />
             <button @click="${this._onGoClick}" ?disabled="${!this.isValid()}">GO</button>
         `;

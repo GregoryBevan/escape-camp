@@ -186,7 +186,7 @@ export class EscapeCampController implements ReactiveController {
     async notifyRiddleSolved(data: any) {
         if (Notification.permission === "granted") {
             const registration = await navigator.serviceWorker.ready;
-            await registration.showNotification("Escape Camp", {body: "Une personne a résolu une énigme"});
+            await registration.showNotification("Escape Camp", {body: "A contestant has solved a riddle"});
 
         }
     }
@@ -194,7 +194,7 @@ export class EscapeCampController implements ReactiveController {
     async notifyWinnerAnnounced(data: any) {
         if (Notification.permission === "granted") {
             const registration = await navigator.serviceWorker.ready;
-            await registration.showNotification("Escape Camp", {body: "Une personne a gagné"});
+            await registration.showNotification("Escape Camp", {body: "We have a winner !"});
 
         }
     }

@@ -16,8 +16,8 @@ export class EscapeCampContestant extends LitElement {
 
     override render() {
         return html`
-            <p>Bienvenue ${this.contestantName} !</p>
-            <p>Veuillez patienter le temps que d'autres participant⋅es arrivent.</p>
+            <p>Welcome ${this.contestantName} !</p>
+            <p>Wait for other contestants to enroll</p>
         `;
     }
 }
