@@ -19,6 +19,7 @@ export class EscapeCampInstruction extends LitElement {
             background-color: black;
             padding: 16px;
             border-radius: 16px;
+            color: #deeeef;
         }
         `,
     ];
