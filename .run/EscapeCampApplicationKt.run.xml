@@ -2,11 +2,6 @@
   <configuration default="false" name="EscapeCampApplicationKt" type="JetRunConfigurationType" nameIsGenerated="true">
     <envs>
       <env name="POSTGRESQL_ADDON_PORT" value="5440" />
-      <env name="RIDDLE_1_SOLUTION" value="reactive" />
-      <env name="RIDDLE_2_SOLUTION" value="postgres" />
-      <env name="RIDDLE_3_SOLUTION" value="event sourcing" />
-      <env name="RIDDLE_4_SOLUTION" value="ddd" />
-      <env name="RIDDLE_5_SOLUTION" value="server sent event" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="me.elgregos.escapecamp.EscapeCampApplicationKt" />
     <module name="escapecamp.main" />
