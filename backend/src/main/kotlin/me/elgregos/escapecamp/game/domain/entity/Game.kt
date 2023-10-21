@@ -43,11 +43,17 @@ data class Game(
 
     fun started() = startedAt != null
 
+    fun hasSolvedAllUnlockedRiddles(contestantId: UUID) =
+        contestants.find { it.id == contestantId }?.let { contestant ->
+            enrollmentType == LIMITED_TO_RIDDLE_NUMBER || contestant.numberOfSolvedRiddles() == currentRiddle } ?: true
+
     fun canAssignRiddleToContestant(contestantId: UUID) =
         contestants.find { it.id == contestantId }?.let { contestant ->
             when (enrollmentType) {
                 LIMITED_TO_RIDDLE_NUMBER -> contestant.hasPreviousRiddleSolved()
-                UNLIMITED -> if(currentRiddle != null)  contestant.numberOfSolvedRiddles() == currentRiddle  else false
+                UNLIMITED ->
+                    if (currentRiddle != null) contestant.hasPreviousRiddleSolved() && contestant.numberOfSolvedRiddles() == currentRiddle
+                    else false
             }
         } ?: false
 
@@ -58,7 +64,8 @@ data class Game(
             updatedBy = contestantId,
             contestants = contestants.map { contestant ->
                 if (contestant.id == contestantId) contestant.assignRiddle(
-                    Riddle(riddles[nextContestantRiddleIndex(contestantId)].first, assignedAt
+                    Riddle(
+                        riddles[nextContestantRiddleIndex(contestantId)].first, assignedAt
                     )
                 ) else contestant
             })
@@ -88,8 +95,11 @@ data class Game(
         winner == null && contestants.any { it.hasSolvedAllRiddles(riddles) }
 
     private fun nextContestantRiddleIndex(contestantId: UUID) =
-        when(enrollmentType) {
-            LIMITED_TO_RIDDLE_NUMBER -> (contestantEnrollmentOrder(contestantId) + numberOfSolvedRiddleByContestant(contestantId)).mod(riddles.size)
+        when (enrollmentType) {
+            LIMITED_TO_RIDDLE_NUMBER -> (contestantEnrollmentOrder(contestantId) + numberOfSolvedRiddleByContestant(
+                contestantId
+            )).mod(riddles.size)
+
             UNLIMITED -> currentRiddle!!
         }
 

@@ -89,6 +89,17 @@ class GameAggregateAssignContestantNextRiddleTest {
     }
 
     @Test
+    fun `should fail to assign riddle if no more riddle unlocked in unlimited game`() {
+        every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(
+            eventsAfterJeepersKeypersFirstRiddleSolvedInGameWithUnlimitedEnrollment)
+
+        GameAggregate(escapeCampId, jeepersKeypersContestantId, MockedRiddleSolutionChecker(riddles), gameEventStore)
+            .assignContestantNextRiddle(jeepersKeypersSecondRiddleAssignedAt)
+            .`as`(StepVerifier::create)
+            .verifyErrorMatches { throwable ->  throwable is GameException.NoRiddleUnlockedException && throwable.message == "No more riddle is unlocked yet" }
+    }
+
+    @Test
     fun `should fail to assign riddle to first enrolled contestant if previous riddle not solved`() {
         every { gameEventStore.loadAllEvents(escapeCampId) } returns Flux.fromIterable(eventsAfterLockedAndLoadedFirstRiddleAssigned)
 

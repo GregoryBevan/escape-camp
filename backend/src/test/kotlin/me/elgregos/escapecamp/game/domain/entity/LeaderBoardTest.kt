@@ -40,7 +40,7 @@ internal class LeaderBoardTest {
                 )
             ),
             Arguments.of(
-                Named.named("After Locked and Loaded's first riddle solved", escapeCampAfterLockedAndLoadedFirstRiddleSolved),
+                Named.named("After Locked and Loaded's first riddle solved", unlimitedEnrollmentEscapeCampAfterLockedAndLoadedFirstRiddleSolved),
                 listOf(
                     Line(jeepersKeypersContestantName, 1, Duration.ofSeconds(281)),
                     Line(lockedAndLoadedContestantName, 1, Duration.ofSeconds(464))

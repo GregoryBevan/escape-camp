@@ -76,14 +76,10 @@ class GameAggregate(
             .switchIfEmpty(Mono.error { ContestantNotFoundException(userId) })
             .filter(Game::started)
             .switchIfEmpty(Mono.error { GameNotStartedException() })
-            .handle { game, sink ->
-                when (game.enrollmentType) {
-                    LIMITED_TO_RIDDLE_NUMBER ->
-                        if (game.canAssignRiddleToContestant(userId)) sink.next(game)
-                        else sink.error(PreviousRiddleNotSolvedException())
-                    UNLIMITED -> sink.next(game)
-                }
-            }
+            .filter { game -> game.hasSolvedAllUnlockedRiddles(userId) }
+            .switchIfEmpty(Mono.error { NoRiddleUnlockedException() })
+            .filter { game -> game.canAssignRiddleToContestant(userId) }
+            .switchIfEmpty(Mono.error { PreviousRiddleNotSolvedException() })
             .map { game -> game.assignRiddleToContestant(userId, assignedAt) }
             .flatMapMany { game ->
                 nextVersion()
