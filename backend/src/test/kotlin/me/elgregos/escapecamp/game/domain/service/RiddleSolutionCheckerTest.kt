@@ -21,10 +21,13 @@ internal class RiddleSolutionCheckerTest {
     fun `should retrieve riddle content`() {
         assertThat(riddleSolutionChecker.retrieveRiddleContent("riddle-1"))
             .isEqualTo("""
-            # A la piscine
+            # Episode I
 
-            Si vous vous placez au bon endroit,
-            la réponse se révèlera.
+            Un mot à trouver.
+
+            Pour avoir le début, il faut se rappeler la stratégie de discipline de Monsieur Rachin dans _Les Choristes_ : « action, \_\_\_\_\_ion ».
+
+            Le mot rime avec le prénom du chanteur et acteur franco-italien qui a joué dans _La Folie des grandeurs_.
 
             """.trimIndent())
     }
@@ -44,10 +47,13 @@ internal class RiddleSolutionCheckerTest {
     fun `should calculate game leaderboard`() {
         assertThat(riddleSolutionChecker.retrieveRiddleContent("riddle-1"))
             .isEqualTo("""
-            # A la piscine
+            # Episode I
 
-            Si vous vous placez au bon endroit,
-            la réponse se révèlera.
+            Un mot à trouver.
+
+            Pour avoir le début, il faut se rappeler la stratégie de discipline de Monsieur Rachin dans _Les Choristes_ : « action, \_\_\_\_\_ion ».
+
+            Le mot rime avec le prénom du chanteur et acteur franco-italien qui a joué dans _La Folie des grandeurs_.
 
             """.trimIndent())
     }

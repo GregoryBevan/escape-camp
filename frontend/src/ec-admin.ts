@@ -7,7 +7,7 @@ export class EscapeCampAdmin extends LitElement {
     static styles = [
         styles,
         css`
-        :host { display: block; background-color: var(--dark-blue); }
+        :host { display: block; background-color: #183c5c; }
         `,
     ];
 

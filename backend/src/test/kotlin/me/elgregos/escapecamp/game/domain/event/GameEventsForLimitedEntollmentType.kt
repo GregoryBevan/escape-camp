@@ -111,6 +111,17 @@ val eventsAfterJeepersKeypersFirstRiddleSolved = listOf(
     jeepersKeypersFirstRiddleSolved
 )
 
+val eventsAfterJeepersKeypersFirstRiddleSolvedInGameWithUnlimitedEnrollment = listOf(
+    unlimitedEnrollmentEscapeCampCreated,
+    lockedAndLoadedContestantEnrolled,
+    jeepersKeypersContestantEnrolled,
+    firstRiddleUnlocked,
+    escapeCampStarted,
+    lockedAndLoadedFirstRiddleAssigned,
+    jeepersKeypersFirstRiddleAssigned,
+    jeepersKeypersFirstRiddleSolved
+)
+
 val secondRiddleUnlocked = NextRiddleUnlocked(
     gameId = escapeCampId,
     version = 8,

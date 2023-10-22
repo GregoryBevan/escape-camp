@@ -4,13 +4,14 @@
 :root {
     font-family: "Rubik", sans-serif;
     font-weight: 500;
-    font-size: 40pt;
+    font-size: 14pt;
     color: var(--fg);
 
-    --fg: lightgray;
-    --bg: #567d46;
+    --fg: #183c5c;
+    --bg: #deeeef;
 }
 
 body {
     margin: 0;
+    height:100%;
 }

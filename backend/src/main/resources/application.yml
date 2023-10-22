@@ -32,6 +32,8 @@ game:
         solution: ${RIDDLE_3_SOLUTION}
     - riddle-4:
         solution: ${RIDDLE_4_SOLUTION}
+    - riddle-5:
+        solution: ${RIDDLE_5_SOLUTION}
   sseHeartbeatPeriod: ${SSE_HEARTBEAT_PERIOD:PT20S}
   maxDuration: ${GAME_MAX_DURATION:PT90M}
 

@@ -2,10 +2,10 @@ import {LitElement, html, css} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {styles} from './styles';
 
-@customElement('ec-team')
-export class EscapeCampTeam extends LitElement {
-    @property({type: String, attribute: "team-name"})
-    teamName?: string;
+@customElement('ec-contestant')
+export class EscapeCampContestant extends LitElement {
+    @property({type: String, attribute: "contestant-name"})
+    contestantName?: string;
 
     static styles = [
         styles,
@@ -16,8 +16,8 @@ export class EscapeCampTeam extends LitElement {
 
     override render() {
         return html`
-            <p>Bienvenue ${this.teamName} !</p>
-            <p>Veuillez patienter le temps que d'autres équipes arrivent.</p>
+            <p>Welcome ${this.contestantName} !</p>
+            <p>Wait for other contestants to enroll</p>
         `;
     }
 }

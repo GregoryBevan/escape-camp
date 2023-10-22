@@ -1,29 +1,31 @@
 import {LitElement, html, css, unsafeCSS} from 'lit';
-import {customElement, state} from 'lit/decorators.js';
+import {customElement} from 'lit/decorators.js';
 import {choose} from 'lit/directives/choose.js';
-import {Task} from '@lit-labs/task';
+import {until} from 'lit/directives/until.js';
 import {styles} from './styles';
 import {EscapeCampController} from './ec-controller';
 import './ec-home';
 import './ec-admin';
 import './ec-game';
-import './ec-team';
+import './ec-contestant';
 import './ec-riddle';
-import logo from './escape.svg?url'
+import './ec-instruction';
+import logo from './escape.svg?url';
 
 @customElement('ec-app')
 export class EscapeCampApp extends LitElement {
     static styles = [
         styles,
         css`
-        :host { display: block; background-color: var(--bg); }
+        :host { display: block; background-color: var(--bg); min-height: 100%; }
         h1 {
-            width: 100%; height: 100px; padding-left: 200px;
-            color: darkgray;
+            width: 100%; height: 1.5em; padding-left: 2em; padding-top:0.2em;margin: 0px;
+            color: #bcdbdf;
             font-family: "VT323"; font-weight: inherit;
-            background: url("${unsafeCSS(logo)}") bottom left/200px no-repeat, cyan;
+            background: url("${unsafeCSS(logo)}") 0.5em -0.3em no-repeat, #235784;
+
         }
-        main { width: 100%; height: calc(100% - 100px); padding: 0 48px; }
+        main { width: 100%; padding: 0 48px 48px; }
         `,
     ];
 
@@ -43,17 +45,19 @@ export class EscapeCampApp extends LitElement {
         const hash = window.location.hash;
         let page = "home";
         let m: RegExpMatchArray | null = null;
-        let riddle = "";
+        let riddle;
         if (m = hash.match(/^#admin$/)) {
             page = "admin";
         } else if (m = hash.match(/^#game\/([^/]+)$/)) {
             page = "game";
             this.controller.gameId = m[1];
-        } else if (m = hash.match(/^#game\/([^/]+)\/team\/([^/]+)$/)) {
-            page = "team";
+        } else if (m = hash.match(/^#game\/([^/]+)\/contestant\/([^/]+)$/)) {
+            page = "contestant";
         } else if (m = hash.match(/^#riddle$/)) {
             page = "riddle";
-            this.controller.getRiddle().then(riddleText => { this.requestUpdate(); });
+            riddle = this.controller.getRiddle().then(riddleText => html`<ec-riddle .riddle="${riddleText}" @guess="${this._onGuess}"></ec-riddle>`);
+        } else if (m = hash.match(/^#instruction$/)) {
+            page = "instruction";
         } else if (m = hash.match(/^#good$/)) {
             page = "good";
         } else if (m = hash.match(/^#try-again$/)) {
@@ -67,13 +71,13 @@ export class EscapeCampApp extends LitElement {
             <main>
             ${choose(page, [
                 ["home", () => html`<ec-home></ec-home>`],
-                ["team", () => html`<ec-team team-name="${this.controller.teamName}"></ec-team>`],
                 ["admin", () => html`<ec-admin></ec-admin>`],
-                ["game", () => html`<ec-game game-id="${this.controller.gameId}" @addTeam="${this._onAddTeam}"></ec-game>`],
-                ["good", () => html`<p>Bonne réponse !</p><a class="button" href="#riddle">Suivant</a>`],
-                ["try-again", () => html`<p>Essayez encore !</p><a class="button" href="#riddle">OK</a>`],
-                ["riddle", () => html`<ec-riddle .riddle="${this.controller.riddleText}" @guess="${this._onGuess}"></ec-riddle>`],
-                ["finished", () => html`<p>Bravo ! Vous avez terminé le jeu</p><p>Maintenant que vous avez les quatre mots-clés, vous pouvez deviner le sujet de notre conférence.</p>`],
+                ["game", () => html`<ec-game game-id="${this.controller.gameId}" @addContestant="${this._onAddContestant}"></ec-game>`],
+                ["instruction", () => html`<ec-instruction .instruction="${this.controller.instructionText}" .nextRiddleUnlocked="${this.controller.nextRiddleUnlocked}" @nextRiddle="${this.onNextRiddle}"></ec-instruction>`],
+                ["good", () => html`<p>Good answer !</p><br><a class="button" href="#instruction">Next</a>`],
+                ["try-again", () => html`<p>Try again !</p><br><a class="button" href="#riddle">OK</a>`],
+                ["riddle", () => until(riddle, html`<p>...</p>`)],
+                ["finished", () => html`<p>Bravo ! You sucessfully finished the game</p>`],
             ])}
             </main>
         `;
@@ -83,22 +87,18 @@ export class EscapeCampApp extends LitElement {
         this.requestUpdate();
     }
 
-    private async _onAddTeam(e: CustomEvent) {
-        const eventType = await this.controller.addTeam(e.detail.teamName);
-        if (eventType == "TeamAdded") {
-            window.location.hash = `#game/${this.controller.gameId}/team/${this.controller.teamId}`;
-        } else if (eventType == "GameStarted") {
-            window.location.hash = "#riddle";
-        }
+    private async _onAddContestant(e: CustomEvent) {
+        const eventType = await this.controller.addContestant(e.detail.contestantName);
+        window.location.hash = `#instruction`;
     }
 
-    onGameStarted() {
+    onNextRiddle() {
         window.location.hash = "#riddle";
     }
 
     private async _onGuess(e: CustomEvent) {
         if (await this.controller.guess(e.detail.guess)) {
-            if (this.controller.solvedRiddleCount >= 4) {
+            if (this.controller.solvedRiddleCount >= 5) {
                 window.location.hash = "#finished";
             } else {
                 window.location.hash = "#good";

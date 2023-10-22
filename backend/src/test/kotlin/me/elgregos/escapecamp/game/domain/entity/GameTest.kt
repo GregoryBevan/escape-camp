@@ -78,6 +78,13 @@ internal class GameTest {
     }
 
     @ParameterizedTest
+    @MethodSource("hasSolvedAllUnlockedRiddlesTestCases")
+    fun `should check if contestant has solved previous riddles in game with unlimited enrollment`(game: Game, expectedResult: Boolean) {
+        assertThat(game.hasSolvedAllUnlockedRiddles(lockedAndLoadedContestantId))
+            .isEqualTo(expectedResult)
+    }
+
+    @ParameterizedTest
     @MethodSource("canAssignRiddleToContestantTestCases")
     fun `should check if riddle is assignable to contestant`(game: Game, expectedResult: Boolean) {
         assertThat(game.canAssignRiddleToContestant(lockedAndLoadedContestantId))
@@ -173,7 +180,7 @@ internal class GameTest {
             Arguments.of(named("After game created", escapeCamp), false),
             Arguments.of(named("After unlimited enrollment game created", unlimitedEnrollmentEscapeCamp), true),
             Arguments.of(named("After first riddle unlocked", escapeCampWithFirstRiddleUnlocked), true),
-            Arguments.of(named("After second riddle unlocked", escapeCampWithSecondRiddleUnlocked), false)
+            Arguments.of(named("After second riddle unlocked", unlimitedEscapeCampWithSecondRiddleUnlocked), false)
         )
 
         @JvmStatic
@@ -181,17 +188,32 @@ internal class GameTest {
             Arguments.of(named("After game created", escapeCamp), false),
             Arguments.of(named("After unlimited enrollment game created", unlimitedEnrollmentEscapeCamp), false),
             Arguments.of(named("After first riddle unlocked", escapeCampWithFirstRiddleUnlocked), true),
-            Arguments.of(named("After second riddle unlocked", escapeCampWithSecondRiddleUnlocked), true)
+            Arguments.of(named("After second riddle unlocked", unlimitedEscapeCampWithSecondRiddleUnlocked), true)
+        )
+
+        @JvmStatic
+        fun hasSolvedAllUnlockedRiddlesTestCases(): Stream<Arguments> = Stream.of(
+            Arguments.of(named("Limited : No previous riddle assigned to the contestant", escapeCampAfterGameStarted), true),
+            Arguments.of(named("Limited : After riddle assigned to the contestant", escapeCampAfterLockedAndLoadedFirstRiddleAssigned), true),
+            Arguments.of(named("Limited : After riddle solved by contestant", escapeCampAfterLockedAndLoadedFirstRiddleSolved), true),
+            Arguments.of(named("Unlimited : No riddle unlocked", unlimitedEnrollmentEscapeCampAfterJeepersKeypersContestantEnrolled), false),
+            Arguments.of(named("Unlimited : No previous riddle assigned to the contestant", escapeCampWithFirstRiddleUnlocked), true),
+            Arguments.of(named("Unlimited : After first riddle assigned to contestant", unlimitedEnrollmentEscapeCampAfterLockedAndLoadedFirstRiddleAssigned), true),
+            Arguments.of(named("Unlimited : First riddle solved by contestant", unlimitedEnrollmentEscapeCampAfterLockedAndLoadedFirstRiddleSolved), false),
+            Arguments.of(named("Unlimited : After second riddle unlocked", unlimitedEscapeCampWithSecondRiddleUnlocked), true),
         )
 
         @JvmStatic
         fun canAssignRiddleToContestantTestCases(): Stream<Arguments> = Stream.of(
-                Arguments.of(named("Limited : No previous riddle assigned to the contestant", escapeCampAfterGameStarted), true),
-                Arguments.of(named("Limited : After riddle assigned to the contestant", escapeCampAfterLockedAndLoadedFirstRiddleAssigned), false),
-                Arguments.of(named("Limited : After riddle solved by contestant", escapeCampAfterLockedAndLoadedFirstRiddleSolved), true),
-                Arguments.of(named("Unlimited : No riddle unlocked", unlimitedEnrollmentEscapeCampAfterJeepersKeypersContestantEnrolled), false),
-                Arguments.of(named("Unlimited : No previous riddle assigned to the contestant", escapeCampWithFirstRiddleUnlocked), true),
-            )
+            Arguments.of(named("Limited : No previous riddle assigned to the contestant", escapeCampAfterGameStarted), true),
+            Arguments.of(named("Limited : After riddle assigned to the contestant", escapeCampAfterLockedAndLoadedFirstRiddleAssigned), false),
+            Arguments.of(named("Limited : After riddle solved by contestant", escapeCampAfterLockedAndLoadedFirstRiddleSolved), true),
+            Arguments.of(named("Unlimited : No riddle unlocked", unlimitedEnrollmentEscapeCampAfterJeepersKeypersContestantEnrolled), false),
+            Arguments.of(named("Unlimited : No previous riddle assigned to the contestant", escapeCampWithFirstRiddleUnlocked), true),
+            Arguments.of(named("Unlimited : After first riddle assigned to contestant", unlimitedEnrollmentEscapeCampAfterLockedAndLoadedFirstRiddleAssigned), false),
+            Arguments.of(named("Unlimited : First riddle solved by contestant", unlimitedEnrollmentEscapeCampAfterLockedAndLoadedFirstRiddleSolved), false),
+            Arguments.of(named("Unlimited : After second riddle unlocked", unlimitedEscapeCampWithSecondRiddleUnlocked), true),
+        )
 
         @JvmStatic
         fun assignRiddleContestantTestCases(): Stream<Arguments> = Stream.of(
@@ -199,7 +221,7 @@ internal class GameTest {
                 named("First registered contestant - First riddle", unlimitedEnrollmentEscapeCampAfterGameStarted),
                 lockedAndLoadedContestantId,
                 lockedAndLoadedFirstRiddleAssignedAt,
-                escapeCampAfterLockedAndLoadedFirstRiddleAssigned
+                unlimitedEnrollmentEscapeCampAfterLockedAndLoadedFirstRiddleAssigned
             ),
             Arguments.of(
                 named(
